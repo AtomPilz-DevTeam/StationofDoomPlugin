@@ -46,6 +46,7 @@ public class PlayerSitListener implements Listener, CommandExecutor {
                 chicken.setGravity(false);
                 sitting.put(player, chicken);
 
+
             }
         }
         return false;
