@@ -1,0 +1,16 @@
+name: StaionofDoom
+version: 1.0
+main: de.j.staionofdoomv1.main.Main
+api-version: 1.16
+load: STARTUP
+authors: [ 12jking ]
+
+commands:
+  afk:
+    description: Toggle AFK
+  plversion:
+    description: Shows you the pluginversion
+  lag:
+    description: Kick Players when lag
+  sit:
+    description: Setz dich hin
