@@ -13,4 +13,4 @@ commands:
   lag:
     description: Kick Players when lag
   sit:
-    description: Setz dich hin
+    description:

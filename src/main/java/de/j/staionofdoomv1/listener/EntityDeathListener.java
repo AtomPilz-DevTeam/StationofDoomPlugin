@@ -49,10 +49,6 @@ public class EntityDeathListener implements Listener {
                     event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), head);
                 }
                 break;
-            case CHICKEN:
-                if (PlayerSitListener.sitting.containsValue(event.getEntity())){
-                    event.setCancelled(true);
-                }
         }
     }
 

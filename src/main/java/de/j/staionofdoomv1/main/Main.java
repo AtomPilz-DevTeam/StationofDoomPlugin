@@ -8,12 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-
 public final class Main extends JavaPlugin {
 
-    //public static final String tp = "";
-    public static ArrayList<String> motd = new ArrayList<>();
 
     private static Main plugin;
 
@@ -23,9 +19,6 @@ public final class Main extends JavaPlugin {
     public void onEnable() {
         version = "1.2.1";
         plugin = this;
-        motd.add("\\u00a7aWillkommen auf\\u00a76 StationOfDoom");
-        motd.add("MisterDoenerHD");
-        motd.add("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
 
         getCommand("afk").setExecutor(new StatusCMD());
         getCommand("plversion").setExecutor(new VersionCMD());
@@ -40,6 +33,7 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new PlayerKillListener(), this);
         pluginManager.registerEvents(new ChatMessagesListener(), this);
         pluginManager.registerEvents(new EntityDeathListener(), this);
+        pluginManager.registerEvents(new PlayerSitListener(), this);
         pluginManager.registerEvents(new PlayerSitListener(), this);
 
     }
