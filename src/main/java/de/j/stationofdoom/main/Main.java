@@ -1,9 +1,10 @@
-package de.j.staionofdoomv1.main;
+package de.j.stationofdoom.main;
 
-import de.j.staionofdoomv1.cmd.LagCMD;
-import de.j.staionofdoomv1.cmd.StatusCMD;
-import de.j.staionofdoomv1.cmd.VersionCMD;
-import de.j.staionofdoomv1.listener.*;
+import de.j.stationofdoom.cmd.DeathPointCMD;
+import de.j.stationofdoom.cmd.ServerCMD;
+import de.j.stationofdoom.cmd.StatusCMD;
+import de.j.stationofdoom.cmd.VersionCMD;
+import de.j.stationofdoom.listener.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,13 +18,14 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        version = "1.2.1";
+        version = "1.4";
         plugin = this;
 
         getCommand("afk").setExecutor(new StatusCMD());
         getCommand("plversion").setExecutor(new VersionCMD());
-        getCommand("lag").setExecutor(new LagCMD());
         getCommand("sit").setExecutor(new PlayerSitListener());
+        getCommand("server").setExecutor(new ServerCMD());
+        getCommand("deathpoint").setExecutor(new DeathPointCMD());
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new Bed(), this);
@@ -35,13 +37,12 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new EntityDeathListener(), this);
         pluginManager.registerEvents(new PlayerSitListener(), this);
         pluginManager.registerEvents(new PlayerSitListener(), this);
+        pluginManager.registerEvents(new DeathPointCMD(), this);
 
     }
 
     @Override
-    public void onDisable() {
-
-    }
+    public void onDisable() {}
 
     public static Main getPlugin(){
         return plugin;

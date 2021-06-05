@@ -1,8 +1,5 @@
-package de.j.staionofdoomv1.cmd;
+package de.j.stationofdoom.cmd;
 
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

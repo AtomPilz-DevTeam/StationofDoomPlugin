@@ -1,4 +1,4 @@
-package de.j.staionofdoomv1.listener;
+package de.j.stationofdoom.listener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;

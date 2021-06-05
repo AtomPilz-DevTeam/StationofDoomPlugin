@@ -1,5 +1,6 @@
-package de.j.staionofdoomv1.listener;
+package de.j.stationofdoom.listener;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,14 +23,16 @@ public class PlayerKillListener implements Listener {
         if (player.getKiller() != null){
             if (player.getKiller() instanceof Player){
                 if (drop(2)){
-                    Player killer = ((Player) player.getKiller());
+                    Player killer = (Player) player.getKiller();
                     ItemStack head = new ItemStack(Material.PLAYER_HEAD);
                     SkullMeta meta = (SkullMeta) head.getItemMeta();
+                    assert meta != null;
                     meta.setOwningPlayer(player);
                     List<String> lore = new ArrayList<>();
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
                     LocalDateTime now = LocalDateTime.now();
                     lore.add("§aKilled on " + dtf.format(now));
+                    lore.add(ChatColor.YELLOW + "Killed by " + killer.getName());
                     meta.setLore(lore);
                     head.setItemMeta(meta);
                     player.getWorld().dropItem(player.getLocation(), head);

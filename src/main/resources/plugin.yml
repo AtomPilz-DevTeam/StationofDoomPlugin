@@ -1,6 +1,6 @@
-name: StaionofDoom
-version: 1.0
-main: de.j.staionofdoomv1.main.Main
+name: StationofDoom
+version: 1.4
+main: de.j.stationofdoom.main.Main
 api-version: 1.16
 load: STARTUP
 authors: [ 12jking ]
@@ -14,3 +14,7 @@ commands:
     description: Kick Players when lag
   sit:
     description:
+  server:
+    description:
+  deathpoint:
+    description: Gibt dir deinen Death Point

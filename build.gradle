@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id "com.github.johnrengelman.shadow" version "5.2.0"
 }
 
 group 'org.example'
@@ -16,10 +17,12 @@ repositories {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
+    mavenLocal()
 }
 
 dependencies {
-    compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
+    compileOnly "org.spigotmc:spigot:1.16.5-R0.1-SNAPSHOT"
+    shadow files ('C:\\Users\\jonas\\Downloads\\Discord-Webhooks-API-WithDependencies.jar')
 }
 
 compileJava.options.encoding = "UTF-8"

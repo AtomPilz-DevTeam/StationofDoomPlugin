@@ -1,6 +1,6 @@
-package de.j.staionofdoomv1.listener;
+package de.j.stationofdoom.listener;
 
-import de.j.staionofdoomv1.cmd.StatusCMD;
+import de.j.stationofdoom.cmd.StatusCMD;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;

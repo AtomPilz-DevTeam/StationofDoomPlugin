@@ -1,7 +1,6 @@
-package de.j.staionofdoomv1.listener;
+package de.j.stationofdoom.listener;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,15 +8,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class PlayerSitListener implements Listener, CommandExecutor {
 
