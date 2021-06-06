@@ -1,6 +1,7 @@
 package de.j.stationofdoom.listener;
 
 import de.j.stationofdoom.util.Tablist;
+import de.j.stationofdoom.util.WhoIsOnline;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,5 +21,7 @@ public class PlayerJoin implements Listener {
         Tablist tablist = new Tablist();
         tablist.tab(event.getPlayer(), ChatColor.DARK_BLUE + "     StationOfDoom     ", ChatColor.RED + "     Hosted by MisterDoenerHD     \n Plugin by LuckyProgrammer");
         tablist.setScoreboard();
+
+        WhoIsOnline.join(event.getPlayer());
     }
 }
