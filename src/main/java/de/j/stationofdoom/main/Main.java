@@ -18,7 +18,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        version = "1.4";
+        version = "1.5";
         plugin = this;
 
         getCommand("afk").setExecutor(new StatusCMD());
