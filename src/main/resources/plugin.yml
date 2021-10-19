@@ -18,3 +18,5 @@ commands:
     description:
   deathpoint:
     description: Gibt dir deinen Death Point
+  voterestart:
+    description: Vote für restarts

@@ -1,9 +1,6 @@
 package de.j.stationofdoom.main;
 
-import de.j.stationofdoom.cmd.DeathPointCMD;
-import de.j.stationofdoom.cmd.ServerCMD;
-import de.j.stationofdoom.cmd.StatusCMD;
-import de.j.stationofdoom.cmd.VersionCMD;
+import de.j.stationofdoom.cmd.*;
 import de.j.stationofdoom.listener.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
@@ -18,7 +15,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        version = "1.5";
+        version = "1.6";
         plugin = this;
 
         getCommand("afk").setExecutor(new StatusCMD());
@@ -26,6 +23,7 @@ public final class Main extends JavaPlugin {
         getCommand("sit").setExecutor(new PlayerSitListener());
         getCommand("server").setExecutor(new ServerCMD());
         getCommand("deathpoint").setExecutor(new DeathPointCMD());
+        getCommand("voterestart").setExecutor(new VoteRestartCMD());
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new Bed(), this);
