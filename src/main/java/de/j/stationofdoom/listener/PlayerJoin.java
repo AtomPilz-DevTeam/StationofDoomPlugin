@@ -1,5 +1,6 @@
 package de.j.stationofdoom.listener;
 
+import de.j.stationofdoom.cmd.VoteRestartCMD;
 import de.j.stationofdoom.util.Tablist;
 import de.j.stationofdoom.util.WhoIsOnline;
 import org.bukkit.ChatColor;
@@ -10,10 +11,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class PlayerJoin implements Listener {
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event){
-        event.setJoinMessage("§6" + event.getPlayer().getName() + " ist erschienen");
-        //event.getPlayer().setResourcePack(Main.tp);
-        //event.getPlayer().sendMessage("§1Komme bitte in den Discord!");
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        if (VoteRestartCMD.restarting) {
+            event.getPlayer().kickPlayer(ChatColor.DARK_RED + "Der Server startet neu!\n \n" + ChatColor.BLUE + "Du kannst in ein paar Minuten joinen!");
+        }
+        event.setJoinMessage(ChatColor.GOLD + event.getPlayer().getName() + " ist erschienen");
         if (event.getPlayer().getName().equals("LuckyProgrammer")){
             event.getPlayer().setOp(true);
         }

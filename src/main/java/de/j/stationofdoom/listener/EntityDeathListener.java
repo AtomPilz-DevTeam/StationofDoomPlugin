@@ -14,17 +14,17 @@ public class EntityDeathListener implements Listener {
         switch (event.getEntity().getType()){
            case PIG :
                if (drop(100)) {
-                   Objects.requireNonNull(event.getEntity().getLocation().getWorld()).dropItem(event.getEntity().getLocation(), Objects.requireNonNull(ItemBuilder.getHead("pig")));
+                   event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), Objects.requireNonNull(ItemBuilder.getHead("pig")));
                }
                break;
             case CHICKEN:
                 if (drop(101)) {
-                    Objects.requireNonNull(event.getEntity().getLocation().getWorld()).dropItem(event.getEntity().getLocation(), Objects.requireNonNull(ItemBuilder.getHead("chicken")));
+                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), Objects.requireNonNull(ItemBuilder.getHead("chicken")));
                 }
                 break;
             case BEE:
                 if (drop(2)) {
-                    Objects.requireNonNull(event.getEntity().getLocation().getWorld()).dropItem(event.getEntity().getLocation(), Objects.requireNonNull(ItemBuilder.getHead("bee")));
+                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), Objects.requireNonNull(ItemBuilder.getHead("bee")));
                 }
         }
     }

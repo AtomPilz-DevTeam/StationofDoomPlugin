@@ -14,8 +14,12 @@ public final class Main extends JavaPlugin {
     public static String version;
 
     @Override
+    public void onLoad() {
+        version = "1.6.1";
+    }
+
+    @Override
     public void onEnable() {
-        version = "1.6";
         plugin = this;
 
         getCommand("afk").setExecutor(new StatusCMD());
@@ -24,6 +28,7 @@ public final class Main extends JavaPlugin {
         getCommand("server").setExecutor(new ServerCMD());
         getCommand("deathpoint").setExecutor(new DeathPointCMD());
         getCommand("voterestart").setExecutor(new VoteRestartCMD());
+        //getCommand("download").setExecutor(new DownloadVersionCMD());
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new Bed(), this);

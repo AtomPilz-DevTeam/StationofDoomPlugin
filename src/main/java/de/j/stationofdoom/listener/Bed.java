@@ -25,6 +25,7 @@ public class Bed implements Listener {
         if (event.getPlayer().getWorld().getTime() >= 12541 && event.getPlayer().getWorld().getTime() <= 23458){
             Bukkit.broadcastMessage("§7" + event.getPlayer().getName() + " schläft");
         }
+        assert world != null;
         for (Player iOw : world.getPlayers()){
             playersInOverworld.add(iOw);
         }
