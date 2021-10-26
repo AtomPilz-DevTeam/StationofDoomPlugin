@@ -21,7 +21,7 @@ public class PlayerJoin implements Listener {
         }
 
         Tablist tablist = new Tablist();
-        tablist.tab(event.getPlayer(), ChatColor.DARK_BLUE + "     StationOfDoom     ", ChatColor.RED + "     Hosted by MisterDoenerHD     \n Plugin by LuckyProgrammer");
+        tablist.tab(event.getPlayer(), ChatColor.DARK_BLUE + "     StationOfDoom     \n\n", ChatColor.RED + "\n\n     Hosted by MisterDoenerHD     \n Plugin by LuckyProgrammer");
         tablist.setScoreboard();
 
         WhoIsOnline.join(event.getPlayer());
