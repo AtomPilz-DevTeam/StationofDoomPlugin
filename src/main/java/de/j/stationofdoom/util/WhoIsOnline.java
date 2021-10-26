@@ -40,6 +40,16 @@ public class WhoIsOnline {
         send(player);
     }
 
+    public static void restart() {
+        embed = new DiscordEmbed.Builder()
+                .withColor(Color.GRAY)
+                .withTitle("Restart")
+                .withDescription("Server startet neu")
+                .withFooter(new FooterEmbed("Plugin by LuckyProgrammer aka 12jking", AVATAR_URL + "LuckyProgrammer"))
+                .build();
+        send();
+    }
+
     private static boolean send(Player player) {
         try {
             DiscordWebhook webhook = new DiscordWebhook(WEBHOOK);
@@ -55,6 +65,21 @@ public class WhoIsOnline {
             Main.getPlugin().getLogger().severe("Failed to send webhook to discord...");
             return false;
         }
+    }
 
+    private static boolean send() {
+        try {
+            DiscordWebhook webhook = new DiscordWebhook(WEBHOOK);
+            DiscordMessage message = new DiscordMessage.Builder()
+                    .withUsername("MinecraftServer")
+                    .withEmbed(embed)
+                    .build();
+            webhook.sendMessage(message);
+            Main.getPlugin().getLogger().info("Sending webhook to discord...");
+            return true;
+        } catch (Exception e) {
+            Main.getPlugin().getLogger().severe("Failed to send webhook to discord...");
+            return false;
+        }
     }
 }
