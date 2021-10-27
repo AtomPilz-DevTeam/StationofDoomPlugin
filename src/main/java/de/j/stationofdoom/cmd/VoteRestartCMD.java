@@ -1,6 +1,7 @@
 package de.j.stationofdoom.cmd;
 
 import de.j.stationofdoom.main.Main;
+import de.j.stationofdoom.util.WhoIsOnline;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -35,10 +36,13 @@ public class VoteRestartCMD implements CommandExecutor {
                         ClickEvent.Action.RUN_COMMAND, "/voterestart"
                 ));
                 message.setHoverEvent(new HoverEvent(
-                        HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Klicke zum Voten!").color(net.md_5.bungee.api.ChatColor.GREEN).create()
+                        HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Klicke zum Voten!")
+                        .color(net.md_5.bungee.api.ChatColor.GREEN)
+                        .create()
                 ));
                 Bukkit.broadcastMessage(ChatColor.BLUE.toString() + ChatColor.BOLD + "[" + ChatColor.RESET + ChatColor.AQUA + player.getName() + ChatColor.BLUE + ChatColor.BOLD + "] " + ChatColor.RESET + ChatColor.GRAY + "hat einen Restart Vote eröffnet!");
                 Bukkit.spigot().broadcast(message);
+
             } else {
                 if (!votedPlayers.contains(player)) {
                     votedPlayers.add(player);
@@ -72,6 +76,7 @@ public class VoteRestartCMD implements CommandExecutor {
                                 players ++;
                             }
                             Main.getPlugin().getLogger().info("Kicked " + players + " players!");
+                            WhoIsOnline.restart();
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {
