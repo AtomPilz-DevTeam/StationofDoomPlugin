@@ -1,10 +1,15 @@
 package de.j.stationofdoom.main;
 
 import de.j.stationofdoom.cmd.*;
+import de.j.stationofdoom.cmd.tab.GetCustomEnchantsTAB;
+import de.j.stationofdoom.enchants.CustomEnchants;
+import de.j.stationofdoom.enchants.TelepathyEvents;
 import de.j.stationofdoom.listener.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.logging.Logger;
 
 public final class Main extends JavaPlugin {
 
@@ -15,7 +20,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        version = "1.6.1";
+        version = "1.7";
     }
 
     @Override
@@ -25,10 +30,10 @@ public final class Main extends JavaPlugin {
         getCommand("afk").setExecutor(new StatusCMD());
         getCommand("plversion").setExecutor(new VersionCMD());
         getCommand("sit").setExecutor(new PlayerSitListener());
-        getCommand("server").setExecutor(new ServerCMD());
         getCommand("deathpoint").setExecutor(new DeathPointCMD());
         getCommand("voterestart").setExecutor(new VoteRestartCMD());
-        //getCommand("download").setExecutor(new DownloadVersionCMD());
+        getCommand("customenchant").setExecutor(new GetCustomEnchantsCMD());
+        getCommand("customenchant").setTabCompleter(new GetCustomEnchantsTAB());
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new Bed(), this);
@@ -41,7 +46,9 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new PlayerSitListener(), this);
         pluginManager.registerEvents(new PlayerSitListener(), this);
         pluginManager.registerEvents(new DeathPointCMD(), this);
+        pluginManager.registerEvents(new TelepathyEvents(), this);
 
+        CustomEnchants.register();
     }
 
     @Override
@@ -49,5 +56,9 @@ public final class Main extends JavaPlugin {
 
     public static Main getPlugin(){
         return plugin;
+    }
+
+    public static Logger getMainLogger() {
+        return getPlugin().getLogger();
     }
 }

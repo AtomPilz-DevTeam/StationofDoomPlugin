@@ -1,5 +1,5 @@
 name: StationofDoom
-version: 1.6.1
+version: 1.7
 main: de.j.stationofdoom.main.Main
 api-version: 1.16
 load: STARTUP
@@ -14,9 +14,9 @@ commands:
     description: Kick Players when lag
   sit:
     description:
-  server:
-    description:
   deathpoint:
     description: Gibt dir deinen Death Point
   voterestart:
     description: Vote für restarts
+  customenchant:
+    description:
