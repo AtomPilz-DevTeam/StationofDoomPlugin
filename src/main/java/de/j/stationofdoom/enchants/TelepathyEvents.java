@@ -1,6 +1,7 @@
 package de.j.stationofdoom.enchants;
 
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
@@ -26,7 +27,7 @@ public class TelepathyEvents implements Listener {
             return;
         if (player.getInventory().firstEmpty() == -1)
             return;
-        if (event.getBlock().getState() instanceof Container)
+        if (event.getBlock().getState() instanceof Container && event.getBlock().getType() == Material.SHULKER_BOX)
             return;
         
         event.setDropItems(false);
