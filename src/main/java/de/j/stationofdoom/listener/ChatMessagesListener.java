@@ -16,7 +16,7 @@ public class ChatMessagesListener implements Listener {
         LocalDateTime now = LocalDateTime.now();
         if (!StatusCMD.afk.contains(event.getPlayer())){
             event.setFormat(String.format("§7[§8%s§7] §7<§r%s§7> §r%s", dtf.format(now), event.getPlayer().getName(), event.getMessage()));
-        }else {
+        } else {
             event.setFormat(String.format("§7[§8%s§7] §1[§3AFK§1] §7<§r%s§7> §r%s", dtf.format(now), event.getPlayer().getName(), event.getMessage()));
         }
 

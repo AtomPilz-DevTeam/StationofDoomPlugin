@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
     implementation "org.spigotmc:spigot:1.16.5-R0.1-SNAPSHOT"
-    implementation files ('C:\\Users\\jonas\\Downloads\\Discord-Webhooks-API-WithDependencies.jar')
+    implementation files ('lib/Discord-Webhooks-API-WithDependencies.jar')
 }
 
 compileJava.options.encoding = "UTF-8"

@@ -3,6 +3,7 @@ package de.j.stationofdoom.main;
 import de.j.stationofdoom.cmd.*;
 import de.j.stationofdoom.cmd.tab.GetCustomEnchantsTAB;
 import de.j.stationofdoom.enchants.CustomEnchants;
+import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.TelepathyEvents;
 import de.j.stationofdoom.listener.*;
 import org.bukkit.Bukkit;
@@ -47,8 +48,10 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new PlayerSitListener(), this);
         pluginManager.registerEvents(new DeathPointCMD(), this);
         pluginManager.registerEvents(new TelepathyEvents(), this);
+        pluginManager.registerEvents(new FlightEvents(), this);
 
         CustomEnchants.register();
+
     }
 
     @Override

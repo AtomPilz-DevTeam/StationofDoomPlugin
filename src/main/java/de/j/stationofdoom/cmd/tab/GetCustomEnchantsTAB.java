@@ -15,6 +15,7 @@ public class GetCustomEnchantsTAB implements TabCompleter {
         List<String> list = new ArrayList<>();
         if (sender instanceof Player && args.length == 1) {
             list.add("telepathy");
+            list.add("flight");
         }
         return list;
     }

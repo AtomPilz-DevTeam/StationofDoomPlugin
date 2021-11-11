@@ -4,19 +4,28 @@ import de.j.stationofdoom.main.Main;
 import org.bukkit.enchantments.Enchantment;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class CustomEnchants {
 
     public static final Enchantment TELEPATHY = new EnchantmentWrapper("telepathy", "Telepathy", 1);
+    public static final Enchantment FLIGHT = new EnchantmentWrapper("flight", "Flight", 1);
 
     public static void register() {
-        boolean registered = Arrays.stream(Enchantment.values()).collect(Collectors.toList()).contains(TELEPATHY);
+        ArrayList<Enchantment> enchantments = new ArrayList<>();
+        enchantments.add(TELEPATHY);
+        enchantments.add(FLIGHT);
 
-        if (!registered) {
-            registerEnchantments(TELEPATHY);
+        for (Enchantment e : enchantments) {
+            boolean registered = Arrays.stream(Enchantment.values()).collect(Collectors.toList()).contains(e);
+
+            if (!registered) {
+                registerEnchantments(e);
+            }
         }
+
     }
 
     private static void registerEnchantments(Enchantment enchantment) {

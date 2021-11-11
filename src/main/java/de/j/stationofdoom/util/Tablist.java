@@ -25,11 +25,13 @@ public class Tablist {
         scoreboard.registerNewTeam("1Admin");
         scoreboard.registerNewTeam("2Developer");
         scoreboard.registerNewTeam("4Spieler");
+        scoreboard.registerNewTeam("5AFK");
 
         scoreboard.getTeam("0Host").setPrefix(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Host " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
         scoreboard.getTeam("1Admin").setPrefix(ChatColor.RED + "Admin " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
         scoreboard.getTeam("2Developer").setPrefix(ChatColor.GOLD + "Dev " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
         scoreboard.getTeam("4Spieler").setPrefix("");
+        scoreboard.getTeam("5AFK").setPrefix("§1[§3AFK§1]");
 
         for (Player on : Bukkit.getOnlinePlayers()){
             setTeam(on);
@@ -61,6 +63,18 @@ public class Tablist {
         player.setScoreboard(scoreboard);
     }
 
+    private void setTeam(Player player, boolean afk) {
+        String team;
+        if (afk) {
+            team = "4AFK";
+            rank.put(player, "§1[§3AFK§1]");
+
+            scoreboard.getTeam(team).addPlayer(player);
+            player.setScoreboard(scoreboard);
+        } else
+            setTeam(player);
+    }
+
     public void tab(Player player, String header, String footer){
         PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
         PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
@@ -81,5 +95,10 @@ public class Tablist {
         } finally {
             connection.sendPacket(packet);
         }
+    }
+
+    public void setAFK(Player player, boolean afk) {
+        setTeam(player, afk);
+        setScoreboard();
     }
 }

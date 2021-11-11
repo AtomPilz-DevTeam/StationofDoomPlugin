@@ -21,7 +21,7 @@ public class TelepathyEvents implements Listener {
             return;
         if (!player.getInventory().getItemInMainHand().hasItemMeta())
             return;
-        if (!player.getInventory().getItemInMainHand().getItemMeta().hasEnchant(CustomEnchants.TELEPATHY))
+        if (!(player.getInventory().getItemInMainHand().getItemMeta().hasEnchant(CustomEnchants.TELEPATHY) || player.getInventory().getItemInMainHand().getItemMeta().getLore().contains("Telepathy I")))
             return;
         if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR)
             return;

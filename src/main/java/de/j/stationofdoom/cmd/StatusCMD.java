@@ -1,5 +1,6 @@
 package de.j.stationofdoom.cmd;
 
+import de.j.stationofdoom.util.Tablist;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,51 +16,16 @@ public class StatusCMD implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player){
             Player player = (Player) sender;
-            if (!afk.contains(player)){
+            Tablist tablist = new Tablist();
+            if (!afk.contains(player)) {
                 afk.add(player);
+                tablist.setAFK(player, true);
                 player.sendMessage("§3[§1AFK§3] §aYou are now afk");
-            }else {
+            } else {
                 afk.remove(player);
+                tablist.setAFK(player, true);
                 player.sendMessage("§3[§1AFK§3] §cYou are not longer afk");
             }
-            /*if (args.length == 0){
-                if (!afk.contains(player)){
-                    TextComponent message = new TextComponent("Are you afk?");
-                    message.setColor(ChatColor.GOLD);
-                    message.setBold(true);
-                    message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afk yesimafk"));
-                    message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                            new ComponentBuilder("You are not AFK yet").color(ChatColor.GREEN).italic(true).create()));
-                    player.spigot().sendMessage(message);
-                }else {
-                    TextComponent message = new TextComponent("Are you afk?");
-                    message.setColor(ChatColor.GOLD);
-                    message.setBold(true);
-                    message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afk noimnotafk"));
-                    message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                            new ComponentBuilder("You are AFK yet").color(ChatColor.RED).italic(true).create()));
-                    player.spigot().sendMessage(message);
-                }
-            }else if (args.length == 1){
-                switch (args[0]){
-                    case "yesimafk":
-                        if (afk.contains(player)){
-                            player.sendActionBar("§cYou are already AFK");
-                        }else {
-                            afk.add(player);
-                            player.sendActionBar("§cYou are now AFK");
-                        }
-                        break;
-                    case "noimnotafk":
-                        if (!afk.contains(player)){
-                            player.sendActionBar("§cYou are not AFK");
-                        }else {
-                            afk.remove(player);
-                            player.sendActionBar("§cYou are not longer AFK");
-                        }
-                        break;
-                }
-            }*/
         }
         return false;
     }
