@@ -27,7 +27,7 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
             if (args.length == 1) {
                 switch (args[0].toLowerCase()) {
                     case "telepathy":
-                        player.sendMessage(ChatColor.RED + "Möchtest du " + ChatColor.AQUA + "Telepathy" + ChatColor.RED +  " für " + ChatColor.BOLD + "10 " + ChatColor.RESET + ChatColor.RED + "Dias kaufen");
+                        player.sendMessage(ChatColor.RED + "Möchtest du " + ChatColor.AQUA + "Telepathy" + ChatColor.RED +  " für " + ChatColor.BOLD + CustomEnchantsEnum.TELEPATHY.getPrice() + " " + ChatColor.RESET + ChatColor.RED + "Dias kaufen");
                         TextComponent t = new TextComponent("Dann klicke diese Nachricht!");
                         t.setColor(net.md_5.bungee.api.ChatColor.RED);
                         t.setClickEvent(new ClickEvent(
@@ -36,7 +36,7 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
                         player.spigot().sendMessage(t);
                         break;
                     case "flight":
-                        player.sendMessage(ChatColor.RED + "Möchtest du " + ChatColor.AQUA + "Flight" + ChatColor.RED +  " für " + ChatColor.BOLD + "10 " + ChatColor.RESET + ChatColor.RED + "Dias kaufen");
+                        player.sendMessage(ChatColor.RED + "Möchtest du " + ChatColor.AQUA + "Flight" + ChatColor.RED +  " für " + ChatColor.BOLD + CustomEnchantsEnum.FLIGHT.getPrice() + " " + ChatColor.RESET + ChatColor.RED + "Dias kaufen");
                         TextComponent f = new TextComponent("Dann klicke diese Nachricht!");
                         f.setColor(net.md_5.bungee.api.ChatColor.RED);
                         f.setClickEvent(new ClickEvent(
@@ -69,7 +69,7 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
                                                     assert meta != null;
                                                     meta.setLore(lore);
                                                     player.getInventory().getItemInMainHand().setItemMeta(meta);
-                                                    itemStack.setAmount(itemStack.getAmount() - 10);
+                                                    itemStack.setAmount(itemStack.getAmount() - CustomEnchantsEnum.TELEPATHY.getPrice());
                                                 } else
                                                     player.sendMessage(ChatColor.RED + "Bitte nehme ein Dia oder Netherite Tool in die Hand!");
                                                 break;
@@ -101,7 +101,7 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
                                                     assert meta != null;
                                                     meta.setLore(lore);
                                                     player.getInventory().getItemInMainHand().setItemMeta(meta);
-                                                    itemStack.setAmount(itemStack.getAmount() - 10);
+                                                    itemStack.setAmount(itemStack.getAmount() - CustomEnchantsEnum.FLIGHT.getPrice());
                                                 } else
                                                     player.sendMessage(ChatColor.RED + "Bitte nehme eine Dia oder Netherite Schwert in die Hand!");
                                                 break;
