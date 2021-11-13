@@ -31,15 +31,27 @@ public class Tablist {
         scoreboard.getTeam("1Admin").setPrefix(ChatColor.RED + "Admin " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
         scoreboard.getTeam("2Developer").setPrefix(ChatColor.GOLD + "Dev " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
         scoreboard.getTeam("4Spieler").setPrefix("");
-        scoreboard.getTeam("5AFK").setPrefix("§1[§3AFK§1]");
+        scoreboard.getTeam("5AFK").setPrefix("§1[§3AFK§1] | ");
 
         for (Player on : Bukkit.getOnlinePlayers()){
             setTeam(on);
         }
     }
 
+    public void setScoreboard(boolean afk) {
+        scoreboard.getTeam("0Host").setPrefix(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Host " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
+        scoreboard.getTeam("1Admin").setPrefix(ChatColor.RED + "Admin " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
+        scoreboard.getTeam("2Developer").setPrefix(ChatColor.GOLD + "Dev " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
+        scoreboard.getTeam("4Spieler").setPrefix("");
+        scoreboard.getTeam("5AFK").setPrefix("§1[§3AFK§1] | ");
+
+        for (Player on : Bukkit.getOnlinePlayers()){
+            setTeam(on, afk);
+        }
+    }
+
     private void setTeam(Player player) {
-        String team;
+        String team = null;
         switch (player.getUniqueId().toString()) {
             case "0565369c-ec68-4e7e-a90f-3492eb7002d8"://MDHD
                 team = "0Host";
@@ -53,10 +65,11 @@ public class Tablist {
                 team = "2Developer";
                 rank.put(player, ChatColor.GRAY + "[Dev]" + ChatColor.RESET + " ");
                 break;
-            default:
-                team = "4Spieler";
-                rank.put(player, "");
-                break;
+        }
+
+        if (team == null) {
+            team = "4Spieler";
+            rank.put(player, "");
         }
 
         scoreboard.getTeam(team).addPlayer(player);
@@ -66,7 +79,7 @@ public class Tablist {
     private void setTeam(Player player, boolean afk) {
         String team;
         if (afk) {
-            team = "4AFK";
+            team = "5AFK";
             rank.put(player, "§1[§3AFK§1]");
 
             scoreboard.getTeam(team).addPlayer(player);
@@ -98,7 +111,11 @@ public class Tablist {
     }
 
     public void setAFK(Player player, boolean afk) {
-        setTeam(player, afk);
-        setScoreboard();
+        //tab(player, ChatColor.DARK_BLUE + "     StationOfDoom     \n\n", ChatColor.RED + "\n\n     Hosted by MisterDoenerHD     \n Plugin by LuckyProgrammer");
+        if (afk) {
+            setScoreboard(afk);
+        } else
+            setScoreboard();
+
     }
 }
