@@ -21,7 +21,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        version = "1.7";
+        version = "1.8";
     }
 
     @Override
