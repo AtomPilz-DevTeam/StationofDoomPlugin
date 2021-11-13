@@ -18,7 +18,11 @@ public class FlightEvents implements Listener {
         if (!(event.getEntity() instanceof LivingEntity)) return;
 
         LivingEntity entity = (LivingEntity) event.getEntity();
-        entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 20, 5));
+        if (!entity.isDead()) {
+            entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 15, 8));
+        }
+
+
 
     }
 }
