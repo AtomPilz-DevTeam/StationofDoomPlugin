@@ -23,7 +23,7 @@ public class StatusCMD implements CommandExecutor {
                 player.sendMessage("§3[§1AFK§3] §aYou are now afk");
             } else {
                 afk.remove(player);
-                tablist.setAFK(player, true);
+                tablist.setAFK(player, false);
                 player.sendMessage("§3[§1AFK§3] §cYou are not longer afk");
             }
         }

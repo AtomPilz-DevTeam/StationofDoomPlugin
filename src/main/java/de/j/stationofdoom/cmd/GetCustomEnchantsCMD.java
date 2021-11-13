@@ -1,6 +1,7 @@
 package de.j.stationofdoom.cmd;
 
 import de.j.stationofdoom.enchants.CustomEnchants;
+import de.j.stationofdoom.enchants.CustomEnchantsEnum;
 import de.j.stationofdoom.main.Main;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -64,7 +65,7 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
 
                                                     ItemMeta meta = item.getItemMeta();
                                                     List<String> lore = new ArrayList<>();
-                                                    lore.add(ChatColor.GRAY + "Telepathy I");
+                                                    lore.add(CustomEnchantsEnum.TELEPATHY.getLoreName());
                                                     assert meta != null;
                                                     meta.setLore(lore);
                                                     player.getInventory().getItemInMainHand().setItemMeta(meta);
@@ -96,7 +97,7 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
 
                                                     ItemMeta meta = item.getItemMeta();
                                                     List<String> lore = new ArrayList<>();
-                                                    lore.add(ChatColor.GRAY + "Flight I");
+                                                    lore.add(CustomEnchantsEnum.FLIGHT.getLoreName());
                                                     assert meta != null;
                                                     meta.setLore(lore);
                                                     player.getInventory().getItemInMainHand().setItemMeta(meta);

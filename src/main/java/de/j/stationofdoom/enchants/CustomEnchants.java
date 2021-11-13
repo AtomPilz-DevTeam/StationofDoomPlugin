@@ -2,6 +2,7 @@ package de.j.stationofdoom.enchants;
 
 import de.j.stationofdoom.main.Main;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -43,4 +44,18 @@ public class CustomEnchants {
             Main.getPlugin().getLogger().info(enchantment.getKey() + " registered");
         }
     }
+
+    public static boolean checkEnchant(ItemStack item, CustomEnchantsEnum checkFor) {
+        if (item != null) {
+            if (item.hasItemMeta()) {
+                if (item.getItemMeta().hasEnchants()) {
+                    return item.getItemMeta().hasEnchant(checkFor.getEnchantment()) || item.getItemMeta().getLore().contains(checkFor.getLoreName());
+                }
+            }
+        }
+        return false;
+    }
+
+
 }
+
