@@ -10,7 +10,9 @@ import de.j.stationofdoom.util.WhoIsOnline;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.spigotmc.Metrics;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 public final class Main extends JavaPlugin {
@@ -23,7 +25,6 @@ public final class Main extends JavaPlugin {
     @Override
     public void onLoad() {
         version = "1.10";
-        WhoIsOnline.init();
     }
 
     @Override
@@ -54,6 +55,7 @@ public final class Main extends JavaPlugin {
 
         CustomEnchants.register();
 
+        WhoIsOnline.init();
     }
 
     @Override
