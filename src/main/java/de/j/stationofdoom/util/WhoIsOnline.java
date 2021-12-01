@@ -10,6 +10,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class WhoIsOnline {
 
@@ -20,10 +22,16 @@ public class WhoIsOnline {
 
     public static void init() {
         FileConfiguration config = Main.getPlugin().getConfig();
-        if (config.getString("discord.webhook") != null) {
-            webhookURL = config.getString("discord.webhook");
-            enabled = true;
-        }
+        if (config.getString("path.webhook") != null) {
+            if ((!config.getString("discord.webhook").equals("INSERT_WEBHOOK_HERE"))) {
+                webhookURL = config.getString("discord.webhook");
+                enabled = true;
+            }
+        } else
+            config.set("discord.webhook", "INSERT_WEBHOOK_HERE");
+        config.set("discord.webhookEnabled", enabled);
+        Main.getPlugin().saveConfig();
+
     }
 
     public static void join(Player player) {
