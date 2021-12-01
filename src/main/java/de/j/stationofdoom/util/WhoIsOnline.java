@@ -6,15 +6,25 @@ import net.ranktw.DiscordWebHooks.DiscordMessage;
 import net.ranktw.DiscordWebHooks.DiscordWebhook;
 import net.ranktw.DiscordWebHooks.embed.FooterEmbed;
 import net.ranktw.DiscordWebHooks.embed.ThumbnailEmbed;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
 
 public class WhoIsOnline {
 
-    private static DiscordEmbed embed;
-    private static final String WEBHOOK = "https://ptb.discord.com/api/webhooks/850676262858129498/JAlrlRAF-FTXcWpPcPxRyjvSYFNPuTMPaNMsdHDWdXHxxIKsH9az0A4N7lhJLl6sOjYI";
+    private static DiscordEmbed embed;//https://ptb.discord.com/api/webhooks/850676262858129498/JAlrlRAF-FTXcWpPcPxRyjvSYFNPuTMPaNMsdHDWdXHxxIKsH9az0A4N7lhJLl6sOjYI
+    public static String webhookURL;
     private static final String AVATAR_URL = "https://www.mc-heads.net/avatar/";
+    private static boolean enabled = false;
+
+    public static void init() {
+        FileConfiguration config = Main.getPlugin().getConfig();
+        if (config.getString("discord.webhook") != null) {
+            webhookURL = config.getString("discord.webhook");
+            enabled = true;
+        }
+    }
 
     public static void join(Player player) {
         embed = new DiscordEmbed.Builder()
@@ -51,35 +61,43 @@ public class WhoIsOnline {
     }
 
     private static boolean send(Player player) {
-        try {
-            DiscordWebhook webhook = new DiscordWebhook(WEBHOOK);
-            DiscordMessage message = new DiscordMessage.Builder()
-                    .withUsername("Minecraft")
-                    .withEmbed(embed)
-                    .withAvatarURL(AVATAR_URL + player.getUniqueId())
-                    .build();
-            webhook.sendMessage(message);
-            Main.getPlugin().getLogger().info("Sending webhook to discord...");
-            return true;
-        } catch (Exception e) {
-            Main.getPlugin().getLogger().severe("Failed to send webhook to discord...");
+        if (enabled) {
+            try {
+                assert webhookURL != null;
+                DiscordWebhook webhook = new DiscordWebhook(webhookURL);
+                DiscordMessage message = new DiscordMessage.Builder()
+                        .withUsername("Minecraft")
+                        .withEmbed(embed)
+                        .withAvatarURL(AVATAR_URL + player.getUniqueId())
+                        .build();
+                webhook.sendMessage(message);
+                Main.getPlugin().getLogger().info("Sending webhook to discord...");
+                return true;
+            } catch (Exception e) {
+                Main.getPlugin().getLogger().severe("Failed to send webhook to discord...");
+                return false;
+            }
+        } else
             return false;
-        }
     }
 
     private static boolean send() {
-        try {
-            DiscordWebhook webhook = new DiscordWebhook(WEBHOOK);
-            DiscordMessage message = new DiscordMessage.Builder()
-                    .withUsername("MinecraftServer")
-                    .withEmbed(embed)
-                    .build();
-            webhook.sendMessage(message);
-            Main.getPlugin().getLogger().info("Sending webhook to discord...");
-            return true;
-        } catch (Exception e) {
-            Main.getPlugin().getLogger().severe("Failed to send webhook to discord...");
+        if (enabled) {
+            try {
+                assert webhookURL != null;
+                DiscordWebhook webhook = new DiscordWebhook(webhookURL);
+                DiscordMessage message = new DiscordMessage.Builder()
+                        .withUsername("MinecraftServer")
+                        .withEmbed(embed)
+                        .build();
+                webhook.sendMessage(message);
+                Main.getPlugin().getLogger().info("Sending webhook to discord...");
+                return true;
+            } catch (Exception e) {
+                Main.getPlugin().getLogger().severe("Failed to send webhook to discord...");
+                return false;
+            }
+        } else
             return false;
-        }
     }
 }
