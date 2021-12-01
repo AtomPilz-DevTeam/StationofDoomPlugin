@@ -3,7 +3,6 @@ package de.j.stationofdoom.listener;
 import de.j.stationofdoom.cmd.VoteRestartCMD;
 import de.j.stationofdoom.util.Tablist;
 import de.j.stationofdoom.util.WhoIsOnline;
-import net.kyori.adventure.text.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
