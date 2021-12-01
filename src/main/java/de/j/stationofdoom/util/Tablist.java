@@ -89,26 +89,31 @@ public class Tablist {
     }
 
     public void tab(Player player, String header, String footer){
-        PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
+        PacketPlayOutPlayerListHeaderFooter packet;
         PlayerConnection connection = ((CraftPlayer) player).getHandle().b;
 
         IChatBaseComponent title = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + header + "\"}");
         IChatBaseComponent foot = IChatBaseComponent.ChatSerializer.b("{\"text\": \"" + footer + "\"}");
 
-        try {
-            Field a = packet.getClass().getDeclaredField("header");
+        packet = new PacketPlayOutPlayerListHeaderFooter(title, foot);
+
+        /*try {
+            /*Field a = packet.getClass().getDeclaredField("header");
             a.setAccessible(true);
             Field b = packet.getClass().getDeclaredField("footer");
             b.setAccessible(true);
 
             a.set(packet, title);
             b.set(packet, foot);
+
         } catch (NoSuchFieldException | IllegalAccessException e){
             e.printStackTrace();
         } finally {
-            connection.sendPacket(packet);
-            connection.
-        }
+            //connection.sendPacket(packet);
+
+        }*/
+
+        connection.a(packet);
     }
 
     public void setAFK(Player player, boolean afk) {
