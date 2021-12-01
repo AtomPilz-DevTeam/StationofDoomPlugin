@@ -54,7 +54,7 @@ public class WhoIsOnline {
         try {
             DiscordWebhook webhook = new DiscordWebhook(WEBHOOK);
             DiscordMessage message = new DiscordMessage.Builder()
-                    .withUsername("WerIsOnBot")
+                    .withUsername("Minecraft")
                     .withEmbed(embed)
                     .withAvatarURL(AVATAR_URL + player.getUniqueId())
                     .build();

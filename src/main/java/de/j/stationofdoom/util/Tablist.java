@@ -1,11 +1,11 @@
 package de.j.stationofdoom.util;
 
-import net.minecraft.server.v1_16_R3.IChatBaseComponent;
-import net.minecraft.server.v1_16_R3.PacketPlayOutPlayerListHeaderFooter;
-import net.minecraft.server.v1_16_R3.PlayerConnection;
+import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.network.protocol.game.PacketPlayOutPlayerListHeaderFooter;
+import net.minecraft.server.network.PlayerConnection;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -53,18 +53,18 @@ public class Tablist {
     private void setTeam(Player player) {
         String team = null;
         switch (player.getUniqueId().toString()) {
-            case "0565369c-ec68-4e7e-a90f-3492eb7002d8"://MDHD
+            case "0565369c-ec68-4e7e-a90f-3492eb7002d8" -> {//MDHD
                 team = "0Host";
                 rank.put(player, ChatColor.RED + "" + ChatColor.BOLD + "[Host]" + ChatColor.RESET + " ");
-                break;
-            case "46cd27ba-df0c-49ef-9f33-6cfa884e339b"://PP
+            }
+            case "46cd27ba-df0c-49ef-9f33-6cfa884e339b" -> {//PP
                 team = "1Admin";
                 rank.put(player, ChatColor.BLUE + "" + ChatColor.BOLD + "[Admin]" + ChatColor.RESET + " ");
-                break;
-            case "050fee27-a1cc-4e78-953a-7cefaf0849a1"://LP
+            }
+            case "050fee27-a1cc-4e78-953a-7cefaf0849a1" -> {//LP
                 team = "2Developer";
                 rank.put(player, ChatColor.GRAY + "[Dev]" + ChatColor.RESET + " ");
-                break;
+            }
         }
 
         if (team == null) {
@@ -90,7 +90,7 @@ public class Tablist {
 
     public void tab(Player player, String header, String footer){
         PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
-        PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
+        PlayerConnection connection = ((CraftPlayer) player).getHandle().b;
 
         IChatBaseComponent title = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + header + "\"}");
         IChatBaseComponent foot = IChatBaseComponent.ChatSerializer.b("{\"text\": \"" + footer + "\"}");
@@ -107,11 +107,11 @@ public class Tablist {
             e.printStackTrace();
         } finally {
             connection.sendPacket(packet);
+            connection.
         }
     }
 
     public void setAFK(Player player, boolean afk) {
-        //tab(player, ChatColor.DARK_BLUE + "     StationOfDoom     \n\n", ChatColor.RED + "\n\n     Hosted by MisterDoenerHD     \n Plugin by LuckyProgrammer");
         if (afk) {
             setScoreboard(afk);
         } else
