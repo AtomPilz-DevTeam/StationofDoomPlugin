@@ -1,10 +1,11 @@
 package de.j.stationofdoom.enchants;
 
-import de.j.stationofdoom.main.Main;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Set;
 
 public class EnchantmentWrapper extends Enchantment {
 
