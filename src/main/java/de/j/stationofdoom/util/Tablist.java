@@ -38,16 +38,15 @@ public class Tablist {
         }
     }
 
-    public void setScoreboard(boolean afk) {
+    public void setScoreboard(Player player, boolean afk) {
         scoreboard.getTeam("0Host").setPrefix(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Host " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
         scoreboard.getTeam("1Admin").setPrefix(ChatColor.RED + "Admin " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
         scoreboard.getTeam("2Developer").setPrefix(ChatColor.GOLD + "Dev " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
         scoreboard.getTeam("4Spieler").setPrefix("");
         scoreboard.getTeam("5AFK").setPrefix("§1[§3AFK§1] | ");
 
-        for (Player on : Bukkit.getOnlinePlayers()){
-            setTeam(on, afk);
-        }
+        setTeam(player, afk);
+
     }
 
     private void setTeam(Player player) {
@@ -102,9 +101,9 @@ public class Tablist {
 
     public void setAFK(Player player, boolean afk) {
         if (afk) {
-            setScoreboard(afk);
+            setScoreboard(player, afk);
         } else
-            setScoreboard();
+            setScoreboard(player, false);
 
     }
 }
