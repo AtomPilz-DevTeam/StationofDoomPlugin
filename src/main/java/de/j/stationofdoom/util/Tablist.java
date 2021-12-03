@@ -97,22 +97,6 @@ public class Tablist {
 
         packet = new PacketPlayOutPlayerListHeaderFooter(title, foot);
 
-        /*try {
-            /*Field a = packet.getClass().getDeclaredField("header");
-            a.setAccessible(true);
-            Field b = packet.getClass().getDeclaredField("footer");
-            b.setAccessible(true);
-
-            a.set(packet, title);
-            b.set(packet, foot);
-
-        } catch (NoSuchFieldException | IllegalAccessException e){
-            e.printStackTrace();
-        } finally {
-            //connection.sendPacket(packet);
-
-        }*/
-
         connection.a(packet);
     }
 
