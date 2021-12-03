@@ -17,7 +17,7 @@ Thanks to [RANKTW](https://github.com/RANKTW) for sending me his Java Discord We
 
 How To (Compiling Jar From Source)
 ------
-To compile Paper, you need JDK 17 and an internet connection.
+To compile the plugin, you need JDK 17 and an internet connection.
 
 Clone this repo and run `gradle shadowJar` from your terminal. You can find the compiled jar in the project root's `build/libs` directory.
 
