@@ -11,6 +11,10 @@ How To
 ------
 Download the plugin from the [releases tap](https://github.com/12jking/StationofDoomPlugin/releases) and copy the plugin to your plugins folder
 
+Thanks
+------
+Thanks to [RANKTW](https://github.com/RANKTW) for sending me his Java Discord Webhook API. (No longer available)
+
 How To (Compiling Jar From Source)
 ------
 To compile Paper, you need JDK 17 and an internet connection.
