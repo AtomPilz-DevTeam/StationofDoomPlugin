@@ -9,7 +9,7 @@ A minecraft spigot survival plugin for private servers
 
 How To 
 ------
-Download the plugin from the [releases tap](https://github.com/12jking/StationofDoomPlugin/releases) and copy the plugin to your plugins folder
+Download the plugin from the [releases tab](https://github.com/12jking/StationofDoomPlugin/releases) and copy the plugin to your plugins folder
 
 Thanks
 ------
