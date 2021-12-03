@@ -6,13 +6,10 @@ import de.j.stationofdoom.enchants.CustomEnchants;
 import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.TelepathyEvents;
 import de.j.stationofdoom.listener.*;
-import de.j.stationofdoom.util.WhoIsOnline;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.spigotmc.Metrics;
 
-import java.io.IOException;
 import java.util.logging.Logger;
 
 public final class Main extends JavaPlugin {
@@ -24,7 +21,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        version = "1.10";
+        version = "1.7";
     }
 
     @Override
@@ -55,7 +52,6 @@ public final class Main extends JavaPlugin {
 
         CustomEnchants.register();
 
-        WhoIsOnline.init();
     }
 
     @Override
