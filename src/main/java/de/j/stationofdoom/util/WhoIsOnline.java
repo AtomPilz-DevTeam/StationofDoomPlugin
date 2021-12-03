@@ -15,20 +15,27 @@ import java.io.IOException;
 
 public class WhoIsOnline {
 
-    private static DiscordEmbed embed;//https://ptb.discord.com/api/webhooks/850676262858129498/JAlrlRAF-FTXcWpPcPxRyjvSYFNPuTMPaNMsdHDWdXHxxIKsH9az0A4N7lhJLl6sOjYI
+    private static DiscordEmbed embed;
     public static String webhookURL;
     private static final String AVATAR_URL = "https://www.mc-heads.net/avatar/";
     private static boolean enabled = false;
 
     public static void init() {
         FileConfiguration config = Main.getPlugin().getConfig();
-        if (config.getString("path.webhook") != null) {
+        if (config.getString("discord.webhook") != null) {
             if ((!config.getString("discord.webhook").equals("INSERT_WEBHOOK_HERE"))) {
                 webhookURL = config.getString("discord.webhook");
-                enabled = true;
+                if (config.getBoolean("discord.webhookEnabled")) {
+                    enabled = true;
+                    Main.getMainLogger().info("Discord Webhook enabled");
+                } else
+                    Main.getMainLogger().info("Discord Webhook disabled");
             }
-        } else
+            Main.getMainLogger().info("Discord Webhook disabled");
+        } else {
             config.set("discord.webhook", "INSERT_WEBHOOK_HERE");
+            Main.getMainLogger().info("Discord Webhook disabled");
+        }
         config.set("discord.webhookEnabled", enabled);
         Main.getPlugin().saveConfig();
 
