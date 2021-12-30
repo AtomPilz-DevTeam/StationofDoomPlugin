@@ -1,4 +1,4 @@
-Stationofdoom Plugin [![Discord](https://img.shields.io/discord/827941357824770098?label=Discord&logo=Discord)](https://discord.gg/uYwAKpRyak) [![wakatime](https://wakatime.com/badge/github/12jking/StationofDoomPlugin.svg)](https://wakatime.com/badge/github/12jking/StationofDoomPlugin)
+Stationofdoom Plugin [![Discord](https://img.shields.io/discord/827941357824770098?label=Discord&logo=Discord)](https://discord.gg/uYwAKpRyak) [![Time spent](https://wakatime.com/badge/github/12jking/StationofDoomPlugin.svg)](https://wakatime.com/badge/github/12jking/StationofDoomPlugin)
 ===========
 
 A minecraft spigot survival plugin for private servers
