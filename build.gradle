@@ -8,19 +8,18 @@ group 'org.example'
 version 1.10
 
 repositories {
+    //mavenLocal()
     maven {
-        name = 'sonatype'
-        url = 'https://oss.sonatype.org/content/groups/public/'
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
     }
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url = 'https://oss.sonatype.org/content/repositories/central' }
-
-    mavenLocal()
-
 }
 
 dependencies {
-    implementation "org.spigotmc:spigot:1.18-R0.1-SNAPSHOT"
+    //implementation "org.spigotmc:spigot:1.18-R0.1-SNAPSHOT"
+    implementation'org.spigotmc:spigot-api:1.18-R0.1-SNAPSHOT'
+    implementation files ('lib/spigot-1.18.1.jar')
     implementation files ('lib/Discord-Webhooks-API-WithDependencies.jar')
     //implementation ("io.papermc.paper:paper-api:1.18-R0.1-SNAPSHOT")
 }
