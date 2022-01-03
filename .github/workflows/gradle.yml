@@ -11,7 +11,7 @@ jobs:
           java-version: 17
           distribution: 'adopt'
           cache: gradle
-      - name: Get Spigot server
+      - name: Run Buildtools
         run: wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastStableBuild/artifact/target/BuildTools.jar && java -jar BuildTools.jar --rev latest
       - name: Build with Gradle
         run: ./gradlew build
