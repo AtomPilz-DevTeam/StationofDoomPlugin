@@ -12,6 +12,6 @@ jobs:
           distribution: 'adopt'
           cache: gradle
       - name: Get Spigot server
-        run: curl -o "https://hub.spigotmc.org/jenkins/job/BuildTools/lastStableBuild/" && java -jar BuildTools.jar --rev latest
+        run: wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastStableBuild/ && java -jar BuildTools.jar --rev latest
       - name: Build with Gradle
         run: ./gradlew build
