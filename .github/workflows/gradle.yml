@@ -10,7 +10,6 @@ jobs:
         with:
           java-version: 17
           distribution: 'adopt'
-          cache: gradle
       - uses: SpraxDev/Action-SpigotMC@v3
         with:
           # A comma-separated list of Spigot version that should be compiled
