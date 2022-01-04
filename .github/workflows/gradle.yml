@@ -29,7 +29,7 @@ jobs:
           # Disables the check for existing files in the local maven repository
           # Normally, a version is skipped if it is already installed
           # in the local maven repository to speed up build time
-          forceRun: false # Optio
+          forceRun: true # Optio
           # The amount of builds allowed to run at the same time
           # Set to '-1' to use system's cpu core count
           threads: -1 # Optio
