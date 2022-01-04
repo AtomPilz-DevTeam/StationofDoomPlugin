@@ -19,7 +19,7 @@ jobs:
           versions: latest # Optio
           # Should sources be generated?
           # If enabled, BuildTools is provided the '--generate-source' argument
-          generateSrc: false # Optio
+          generateSrc: true # Optio
           # Should the documentation be generated?
           # If enabled, BuildTools is provided the '--generate-docs' argument
           generateDoc: false # Optio
