@@ -1,6 +1,7 @@
 package de.j.stationofdoom.util;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundTabListPacket;
 import net.minecraft.server.network.ServerPlayerConnection;
 import org.bukkit.Bukkit;
@@ -90,8 +91,8 @@ public class Tablist {
         ClientboundTabListPacket packet;
         ServerPlayerConnection connection = ((CraftPlayer) player).getHandle().connection;
 
-        Component title = Component.Serializer.fromJson("{\"text\": \"" + header + "\"}");
-        Component foot = Component.Serializer.fromJson("{\"text\": \"" + footer + "\"}");
+        Component title = new TextComponent(header);
+        Component foot = new TextComponent(footer);
 
         packet = new ClientboundTabListPacket(title, foot);
 
