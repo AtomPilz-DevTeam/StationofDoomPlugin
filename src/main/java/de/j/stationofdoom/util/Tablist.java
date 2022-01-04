@@ -1,15 +1,14 @@
 package de.j.stationofdoom.util;
 
-import net.minecraft.network.chat.IChatBaseComponent;
-import net.minecraft.network.protocol.game.PacketPlayOutPlayerListHeaderFooter;
-import net.minecraft.server.network.PlayerConnection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundTabListPacket;
+import net.minecraft.server.network.ServerPlayerConnection;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 
 public class Tablist {
@@ -87,16 +86,16 @@ public class Tablist {
             setTeam(player);
     }
 
-    public void tab(Player player, String header, String footer){
-        PacketPlayOutPlayerListHeaderFooter packet;
-        PlayerConnection connection = ((CraftPlayer) player).getHandle().b;
+    public void tab(Player player, String header, String footer) {
+        ClientboundTabListPacket packet;
+        ServerPlayerConnection connection = ((CraftPlayer) player).getHandle().connection;
 
-        IChatBaseComponent title = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + header + "\"}");
-        IChatBaseComponent foot = IChatBaseComponent.ChatSerializer.b("{\"text\": \"" + footer + "\"}");
+        Component title = Component.Serializer.fromJson("{\"text\": \"" + header + "\"}");
+        Component foot = Component.Serializer.fromJson("{\"text\": \"" + footer + "\"}");
 
-        packet = new PacketPlayOutPlayerListHeaderFooter(title, foot);
+        packet = new ClientboundTabListPacket(title, foot);
 
-        connection.a(packet);
+        connection.send(packet);
     }
 
     public void setAFK(Player player, boolean afk) {
