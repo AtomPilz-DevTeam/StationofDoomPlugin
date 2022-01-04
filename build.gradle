@@ -8,8 +8,8 @@ group 'org.example'
 version 1.10
 
 repositories {
-    //mavenLocal()
-    mavenCentral()
+    mavenLocal()
+    //mavenCentral()
     maven {
         url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
     }
@@ -18,9 +18,8 @@ repositories {
 }
 
 dependencies {
-    //implementation "org.spigotmc:spigot:1.18-R0.1-SNAPSHOT"
-    implementation'org.spigotmc:spigot-api:1.18-R0.1-SNAPSHOT'
-    implementation files ('lib/spigot-1.18.1.jar')
+    implementation'org.spigotmc:spigot:1.18-R0.1-SNAPSHOT'
+    //implementation files ('lib/spigot-1.18.1.jar')
     implementation files ('lib/Discord-Webhooks-API-WithDependencies.jar')
     //implementation ("io.papermc.paper:paper-api:1.18-R0.1-SNAPSHOT")
 }
