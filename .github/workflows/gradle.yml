@@ -5,6 +5,12 @@ jobs:
   buildtools:
     runs-on: ubuntu-latest
     steps:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'adopt'
+          cache: gradle
       - uses: SpraxDev/Action-SpigotMC@v3
         with:
           # A comma-separated list of Spigot version that should be compiled
