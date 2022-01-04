@@ -9,7 +9,8 @@ A minecraft spigot survival plugin for private servers
 
 How To 
 ------
-Download the plugin from the [releases tab](https://github.com/12jking/StationofDoomPlugin/releases) and copy the plugin to your plugins folder
+Download the plugin from the [releases tab](https://github.com/12jking/StationofDoomPlugin/releases) and copy the plugin to your plugins folder.
+#####Remember You need a Mojang mapped server
 
 Thanks
 ------
@@ -28,4 +29,4 @@ Give a ⭐️ if you like this project!
 
 If you are on the [Brave Browser](https://brave.com/) you can send me BAT!
 
-If not you can send me Chia XCH: xch19e3qeyffjudjd36vhx5stvjzwtnlqnuz7mc7m7w60m8j35cwdq3sas78ld
+If not you can send me Doge: DEJTQbAESiSqtihAYFSZS22EpnBoTKe6ee
