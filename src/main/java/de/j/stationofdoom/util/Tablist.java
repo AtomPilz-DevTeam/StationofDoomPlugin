@@ -1,12 +1,9 @@
 package de.j.stationofdoom.util;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.protocol.game.ClientboundTabListPacket;
-import net.minecraft.server.network.ServerPlayerConnection;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -87,16 +84,8 @@ public class Tablist {
             setTeam(player);
     }
 
-    public void tab(Player player, String header, String footer) {
-        ClientboundTabListPacket packet;
-        ServerPlayerConnection connection = ((CraftPlayer) player).getHandle().connection;
-
-        Component title = new TextComponent(header);
-        Component foot = new TextComponent(footer);
-
-        packet = new ClientboundTabListPacket(title, foot);
-
-        connection.send(packet);
+    public void tab(Audience player, TextComponent header, TextComponent footer) {
+        player.sendPlayerListHeaderAndFooter(header, footer);
     }
 
     public void setAFK(Player player, boolean afk) {
