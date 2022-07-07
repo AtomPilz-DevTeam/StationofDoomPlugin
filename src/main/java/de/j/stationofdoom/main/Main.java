@@ -51,7 +51,6 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new FlightEvents(), this);
 
         CustomEnchants.register();
-
     }
 
     @Override
