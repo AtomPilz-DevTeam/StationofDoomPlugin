@@ -1,6 +1,7 @@
 package de.j.stationofdoom.listener;
 
 import de.j.stationofdoom.cmd.VoteRestartCMD;
+import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.Tablist;
 import de.j.stationofdoom.util.WhoIsOnline;
 import net.kyori.adventure.text.Component;
@@ -9,6 +10,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.text.DecimalFormat;
 
 public class PlayerJoin implements Listener {
 
@@ -27,6 +31,15 @@ public class PlayerJoin implements Listener {
         tablist.setScoreboard();
 
         WhoIsOnline.join(event.getPlayer());
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                tablist.tabTPS(event.getPlayer(), Component.text("     StationOfDoom     \n\n", NamedTextColor.DARK_BLUE), Component
+                        .text("\n\n     Hosted by MisterDoenerHD     \n Plugin by LuckyProgrammer", NamedTextColor.RED)
+                        .append(Component.text(String.format("\nTPS:  %s;  %s;  %s", (int) Main.getPlugin().getServer().getTPS()[0], (int) Main.getPlugin().getServer().getTPS()[1], (int) Main.getPlugin().getServer().getTPS()[2]), NamedTextColor.LIGHT_PURPLE)));
+            }
+        }.runTaskTimerAsynchronously(Main.getPlugin(), 20, 30);
     }
 
 }

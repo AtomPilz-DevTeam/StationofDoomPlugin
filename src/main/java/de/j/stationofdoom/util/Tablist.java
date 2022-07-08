@@ -88,6 +88,10 @@ public class Tablist {
         player.sendPlayerListHeaderAndFooter(header, footer);
     }
 
+    public void tabTPS(Audience player, TextComponent header, TextComponent footer) {
+        player.sendPlayerListHeaderAndFooter(header, footer);
+    }
+
     public void setAFK(Player player, boolean afk) {
         if (afk) {
             setScoreboard(player, afk);
