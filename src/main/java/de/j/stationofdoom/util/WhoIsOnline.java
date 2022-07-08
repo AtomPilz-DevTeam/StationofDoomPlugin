@@ -31,7 +31,6 @@ public class WhoIsOnline {
                 } else
                     Main.getMainLogger().info("Discord Webhook disabled");
             }
-            Main.getMainLogger().info("Discord Webhook disabled");
         } else {
             config.set("discord.webhook", "INSERT_WEBHOOK_HERE");
             Main.getMainLogger().info("Discord Webhook disabled");
