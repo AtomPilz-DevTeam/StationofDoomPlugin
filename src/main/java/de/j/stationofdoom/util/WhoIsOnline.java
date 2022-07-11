@@ -12,6 +12,9 @@ import org.bukkit.entity.Player;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
 
 public class WhoIsOnline {
 
@@ -41,10 +44,12 @@ public class WhoIsOnline {
     }
 
     public static void join(Player player) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
+        LocalDateTime now = LocalDateTime.now();
         embed = new DiscordEmbed.Builder()
                 .withColor(Color.GREEN)
                 .withTitle("Join")
-                .withDescription(player.getName() + " ist gejoint!")
+                .withDescription(player.getName() + " ist gejoint!   " + dtf.format(now))
                 .withFooter(new FooterEmbed("Plugin by LuckyProgrammer aka 12jking", AVATAR_URL + "LuckyProgrammer"))
                 .withThumbnail(new ThumbnailEmbed(AVATAR_URL + player.getUniqueId(), 16, 16))
                 .build();
@@ -53,10 +58,12 @@ public class WhoIsOnline {
     }
 
     public static void quit(Player player) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
+        LocalDateTime now = LocalDateTime.now();
         embed = new DiscordEmbed.Builder()
                 .withColor(Color.RED)
                 .withTitle("Quit")
-                .withDescription(player.getName() + " ist gequittet!")
+                .withDescription(player.getName() + " ist gequittet!   " + dtf.format(now))
                 .withFooter(new FooterEmbed("Plugin by LuckyProgrammer aka 12jking", AVATAR_URL + "LuckyProgrammer"))
                 .withThumbnail(new ThumbnailEmbed(AVATAR_URL + player.getUniqueId(), 16, 16))
                 .build();
