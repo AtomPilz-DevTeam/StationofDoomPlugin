@@ -37,7 +37,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: mkdir -p built/
-
       - run: echo hello > built/Plugin.jar
       - uses: actions/upload-artifact@v3
         with:
