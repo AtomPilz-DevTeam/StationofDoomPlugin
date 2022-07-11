@@ -36,7 +36,8 @@ jobs:
     needs: createJar
     steps:
       - uses: actions/checkout@v2
-      - run: mkdir -p built/Plugin.jar
+      - run: mkdir -p built/
+
       - run: echo hello > built/Plugin.jar
       - uses: actions/upload-artifact@v3
         with:
