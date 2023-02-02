@@ -50,6 +50,7 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new DeathPointCMD(), this);
         pluginManager.registerEvents(new TelepathyEvents(), this);
         pluginManager.registerEvents(new FlightEvents(), this);
+        pluginManager.registerEvents(new AntiSwordDropListener(), this);
 
         CustomEnchants.register();
 
