@@ -1,5 +1,5 @@
 name: StationofDoom
-version: 1.10
+version: 1.10.5
 main: de.j.stationofdoom.main.Main
 api-version: 1.19
 load: STARTUP
