@@ -35,11 +35,13 @@ public class PlayerJoin implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
+                int ping = event.getPlayer().getPing();
                 tablist.tabTPS(event.getPlayer(), Component.text("     StationOfDoom     \n\n", NamedTextColor.DARK_BLUE), Component
                         .text("\n\n     Hosted by MisterDoenerHD     \n Plugin by LuckyProgrammer", NamedTextColor.RED)
-                        .append(Component.text(String.format("\nTPS:  %s;  %s;  %s", (int) Main.getPlugin().getServer().getTPS()[0], (int) Main.getPlugin().getServer().getTPS()[1], (int) Main.getPlugin().getServer().getTPS()[2]), NamedTextColor.LIGHT_PURPLE)));
+                        .append(Component.text(String.format("\nTPS:  %s;  %s;  %s", (int) Main.getPlugin().getServer().getTPS()[0], (int) Main.getPlugin().getServer().getTPS()[1], (int) Main.getPlugin().getServer().getTPS()[2]), NamedTextColor.LIGHT_PURPLE))
+                        .append(Component.text("\n Ping: " + (ping < 30 ? NamedTextColor.GREEN + String.valueOf(ping) : NamedTextColor.RED + String.valueOf(ping)) + " ms" )));
             }
-        }.runTaskTimerAsynchronously(Main.getPlugin(), 20, 30);
+        }.runTaskTimerAsynchronously(Main.getPlugin(), 20, 40);
     }
 
 }
