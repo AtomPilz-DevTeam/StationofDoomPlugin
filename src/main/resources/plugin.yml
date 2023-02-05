@@ -20,3 +20,5 @@ commands:
     description: Vote für restarts
   customenchant:
     description:
+  ping:
+    description: Ping
