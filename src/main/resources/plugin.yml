@@ -13,7 +13,7 @@ commands:
   lag:
     description: Kick Players when lag
   sit:
-    description:
+    description: Setze dich hin
   deathpoint:
     description: Gibt dir deinen Death Point
   voterestart:
