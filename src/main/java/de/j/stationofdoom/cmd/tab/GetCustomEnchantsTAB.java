@@ -16,6 +16,7 @@ public class GetCustomEnchantsTAB implements TabCompleter {
         if (sender instanceof Player && args.length == 1) {
             list.add("telepathy");
             list.add("flight");
+            list.add("furnace");
         }
         return list;
     }

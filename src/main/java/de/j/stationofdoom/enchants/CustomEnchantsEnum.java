@@ -5,7 +5,8 @@ import org.bukkit.enchantments.Enchantment;
 
 public enum CustomEnchantsEnum {
     TELEPATHY("Telepathy", CustomEnchants.TELEPATHY, ChatColor.GRAY + "Telepathy I", 10),
-    FLIGHT("Flight", CustomEnchants.FLIGHT, ChatColor.GRAY + "Flight I", 32);
+    FLIGHT("Flight", CustomEnchants.FLIGHT, ChatColor.GRAY + "Flight I", 32),
+    FURNACE("Furnace", CustomEnchants.FURNACE, ChatColor.GRAY + "Furnace I", 20);
 
     private String name;
     private Enchantment enchantment;

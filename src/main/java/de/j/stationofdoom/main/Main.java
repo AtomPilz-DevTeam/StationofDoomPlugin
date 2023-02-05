@@ -4,6 +4,7 @@ import de.j.stationofdoom.cmd.*;
 import de.j.stationofdoom.cmd.tab.GetCustomEnchantsTAB;
 import de.j.stationofdoom.enchants.CustomEnchants;
 import de.j.stationofdoom.enchants.FlightEvents;
+import de.j.stationofdoom.enchants.FurnaceEvents;
 import de.j.stationofdoom.enchants.TelepathyEvents;
 import de.j.stationofdoom.listener.*;
 import de.j.stationofdoom.util.WhoIsOnline;
@@ -22,7 +23,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        version = "1.10";
+        version = "1.10.5";
     }
 
     @Override
@@ -34,6 +35,7 @@ public final class Main extends JavaPlugin {
         getCommand("sit").setExecutor(new PlayerSitListener());
         getCommand("deathpoint").setExecutor(new DeathPointCMD());
         getCommand("voterestart").setExecutor(new VoteRestartCMD());
+        getCommand("ping").setExecutor(new PingCommand());
         getCommand("customenchant").setExecutor(new GetCustomEnchantsCMD());
         getCommand("customenchant").setTabCompleter(new GetCustomEnchantsTAB());
 
@@ -51,6 +53,7 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new TelepathyEvents(), this);
         pluginManager.registerEvents(new FlightEvents(), this);
         pluginManager.registerEvents(new AntiSwordDropListener(), this);
+        pluginManager.registerEvents(new FurnaceEvents(), this);
 
         CustomEnchants.register();
 

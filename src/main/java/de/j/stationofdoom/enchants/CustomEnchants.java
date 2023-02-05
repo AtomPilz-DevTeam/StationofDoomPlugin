@@ -13,11 +13,13 @@ public class CustomEnchants {
 
     public static final Enchantment TELEPATHY = new EnchantmentWrapper("telepathy", "Telepathy", 1);
     public static final Enchantment FLIGHT = new EnchantmentWrapper("flight", "Flight", 1);
+    public static final Enchantment FURNACE = new EnchantmentWrapper("furnace", "Furnace", 1);
 
     public static void register() {
         ArrayList<Enchantment> enchantments = new ArrayList<>();
         enchantments.add(TELEPATHY);
         enchantments.add(FLIGHT);
+        enchantments.add(FURNACE);
 
         for (Enchantment e : enchantments) {
             boolean registered = Arrays.stream(Enchantment.values()).collect(Collectors.toList()).contains(e);
