@@ -1,0 +1,18 @@
+{
+  "de-DE": [
+    {
+      "JoinMessage": " ist erschienen",
+      "LeaveMessage": " ist gegangen",
+      "ServerRestart": "Der Server startet neu!",
+      "JoinAgain": "Du kannst in ein paar Minuten joinen!"
+    }
+  ],
+  "en-US": [
+    {
+      "JoinMessage": " joined",
+      "LeaveMessage": " left",
+      "ServerRestart": "The server is restarting",
+      "JoinAgain": "You can join in a couple minutes again"
+    }
+  ]
+}
