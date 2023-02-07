@@ -1,5 +1,10 @@
 package de.j.stationofdoom.listener;
 
+import de.j.stationofdoom.main.Main;
+import de.j.stationofdoom.util.translations.LanguageEnums;
+import de.j.stationofdoom.util.translations.TranslationFactory;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -7,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -20,23 +26,20 @@ public class Bed implements Listener {
     public void playerBedEnter(PlayerBedEnterEvent event){
         //if (!event.getPlayer().getWorld().getName().equals("World")) return;
         World world = Bukkit.getWorld("world");
-        List<Player> playersInOverworld = new ArrayList<>();
         inBed ++;
         if (event.getPlayer().getWorld().getTime() >= 12541 && event.getPlayer().getWorld().getTime() <= 23458){
-            Bukkit.broadcastMessage("§7" + event.getPlayer().getName() + " schläft");
+            TranslationFactory translation = new TranslationFactory();
+            Bukkit.broadcast(Component.text(event.getPlayer().getName() + translation.getTranslation(LanguageEnums.DE, "PlayerSleeping")).color(NamedTextColor.GRAY));
         }
         assert world != null;
-        for (Player iOw : world.getPlayers()){
-            playersInOverworld.add(iOw);
-        }
-        if (playersInOverworld.size() / inBed >= 2){
-            try {
-                Thread.sleep(500);
-                event.getPlayer().getWorld().setTime(0L);
-            } catch (InterruptedException e) {
-                System.out.println(Color.red + "[Error] Thread sleep");
-                e.printStackTrace();
-            }
+        List<Player> playersInOverworld = new ArrayList<>(world.getPlayers());
+        if (playersInOverworld.size() / inBed >= 2) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    event.getPlayer().getWorld().setTime(0L);
+                }
+            }.runTaskLaterAsynchronously(Main.getPlugin(), 10);
 
         }
     }

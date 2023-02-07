@@ -1,5 +1,7 @@
 package de.j.stationofdoom.listener;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -34,20 +36,18 @@ public class PlayerSitListener implements Listener, CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("§cOnly a player can perform this command!");
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("Only a player can perform this command!").color(NamedTextColor.RED));
             return true;
         }
 
-        Player player = (Player) sender;
-
         if (!player.isOnGround()) {
-            player.sendMessage("§cYou cannot sit while you are in the air!");
+            player.sendMessage(Component.text("You cannot sit while you are in the air!").color(NamedTextColor.RED));
             return true;
         }
 
         if (sitting.contains(player)) {
-            player.sendMessage("§cYou are aldready sitting!");
+            player.sendMessage(Component.text("You are aldready sitting!").color(NamedTextColor.RED));
             return true;
         }
 

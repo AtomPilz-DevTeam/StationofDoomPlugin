@@ -3,6 +3,7 @@ package de.j.stationofdoom.util;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import de.j.stationofdoom.main.Main;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,7 +34,7 @@ public class ItemBuilder {
     }
 
     public ItemBuilder setName(String name){
-        meta.setDisplayName(name);
+        meta.displayName(Component.text(name));
         return this;
     }
 
@@ -42,7 +44,9 @@ public class ItemBuilder {
     }
 
     public ItemBuilder addLore(List<String> lore) {
-        meta.setLore(lore);
+        List<Component> l = new ArrayList<>();
+        lore.forEach(lo -> l.add(Component.text(lo)));
+        meta.lore(l);
         return this;
     }
 
@@ -83,7 +87,6 @@ public class ItemBuilder {
                 return head.getItemStack();
             }
         }
-        Bukkit.broadcastMessage(ChatColor.RED + "Bitte kontaktiere Jonas!");
         Main.getPlugin().getLogger().severe("An error appeared in while getting a head");
         return null;
     }
