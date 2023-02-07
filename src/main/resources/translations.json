@@ -4,7 +4,18 @@
       "JoinMessage": " ist erschienen",
       "LeaveMessage": " ist gegangen",
       "ServerRestart": "Der Server startet neu!",
-      "JoinAgain": "Du kannst in ein paar Minuten joinen!"
+      "JoinAgain": "Du kannst in ein paar Minuten joinen!",
+      "PlayerSleeping": " schläft",
+      "SwordDropMessage": "Drücke nochmal Q um dein Item zu droppen!",
+      "OpenVoteRestart": "hat einen Restart Vote eröffnet!",
+      "ClickHereToVote": "Klicke Hier zum voten",
+      "ClickToVote": "Klicke zum voten",
+      "AlreadyVotedForRestart": "Du hast bereits für den Restart gestimmt!",
+      "RestartInMessage": "Restart in %s Sekunden",
+      "ServerVersion": "Das Plugin ist auf Version %s !",
+      "SetAfk": "Du bist jetzt AFK",
+      "RmAfk": "Du bist nicht mehr AFK",
+      "GetPing": "Dein Ping ist %s ms"
     }
   ],
   "en-US": [
@@ -12,7 +23,18 @@
       "JoinMessage": " joined",
       "LeaveMessage": " left",
       "ServerRestart": "The server is restarting",
-      "JoinAgain": "You can join in a couple minutes again"
+      "JoinAgain": "You can join in a couple minutes again",
+      "PlayerSleeping": " is sleeping",
+      "SwordDropMessage": "Press Q again to drop the item",
+      "OpenVoteRestart": "opened a restart vote",
+      "ClickHereToVote": "Click here to vote",
+      "ClickToVote": "Click to vote",
+      "AlreadyVotedForRestart": "You voted already for the restart",
+      "RestartInMessage": "Restart in %s seconds",
+      "ServerVersion": "The plugin is in version %s",
+      "SetAfk": "You are now afk",
+      "RmAfk": "You are no longer afk",
+      "GetPing": "Your ping is %s ms"
     }
   ]
 }
