@@ -2,14 +2,11 @@ package de.j.stationofdoom.util.translations;
 
 import com.google.gson.Gson;
 import de.j.stationofdoom.main.Main;
-import org.json.simple.parser.ParseException;
-
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class TranslationFactory {
 
@@ -29,7 +26,7 @@ public class TranslationFactory {
 
     public static void initTranslations() {
         Main.getMainLogger().info("Loading translations!");
-        try (FileReader reader = new FileReader("C:\\Users\\jonas\\IntelliJIDEAProjects\\StationofDoomPlugin\\src\\main\\resources\\translations.json")) {
+        try (InputStreamReader reader = new InputStreamReader(TranslationFactory.class.getResourceAsStream("/translations.json"))) {
             Gson gson = new Gson();
             Map<String, Object> map = gson.fromJson(reader, new HashMap<String, Object>().getClass());
 
@@ -50,5 +47,9 @@ public class TranslationFactory {
 
     public String getTranslation(LanguageEnums lang, String key) {
         return translations.get(lang.getKey()).get(key) != null ? translations.get(lang.getKey()).get(key) : "Translation could not be found!";
+    }
+
+    public String getTranslation(LanguageEnums lang, String key, Object... replaceWords) {
+        return translations.get(lang.getKey()).get(key) != null ? String.format(translations.get(lang.getKey()).get(key), replaceWords) : "Translation could not be found!";
     }
 }
