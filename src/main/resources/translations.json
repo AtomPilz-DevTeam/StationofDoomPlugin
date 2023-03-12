@@ -12,7 +12,7 @@
       "ClickToVote": "Klicke zum voten",
       "AlreadyVotedForRestart": "Du hast bereits für den Restart gestimmt!",
       "RestartInMessage": "Restart in %s Sekunden",
-      "ServerVersion": "Das Plugin ist auf Version %s !",
+      "ServerVersion": "Das Plugin ist auf Version %s! Aktuelle Version: %s",
       "SetAfk": "Du bist jetzt AFK",
       "RmAfk": "Du bist nicht mehr AFK",
       "GetPing": "Dein Ping ist %s ms"
@@ -31,7 +31,7 @@
       "ClickToVote": "Click to vote",
       "AlreadyVotedForRestart": "You voted already for the restart",
       "RestartInMessage": "Restart in %s seconds",
-      "ServerVersion": "The plugin is in version %s",
+      "ServerVersion": "The plugin is in version %s. Current version: %s",
       "SetAfk": "You are now afk",
       "RmAfk": "You are no longer afk",
       "GetPing": "Your ping is %s ms"
