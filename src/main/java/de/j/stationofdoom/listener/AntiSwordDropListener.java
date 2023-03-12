@@ -1,6 +1,8 @@
 package de.j.stationofdoom.listener;
 
 import de.j.stationofdoom.main.Main;
+import de.j.stationofdoom.util.translations.LanguageEnums;
+import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.audience.MessageType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -17,7 +19,7 @@ import java.util.ArrayList;
 
 public class AntiSwordDropListener implements Listener {
 
-    private final ArrayList<Material> swords = new ArrayList<Material>() {{
+    private final ArrayList<Material> swords = new ArrayList<>() {{
         add(Material.WOODEN_SWORD);
         add(Material.STONE_SWORD);
         add(Material.IRON_SWORD);
@@ -25,7 +27,7 @@ public class AntiSwordDropListener implements Listener {
         add(Material.DIAMOND_SWORD);
         add(Material.NETHERITE_SWORD);
     }};
-    private ArrayList<Player> players = new ArrayList<>();
+    private final ArrayList<Player> players = new ArrayList<>();
 
     @EventHandler
     public void onSwordDrop(PlayerDropItemEvent event) {
@@ -37,8 +39,10 @@ public class AntiSwordDropListener implements Listener {
             players.add(player);
             event.setCancelled(true);
 
+            TranslationFactory translation = new TranslationFactory();
+
             player.sendActionBar(Component
-                    .text("Drücke nochmal Q um dein Item zu droppen!")
+                    .text(translation.getTranslation(LanguageEnums.DE, "SwordDropMessage"))
                     .color(NamedTextColor.RED));
 
             new BukkitRunnable() {

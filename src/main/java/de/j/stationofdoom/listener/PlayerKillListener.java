@@ -1,5 +1,7 @@
 package de.j.stationofdoom.listener;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,25 +22,23 @@ public class PlayerKillListener implements Listener {
     @EventHandler
     public void onPlayerKill(PlayerDeathEvent event){
         Player player = event.getEntity();
-        if (player.getKiller() != null){
-            if (player.getKiller() instanceof Player){
+        if (player.getKiller() != null && player.getKiller() instanceof Player) {
                 if (drop(2)){
                     Player killer = (Player) player.getKiller();
                     ItemStack head = new ItemStack(Material.PLAYER_HEAD);
                     SkullMeta meta = (SkullMeta) head.getItemMeta();
                     assert meta != null;
                     meta.setOwningPlayer(player);
-                    List<String> lore = new ArrayList<>();
+                    List<Component> lore = new ArrayList<>();
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
                     LocalDateTime now = LocalDateTime.now();
-                    lore.add("§aKilled on " + dtf.format(now));
-                    lore.add(ChatColor.YELLOW + "Killed by " + killer.getName());
-                    meta.setLore(lore);
+                    lore.add(Component.text("Killed on " + dtf.format(now)).color(NamedTextColor.GREEN));
+                    lore.add(Component.text("Killed by " + killer.getName()).color(NamedTextColor.YELLOW));
+                    meta.lore(lore);
                     head.setItemMeta(meta);
                     player.getWorld().dropItem(player.getLocation(), head);
                 }
 
-            }
         }
     }
 

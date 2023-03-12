@@ -2,10 +2,13 @@ package de.j.stationofdoom.cmd;
 
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.WhoIsOnline;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import de.j.stationofdoom.util.translations.LanguageEnums;
+import de.j.stationofdoom.util.translations.TranslationFactory;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -19,44 +22,31 @@ import java.util.ArrayList;
 public class VoteRestartCMD implements CommandExecutor {
 
     private boolean active = false;
-    private ArrayList<Player> votedPlayers = new ArrayList<>();
+    private final ArrayList<Player> votedPlayers = new ArrayList<>();
     public static boolean restarting = false;
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-
+        if (sender instanceof Player player) {
+            TranslationFactory translations = new TranslationFactory();
             if (!active) {
                 active = true;
                 votedPlayers.add(player);
-                TextComponent message = new TextComponent("Klicke Hier zum voten");
-                message.setColor(net.md_5.bungee.api.ChatColor.GREEN);
-                message.setClickEvent(new ClickEvent(
-                        ClickEvent.Action.RUN_COMMAND, "/voterestart"
-                ));
-                message.setHoverEvent(new HoverEvent(
-                        HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Klicke zum Voten!")
-                        .color(net.md_5.bungee.api.ChatColor.GREEN)
-                        .create()
-                ));
-                Bukkit.broadcastMessage(ChatColor.BLUE.toString() + ChatColor.BOLD + "[" + ChatColor.RESET + ChatColor.AQUA + player.getName() + ChatColor.BLUE + ChatColor.BOLD + "] " + ChatColor.RESET + ChatColor.GRAY + "hat einen Restart Vote eröffnet!");
-                Bukkit.spigot().broadcast(message);
+                Bukkit.broadcast(Component.text("[").color(NamedTextColor.BLUE).decoration(TextDecoration.BOLD, true)
+                        .append(Component.text(player.getName()).color(NamedTextColor.AQUA))
+                        .append(Component.text("] ").color(NamedTextColor.BLUE).decoration(TextDecoration.BOLD, true))
+                        .append(Component.text(translations.getTranslation(LanguageEnums.DE, "OpenVoteRestart")).color(NamedTextColor.GRAY)));
+                Bukkit.broadcast(Component.text(translations.getTranslation(LanguageEnums.DE, "ClickHereToVote"))
+                        .color(NamedTextColor.GREEN)
+                        .clickEvent(ClickEvent.runCommand("/voterestart")).hoverEvent(HoverEvent
+                                .showText(Component.text(translations.getTranslation(LanguageEnums.DE, "ClickToVote"))
+                                        .color(NamedTextColor.GREEN))));
 
             } else {
                 if (!votedPlayers.contains(player)) {
                     votedPlayers.add(player);
-                    for (Player on : Bukkit.getOnlinePlayers()) {
-                        TextComponent message = new TextComponent(ChatColor.BLUE.toString() + votedPlayers.size() + "/" + Bukkit.getOnlinePlayers().size());
-                        if (!votedPlayers.contains(on)) {
-                            message.setClickEvent(new ClickEvent(
-                                    ClickEvent.Action.SUGGEST_COMMAND, "/voterestart"
-                            ));
-                        }
-
-                    }
                 } else
-                    player.sendMessage(ChatColor.RED + "Du hast bereits für den Restart gestimmt!");
+                    player.sendMessage(Component.text(translations.getTranslation(LanguageEnums.DE, "AlreadyVotedForRestart")).color(NamedTextColor.RED));
 
             }
             if (votedPlayers.size() == Bukkit.getOnlinePlayers().size()) {
@@ -66,13 +56,14 @@ public class VoteRestartCMD implements CommandExecutor {
                     @Override
                     public void run() {
                         if (timer >= 0) {
-                            Bukkit.broadcastMessage(ChatColor.RED + "Restart in " + timer + " Sekunden");
+                            Bukkit.broadcast(Component.text(translations.getTranslation(LanguageEnums.DE, "RestartInMessage", timer)).color(NamedTextColor.RED));
                             timer --;
                         } else {
                             Main.getPlugin().getLogger().info("Kicking players...");
                             int players = 0;
                             for (Player on : Bukkit.getOnlinePlayers()) {
-                                on.kickPlayer(ChatColor.DARK_RED + "Der Server startet neu!\n \n" + ChatColor.BLUE + "Du kannst in ein paar Minuten wieder joinen!");
+                                on.kick(Component.text(translations.getTranslation(LanguageEnums.DE, "ServerRestart") + "\n \n").color(NamedTextColor.DARK_RED)
+                                        .append(Component.text(translations.getTranslation(LanguageEnums.DE, "JoinAgain")).color(NamedTextColor.BLUE)));
                                 players ++;
                             }
                             Main.getPlugin().getLogger().info("Kicked " + players + " players!");

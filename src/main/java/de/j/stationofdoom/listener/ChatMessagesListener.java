@@ -1,24 +1,46 @@
 package de.j.stationofdoom.listener;
 
 import de.j.stationofdoom.cmd.StatusCMD;
+import io.papermc.paper.chat.ChatRenderer;
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.jetbrains.annotations.NotNull;
 
+import javax.naming.Name;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ChatMessagesListener implements Listener {
 
     @EventHandler
-    public void onChatMessage(AsyncPlayerChatEvent event){
+    public void onChatMessage(AsyncChatEvent event){
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
         LocalDateTime now = LocalDateTime.now();
-        if (!StatusCMD.afk.contains(event.getPlayer())){
-            event.setFormat(String.format("§7[§8%s§7] §7<§r%s§7> §r%s", dtf.format(now), event.getPlayer().getName(), event.getMessage()));
-        } else {
-            event.setFormat(String.format("§7[§8%s§7] §1[§3AFK§1] §7<§r%s§7> §r%s", dtf.format(now), event.getPlayer().getName(), event.getMessage()));
-        }
-
+        ChatRenderer renderer = (source, sourceDisplayName, message, viewer) -> {
+            Component c = Component.text("[").color(NamedTextColor.GRAY)
+                    .append(Component.text(dtf.format(now)).color(NamedTextColor.DARK_GRAY))
+                    .append(Component.text("]").color(NamedTextColor.GRAY));
+            if (StatusCMD.afk.contains(event.getPlayer())) {
+                return c.append(Component.text(" [").color(NamedTextColor.DARK_BLUE))
+                        .append(Component.text("AFK").color(NamedTextColor.DARK_AQUA))
+                        .append(Component.text("]").color(NamedTextColor.DARK_BLUE))
+                        .append(Component.text(" <").color(NamedTextColor.GRAY))
+                        .append(Component.text(event.getPlayer().getName()))
+                        .append(Component.text(">").color(NamedTextColor.GRAY))
+                        .append(Component.text(" ").append(event.message()));
+            } else {
+                return c.append(Component.text(" <").color(NamedTextColor.GRAY))
+                        .append(Component.text(event.getPlayer().getName()))
+                        .append(Component.text(">").color(NamedTextColor.GRAY))
+                        .append(Component.text(" ").append(event.message()));
+            }
+        };
+        event.renderer(renderer);
     }
 }

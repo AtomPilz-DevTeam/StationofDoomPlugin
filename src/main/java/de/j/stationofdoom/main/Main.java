@@ -7,6 +7,7 @@ import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.FurnaceEvents;
 import de.j.stationofdoom.enchants.TelepathyEvents;
 import de.j.stationofdoom.listener.*;
+import de.j.stationofdoom.util.translations.TranslationFactory;
 import de.j.stationofdoom.util.WhoIsOnline;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
@@ -23,7 +24,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        version = "1.10.5";
+        version = "1.10.6";
     }
 
     @Override
@@ -58,6 +59,8 @@ public final class Main extends JavaPlugin {
         CustomEnchants.register();
 
         WhoIsOnline.init();
+
+        TranslationFactory.initTranslations();
     }
 
     @Override
