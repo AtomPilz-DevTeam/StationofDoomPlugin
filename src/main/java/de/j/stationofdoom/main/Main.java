@@ -1,12 +1,14 @@
 package de.j.stationofdoom.main;
 
 import de.j.stationofdoom.cmd.*;
+import de.j.stationofdoom.cmd.tab.ChangeLanguageTAB;
 import de.j.stationofdoom.cmd.tab.GetCustomEnchantsTAB;
 import de.j.stationofdoom.enchants.CustomEnchants;
 import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.FurnaceEvents;
 import de.j.stationofdoom.enchants.TelepathyEvents;
 import de.j.stationofdoom.listener.*;
+import de.j.stationofdoom.util.translations.LanguageChanger;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import de.j.stationofdoom.util.WhoIsOnline;
 import org.bukkit.Bukkit;
@@ -39,6 +41,8 @@ public final class Main extends JavaPlugin {
         getCommand("ping").setExecutor(new PingCommand());
         getCommand("customenchant").setExecutor(new GetCustomEnchantsCMD());
         getCommand("customenchant").setTabCompleter(new GetCustomEnchantsTAB());
+        getCommand("language").setExecutor(new ChangeLanguageCMD());
+        getCommand("language").setTabCompleter(new ChangeLanguageTAB());
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new Bed(), this);
@@ -61,6 +65,8 @@ public final class Main extends JavaPlugin {
         WhoIsOnline.init();
 
         TranslationFactory.initTranslations();
+
+        LanguageChanger.init();
     }
 
     @Override
