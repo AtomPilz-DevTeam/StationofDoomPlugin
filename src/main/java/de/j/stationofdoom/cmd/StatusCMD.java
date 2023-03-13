@@ -27,7 +27,7 @@ public class StatusCMD implements CommandExecutor {
                 player.sendMessage(Component.text("[").color(NamedTextColor.DARK_AQUA)
                                 .append(Component.text("AFK").color(NamedTextColor.DARK_BLUE))
                                 .append(Component.text("] ").color(NamedTextColor.DARK_AQUA))
-                                .append(Component.text(translations.getTranslation(LanguageEnums.DE, "SetAfk")).color(NamedTextColor.GREEN)));
+                                .append(Component.text(translations.getTranslation(player, "SetAfk")).color(NamedTextColor.GREEN)));
 
             } else {
                 afk.remove(player);
@@ -35,7 +35,7 @@ public class StatusCMD implements CommandExecutor {
                 player.sendMessage(Component.text("[").color(NamedTextColor.DARK_AQUA)
                         .append(Component.text("AFK").color(NamedTextColor.DARK_BLUE))
                         .append(Component.text("] ").color(NamedTextColor.DARK_AQUA))
-                        .append(Component.text(translations.getTranslation(LanguageEnums.DE, "RmAfk")).color(NamedTextColor.GREEN)));
+                        .append(Component.text(translations.getTranslation(player, "RmAfk")).color(NamedTextColor.GREEN)));
 
             }
         }

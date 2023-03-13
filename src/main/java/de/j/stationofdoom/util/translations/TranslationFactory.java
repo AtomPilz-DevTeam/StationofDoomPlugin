@@ -2,6 +2,8 @@ package de.j.stationofdoom.util.translations;
 
 import com.google.gson.Gson;
 import de.j.stationofdoom.main.Main;
+import org.bukkit.entity.Player;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -45,11 +47,21 @@ public class TranslationFactory {
         }
     }
 
+    @Deprecated
     public String getTranslation(LanguageEnums lang, String key) {
         return translations.get(lang.getKey()).get(key) != null ? translations.get(lang.getKey()).get(key) : "Translation could not be found!";
     }
 
+    public String getTranslation(Player player, String key) {
+        return translations.get(new LanguageChanger().getPlayerLanguage(player).getKey()).get(key) != null ? translations.get(new LanguageChanger().getPlayerLanguage(player).getKey()).get(key) : "Translation could not be found!";
+    }
+
+    @Deprecated
     public String getTranslation(LanguageEnums lang, String key, Object... replaceWords) {
         return translations.get(lang.getKey()).get(key) != null ? String.format(translations.get(lang.getKey()).get(key), replaceWords) : "Translation could not be found!";
+    }
+
+    public String getTranslation(Player player, String key, Object... replaceWords) {
+        return translations.get(new LanguageChanger().getPlayerLanguage(player).getKey()).get(key) != null ? String.format(translations.get(new LanguageChanger().getPlayerLanguage(player).getKey()).get(key), replaceWords) : "Translation could not be found!";
     }
 }

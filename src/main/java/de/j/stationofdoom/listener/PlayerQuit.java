@@ -14,7 +14,7 @@ public class PlayerQuit implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        event.quitMessage(Component.text(event.getPlayer().getName() + new TranslationFactory().getTranslation(LanguageEnums.DE, "LeaveMessage"))
+        event.quitMessage(Component.text(event.getPlayer().getName() + new TranslationFactory().getTranslation(event.getPlayer(), "LeaveMessage"))
                 .color(NamedTextColor.GOLD));
         StatusCMD.afk.remove(event.getPlayer());
 

@@ -29,7 +29,7 @@ public class Bed implements Listener {
         inBed ++;
         if (event.getPlayer().getWorld().getTime() >= 12541 && event.getPlayer().getWorld().getTime() <= 23458){
             TranslationFactory translation = new TranslationFactory();
-            Bukkit.broadcast(Component.text(event.getPlayer().getName() + translation.getTranslation(LanguageEnums.DE, "PlayerSleeping")).color(NamedTextColor.GRAY));
+            Bukkit.broadcast(Component.text(event.getPlayer().getName() + translation.getTranslation(event.getPlayer(), "PlayerSleeping")).color(NamedTextColor.GRAY));
         }
         assert world != null;
         List<Player> playersInOverworld = new ArrayList<>(world.getPlayers());

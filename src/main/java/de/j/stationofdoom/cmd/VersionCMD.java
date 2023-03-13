@@ -32,7 +32,7 @@ public class VersionCMD implements CommandExecutor {
                 //player.sendMessage(ChatColor.GREEN + "Das Plugin ist auf Version " + Main.version + "!");
                 TranslationFactory translate = new TranslationFactory();
                 try {
-                    player.sendMessage(Component.text(translate.getTranslation(LanguageEnums.DE, "ServerVersion", Main.version, getLatestTagName())).color(NamedTextColor.GREEN));
+                    player.sendMessage(Component.text(translate.getTranslation(player, "ServerVersion", Main.version, getLatestTagName())).color(NamedTextColor.GREEN));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

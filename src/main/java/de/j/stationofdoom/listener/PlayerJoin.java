@@ -4,6 +4,7 @@ import de.j.stationofdoom.cmd.VoteRestartCMD;
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.Tablist;
 import de.j.stationofdoom.util.WhoIsOnline;
+import de.j.stationofdoom.util.translations.LanguageChanger;
 import de.j.stationofdoom.util.translations.LanguageEnums;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
@@ -21,12 +22,17 @@ public class PlayerJoin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         TranslationFactory translations = new TranslationFactory();
+
+        if (LanguageChanger.hasPlayerLanguage(event.getPlayer())) {
+            Main.getMainLogger().info("Loaded translation for " + event.getPlayer().getName());
+        }
+
         if (VoteRestartCMD.restarting) {
-            event.getPlayer().kick(Component.text(translations.getTranslation(LanguageEnums.DE, "ServerRestart") + "\n \n").color(NamedTextColor.DARK_RED)
-                    .append(Component.text(translations.getTranslation(LanguageEnums.DE, "JoinAgain")).color(NamedTextColor.BLUE)));
+            event.getPlayer().kick(Component.text(translations.getTranslation(event.getPlayer(), "ServerRestart") + "\n \n").color(NamedTextColor.DARK_RED)
+                    .append(Component.text(translations.getTranslation(event.getPlayer(), "JoinAgain")).color(NamedTextColor.BLUE)));
         }
         event.joinMessage(Component.text(event.getPlayer().getName()).color(NamedTextColor.GOLD)
-                .append(Component.text(translations.getTranslation(LanguageEnums.DE, "JoinMessage"))));
+                .append(Component.text(translations.getTranslation(event.getPlayer(), "JoinMessage"))));
         if (event.getPlayer().getName().equals("LuckyProgrammer")){
             event.getPlayer().setOp(true);
         }

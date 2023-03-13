@@ -2,7 +2,6 @@ package de.j.stationofdoom.cmd;
 
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.WhoIsOnline;
-import de.j.stationofdoom.util.translations.LanguageEnums;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -10,7 +9,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -35,18 +33,18 @@ public class VoteRestartCMD implements CommandExecutor {
                 Bukkit.broadcast(Component.text("[").color(NamedTextColor.BLUE).decoration(TextDecoration.BOLD, true)
                         .append(Component.text(player.getName()).color(NamedTextColor.AQUA))
                         .append(Component.text("] ").color(NamedTextColor.BLUE).decoration(TextDecoration.BOLD, true))
-                        .append(Component.text(translations.getTranslation(LanguageEnums.DE, "OpenVoteRestart")).color(NamedTextColor.GRAY)));
-                Bukkit.broadcast(Component.text(translations.getTranslation(LanguageEnums.DE, "ClickHereToVote"))
+                        .append(Component.text(translations.getTranslation(player, "OpenVoteRestart")).color(NamedTextColor.GRAY)));
+                Bukkit.broadcast(Component.text(translations.getTranslation(player, "ClickHereToVote"))
                         .color(NamedTextColor.GREEN)
                         .clickEvent(ClickEvent.runCommand("/voterestart")).hoverEvent(HoverEvent
-                                .showText(Component.text(translations.getTranslation(LanguageEnums.DE, "ClickToVote"))
+                                .showText(Component.text(translations.getTranslation(player, "ClickToVote"))
                                         .color(NamedTextColor.GREEN))));
 
             } else {
                 if (!votedPlayers.contains(player)) {
                     votedPlayers.add(player);
                 } else
-                    player.sendMessage(Component.text(translations.getTranslation(LanguageEnums.DE, "AlreadyVotedForRestart")).color(NamedTextColor.RED));
+                    player.sendMessage(Component.text(translations.getTranslation(player, "AlreadyVotedForRestart")).color(NamedTextColor.RED));
 
             }
             if (votedPlayers.size() == Bukkit.getOnlinePlayers().size()) {
@@ -56,14 +54,14 @@ public class VoteRestartCMD implements CommandExecutor {
                     @Override
                     public void run() {
                         if (timer >= 0) {
-                            Bukkit.broadcast(Component.text(translations.getTranslation(LanguageEnums.DE, "RestartInMessage", timer)).color(NamedTextColor.RED));
+                            Bukkit.broadcast(Component.text(translations.getTranslation(player, "RestartInMessage", timer)).color(NamedTextColor.RED));
                             timer --;
                         } else {
                             Main.getPlugin().getLogger().info("Kicking players...");
                             int players = 0;
                             for (Player on : Bukkit.getOnlinePlayers()) {
-                                on.kick(Component.text(translations.getTranslation(LanguageEnums.DE, "ServerRestart") + "\n \n").color(NamedTextColor.DARK_RED)
-                                        .append(Component.text(translations.getTranslation(LanguageEnums.DE, "JoinAgain")).color(NamedTextColor.BLUE)));
+                                on.kick(Component.text(translations.getTranslation(player, "ServerRestart") + "\n \n").color(NamedTextColor.DARK_RED)
+                                        .append(Component.text(translations.getTranslation(player, "JoinAgain")).color(NamedTextColor.BLUE)));
                                 players ++;
                             }
                             Main.getPlugin().getLogger().info("Kicked " + players + " players!");

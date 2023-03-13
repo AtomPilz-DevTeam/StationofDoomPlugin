@@ -42,7 +42,7 @@ public class AntiSwordDropListener implements Listener {
             TranslationFactory translation = new TranslationFactory();
 
             player.sendActionBar(Component
-                    .text(translation.getTranslation(LanguageEnums.DE, "SwordDropMessage"))
+                    .text(translation.getTranslation(player, "SwordDropMessage"))
                     .color(NamedTextColor.RED));
 
             new BukkitRunnable() {
