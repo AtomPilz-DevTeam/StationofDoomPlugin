@@ -22,3 +22,5 @@ commands:
     description:
   ping:
     description: Ping
+  language:
+    description: Change language
