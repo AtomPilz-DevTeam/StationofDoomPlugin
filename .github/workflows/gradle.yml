@@ -39,7 +39,9 @@ jobs:
           name: StationofdoomPlugin
           path: build/libs
       - name: Get Artifact Version
-        run: echo "::set-output name=version::echo "build/libs/*.jar" | grep -oP "(?<=-)\d+\.\d+\.\d+(?:\.\d+)?""
+        run: |
+          version=$(ls build/libs/*jar | grep -oP "(?<=-)\d+\.\d+\.\d+(?:\.\d+)?")
+          echo "::set-output name=version::$version"
       - name: Release
         uses: ncipollo/release-action@v1.12.0
         with:
