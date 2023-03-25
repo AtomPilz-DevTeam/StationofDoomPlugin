@@ -13,9 +13,13 @@ public class ChangeLanguageTAB implements TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         List<String> list = new ArrayList<>();
-        if (sender instanceof Player && args.length == 1) {
-            for (LanguageEnums lang : LanguageEnums.values()) {
-                list.add(lang.getKey());
+        if (sender instanceof Player player) {
+            if (args.length == 1) {
+                for (LanguageEnums lang : LanguageEnums.values()) {
+                    list.add(lang.getKey());
+                }
+            } else if (args.length == 2 && player.isOp()) {
+                list.add("server");
             }
         }
         return list;

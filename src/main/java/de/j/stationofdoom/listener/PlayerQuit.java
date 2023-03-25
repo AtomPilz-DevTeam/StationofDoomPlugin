@@ -2,7 +2,6 @@ package de.j.stationofdoom.listener;
 
 import de.j.stationofdoom.cmd.StatusCMD;
 import de.j.stationofdoom.util.WhoIsOnline;
-import de.j.stationofdoom.util.translations.LanguageEnums;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -14,7 +13,8 @@ public class PlayerQuit implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        event.quitMessage(Component.text(event.getPlayer().getName() + new TranslationFactory().getTranslation(event.getPlayer(), "LeaveMessage"))
+        TranslationFactory translationFactory = new TranslationFactory();
+        event.quitMessage(Component.text(event.getPlayer().getName() + translationFactory.getTranslation(translationFactory.getServerLang(), "LeaveMessage"))
                 .color(NamedTextColor.GOLD));
         StatusCMD.afk.remove(event.getPlayer());
 

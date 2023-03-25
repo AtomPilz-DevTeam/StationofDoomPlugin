@@ -2,6 +2,7 @@ package de.j.stationofdoom.util.translations;
 
 import com.google.gson.Gson;
 import de.j.stationofdoom.main.Main;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
@@ -15,11 +16,16 @@ public class TranslationFactory {
     private static boolean initialized = false;
     /// Hashmap with translation key as key and the translation as value
     private static Map<String, Map<String, String>> translations = new HashMap<>();
+    private static LanguageEnums lang;
 
     public TranslationFactory() {
         if (!initialized)
             init();
-
+        FileConfiguration config = Main.getPlugin().getConfig();
+        if (config.getString("server.lang") != null) {
+            assert config.getString("server.lang") != null;
+            lang = LanguageEnums.getLangFromKey(config.getString("server.lang"));
+        }
     }
 
     private void init() {
@@ -40,6 +46,15 @@ public class TranslationFactory {
 
             Main.getMainLogger().info("Loaded translations!");
 
+            FileConfiguration config = Main.getPlugin().getConfig();
+            if (config.getString("server.lang") != null) {
+                assert config.getString("server.lang") != null;
+                lang = LanguageEnums.getLangFromKey(config.getString("server.lang"));
+
+            } else {
+                config.set("server.lang", LanguageEnums.EN.getKey());
+            }
+
             initialized = true;
         } catch (IOException e) {
             Main.getMainLogger().severe("Could not load translations \n " + e);
@@ -47,7 +62,6 @@ public class TranslationFactory {
         }
     }
 
-    @Deprecated
     public String getTranslation(LanguageEnums lang, String key) {
         return translations.get(lang.getKey()).get(key) != null ? translations.get(lang.getKey()).get(key) : "Translation could not be found!";
     }
@@ -56,7 +70,6 @@ public class TranslationFactory {
         return translations.get(new LanguageChanger().getPlayerLanguage(player).getKey()).get(key) != null ? translations.get(new LanguageChanger().getPlayerLanguage(player).getKey()).get(key) : "Translation could not be found!";
     }
 
-    @Deprecated
     public String getTranslation(LanguageEnums lang, String key, Object... replaceWords) {
         return translations.get(lang.getKey()).get(key) != null ? String.format(translations.get(lang.getKey()).get(key), replaceWords) : "Translation could not be found!";
     }
@@ -64,4 +77,9 @@ public class TranslationFactory {
     public String getTranslation(Player player, String key, Object... replaceWords) {
         return translations.get(new LanguageChanger().getPlayerLanguage(player).getKey()).get(key) != null ? String.format(translations.get(new LanguageChanger().getPlayerLanguage(player).getKey()).get(key), replaceWords) : "Translation could not be found!";
     }
+
+    public LanguageEnums getServerLang() {
+        return lang;
+    }
+
 }

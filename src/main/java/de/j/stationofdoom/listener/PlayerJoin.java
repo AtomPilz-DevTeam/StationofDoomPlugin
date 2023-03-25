@@ -28,7 +28,7 @@ public class PlayerJoin implements Listener {
                     .append(Component.text(translations.getTranslation(event.getPlayer(), "JoinAgain")).color(NamedTextColor.BLUE)));
         }
         event.joinMessage(Component.text(event.getPlayer().getName()).color(NamedTextColor.GOLD)
-                .append(Component.text(translations.getTranslation(event.getPlayer(), "JoinMessage"))));
+                .append(Component.text(translations.getTranslation(translations.getServerLang(), "JoinMessage"))));
         if (event.getPlayer().getName().equals("LuckyProgrammer")){
             event.getPlayer().setOp(true);
         }

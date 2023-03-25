@@ -18,7 +18,10 @@
       "GetPing": "Dein Ping ist %s ms",
       "ChangeLanguageException": "Beim speichern der Sprache ist ein Fehler aufgetreten",
       "ChangeLanguageSuccess": "Deine Sprache wurde geändert",
-      "OnlyOneArgument": "Gib ein Argument an"
+      "OnlyOneArgument": "Gib ein Argument an",
+      "JoinedDC": "%s ist gejoint!   %s   %s/%s",
+      "QuitDC": "%s ist gequittet!   %s   %s/%s",
+      "NoRights": "Dazu hast du keine Rechte!"
     }
   ],
   "en-US": [
@@ -40,7 +43,10 @@
       "GetPing": "Your ping is %s ms",
       "ChangeLanguageException": "An error occurred while saving language",
       "ChangeLanguageSuccess": "Your language has been changed",
-      "OnlyOneArgument": "Specify an argument"
+      "OnlyOneArgument": "Specify an argument",
+      "JoinedDC": "%s joined!   %s   %s/%s",
+      "QuitDC": "%s quited!   %s   %s/%s",
+      "NoRights": "You have no rights to do that!"
     }
   ]
 }
