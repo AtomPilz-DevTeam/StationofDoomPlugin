@@ -5,17 +5,13 @@ import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.Tablist;
 import de.j.stationofdoom.util.WhoIsOnline;
 import de.j.stationofdoom.util.translations.LanguageChanger;
-import de.j.stationofdoom.util.translations.LanguageEnums;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.text.DecimalFormat;
 
 public class PlayerJoin implements Listener {
 
