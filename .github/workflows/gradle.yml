@@ -42,5 +42,5 @@ jobs:
         with:
           artifacts: "build/libs/*jar"
           prerelease: true
-          tag: v${{ steps.get_version.outputs.version }}
+          tag: pre${{ steps.get_version.outputs.version }}.${{ github.run_number }}
           token: ${{ secrets.TOKEN }}
