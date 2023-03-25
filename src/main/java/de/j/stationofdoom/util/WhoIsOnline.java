@@ -16,15 +16,16 @@ import java.time.format.DateTimeFormatter;
 public class WhoIsOnline {
 
     private static DiscordEmbed embed;
-    public static String webhookURL;
+    public static String[] webhookURL;
     private static final String AVATAR_URL = "https://www.mc-heads.net/avatar/";
     private static boolean enabled = false;
 
     public static void init() {
         FileConfiguration config = Main.getPlugin().getConfig();
         if (config.getString("discord.webhook") != null) {
-            if ((!config.getString("discord.webhook").equals("INSERT_WEBHOOK_HERE"))) {
-                webhookURL = config.getString("discord.webhook");
+            assert config.getString("discord.webhook") != null;
+            if ((!config.getString("discord.webhook").equals("INSERT_WEBHOOK_HERE") && config.getString("discord.webhook").contains("discord.com/api/webhooks"))) {
+                webhookURL = config.getString("discord.webhook").replaceAll(" ", "").split(";");
                 if (config.getBoolean("discord.webhookEnabled")) {
                     enabled = true;
                     Main.getMainLogger().info("Discord Webhook enabled");
@@ -82,14 +83,20 @@ public class WhoIsOnline {
         if (enabled) {
             try {
                 assert webhookURL != null;
-                DiscordWebhook webhook = new DiscordWebhook(webhookURL);
-                DiscordMessage message = new DiscordMessage.Builder()
-                        .withUsername("Minecraft")
-                        .withEmbed(embed)
-                        .withAvatarURL(AVATAR_URL + player.getUniqueId())
-                        .build();
-                webhook.sendMessage(message);
-                Main.getPlugin().getLogger().info("Sending webhook to discord...");
+                for (String dcHook : webhookURL) {
+                    DiscordWebhook webhook = new DiscordWebhook(dcHook);
+                    DiscordMessage message = new DiscordMessage.Builder()
+                            .withUsername("Minecraft")
+                            .withEmbed(embed)
+                            .withAvatarURL(AVATAR_URL + player.getUniqueId())
+                            .build();
+
+                    Thread sendToDiscord = new Thread(() -> {
+                        webhook.sendMessage(message);
+                        Main.getPlugin().getLogger().info("Sending webhook to discord...");
+                    });
+                    sendToDiscord.start();
+                }
                 return true;
             } catch (Exception e) {
                 Main.getPlugin().getLogger().severe("Failed to send webhook to discord...");
@@ -103,13 +110,19 @@ public class WhoIsOnline {
         if (enabled) {
             try {
                 assert webhookURL != null;
-                DiscordWebhook webhook = new DiscordWebhook(webhookURL);
-                DiscordMessage message = new DiscordMessage.Builder()
-                        .withUsername("MinecraftServer")
-                        .withEmbed(embed)
-                        .build();
-                webhook.sendMessage(message);
-                Main.getPlugin().getLogger().info("Sending webhook to discord...");
+                for (String dcHook : webhookURL) {
+                    DiscordWebhook webhook = new DiscordWebhook(dcHook);
+                    DiscordMessage message = new DiscordMessage.Builder()
+                            .withUsername("MinecraftServer")
+                            .withEmbed(embed)
+                            .build();
+
+                    Thread sendToDiscord = new Thread(() -> {
+                        webhook.sendMessage(message);
+                        Main.getPlugin().getLogger().info("Sending webhook to discord...");
+                    });
+                    sendToDiscord.start();
+                }
                 return true;
             } catch (Exception e) {
                 Main.getPlugin().getLogger().severe("Failed to send webhook to discord...");
