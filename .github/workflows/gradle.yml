@@ -35,3 +35,12 @@ jobs:
         with:
           name: StationofdoomPlugin
           path: build/libs
+      - name: Get Artifact Version
+        run: echo ::set-output name=version::$(ls build/libs/*jar | grep -oP "(?<=-)\d+\.\d+\.\d+(?:\.\d+)?")
+      - name: Release
+        uses: ncipollo/release-action@v1.12.0
+        with:
+          artifacts: "build/libs/*jar"
+          prerelease: true
+          tag: v${{ steps.get_version.outputs.version }}
+          token: ${{ secrets.TOKEN }}
