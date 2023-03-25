@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'org.example'
-version '1.10.7'
+version '1.10.7.1'
 
 repositories {
     mavenLocal()
