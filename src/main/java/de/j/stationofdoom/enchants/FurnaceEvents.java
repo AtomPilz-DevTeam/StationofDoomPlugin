@@ -1,6 +1,5 @@
 package de.j.stationofdoom.enchants;
 
-import de.j.stationofdoom.main.Main;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -8,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -36,11 +34,8 @@ public class FurnaceEvents implements Listener {
     /// Hashmap that contains the raw ores as key and the smelted ores as value
     private final HashMap<Material, Material> smeltedOres = new HashMap<>() {{
        put(Material.RAW_COPPER, Material.COPPER_INGOT);
-       //put(Material.DEEPSLATE_COPPER_ORE, Material.COPPER_INGOT);
        put(Material.RAW_IRON, Material.IRON_INGOT);
-       //put(Material.DEEPSLATE_IRON_ORE, Material.IRON_INGOT);
        put(Material.RAW_GOLD, Material.GOLD_INGOT);
-       //put(Material.DEEPSLATE_GOLD_ORE, Material.GOLD_INGOT);
     }};
 
     @EventHandler

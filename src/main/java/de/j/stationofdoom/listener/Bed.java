@@ -1,7 +1,6 @@
 package de.j.stationofdoom.listener;
 
 import de.j.stationofdoom.main.Main;
-import de.j.stationofdoom.util.translations.LanguageEnums;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -14,7 +13,6 @@ import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
