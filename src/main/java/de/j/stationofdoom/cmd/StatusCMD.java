@@ -1,7 +1,6 @@
 package de.j.stationofdoom.cmd;
 
 import de.j.stationofdoom.util.Tablist;
-import de.j.stationofdoom.util.translations.LanguageEnums;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
