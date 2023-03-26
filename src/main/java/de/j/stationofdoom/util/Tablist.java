@@ -1,7 +1,11 @@
 package de.j.stationofdoom.util;
 
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -24,11 +28,23 @@ public class Tablist {
         scoreboard.registerNewTeam("4Spieler");
         scoreboard.registerNewTeam("5AFK");
 
-        scoreboard.getTeam("0Host").setPrefix(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Host " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
-        scoreboard.getTeam("1Admin").setPrefix(ChatColor.RED + "Admin " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
-        scoreboard.getTeam("2Developer").setPrefix(ChatColor.GOLD + "Dev " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
-        scoreboard.getTeam("4Spieler").setPrefix("");
-        scoreboard.getTeam("5AFK").setPrefix("§1[§3AFK§1] | ");
+        scoreboard.getTeam("0Host").prefix(Component.text("Host ")
+                .color(NamedTextColor.DARK_RED).decoration(TextDecoration.BOLD, true)
+                .append(Component.text("| ").color(NamedTextColor.DARK_GRAY)));
+        scoreboard.getTeam("1Admin").prefix(Component.text("Admin ")
+                .color(NamedTextColor.RED)
+                .append(Component.text("| ").color(NamedTextColor.DARK_GRAY)));
+        scoreboard.getTeam("2Developer").prefix(Component.text("Dev ")
+                .color(NamedTextColor.GOLD)
+                .append(Component.text("| ").color(NamedTextColor.DARK_GRAY)));
+        scoreboard.getTeam("4Spieler").prefix(Component.text(""));
+        scoreboard.getTeam("5AFK").prefix(Component.text("[")
+                .color(NamedTextColor.DARK_BLUE)
+                .append(Component.text("AFK")
+                        .color(NamedTextColor.DARK_AQUA)
+                        .append(Component.text("] ")
+                                .color(NamedTextColor.DARK_BLUE)
+                                .append(Component.text("| ").color(NamedTextColor.DARK_GRAY)))));
 
         for (Player on : Bukkit.getOnlinePlayers()){
             setTeam(on);
@@ -36,11 +52,23 @@ public class Tablist {
     }
 
     public void setScoreboard(Player player, boolean afk) {
-        scoreboard.getTeam("0Host").setPrefix(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Host " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
-        scoreboard.getTeam("1Admin").setPrefix(ChatColor.RED + "Admin " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
-        scoreboard.getTeam("2Developer").setPrefix(ChatColor.GOLD + "Dev " + ChatColor.DARK_GRAY + "| " + ChatColor.WHITE);
-        scoreboard.getTeam("4Spieler").setPrefix("");
-        scoreboard.getTeam("5AFK").setPrefix("§1[§3AFK§1] | ");
+        scoreboard.getTeam("0Host").prefix(Component.text("Host ")
+                .color(NamedTextColor.DARK_RED).decoration(TextDecoration.BOLD, true)
+                .append(Component.text("| ").color(NamedTextColor.DARK_GRAY)));
+        scoreboard.getTeam("1Admin").prefix(Component.text("Admin ")
+                .color(NamedTextColor.RED)
+                .append(Component.text("| ").color(NamedTextColor.DARK_GRAY)));
+        scoreboard.getTeam("2Developer").prefix(Component.text("Dev ")
+                .color(NamedTextColor.GOLD)
+                .append(Component.text("| ").color(NamedTextColor.DARK_GRAY)));
+        scoreboard.getTeam("4Spieler").prefix(Component.text(""));
+        scoreboard.getTeam("5AFK").prefix(Component.text("[")
+                .color(NamedTextColor.DARK_BLUE)
+                .append(Component.text("AFK")
+                        .color(NamedTextColor.DARK_AQUA)
+                        .append(Component.text("] ")
+                                .color(NamedTextColor.DARK_BLUE)
+                                .append(Component.text("| ").color(NamedTextColor.DARK_GRAY)))));
 
         setTeam(player, afk);
 
