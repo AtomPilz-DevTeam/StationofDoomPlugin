@@ -29,7 +29,7 @@ public class LanguageChanger {
             assert config != null;
             assert configFile != null;
 
-            config.set("player.lang." + player.getName(), language.getKey());
+            config.set("player.lang." + player.getUniqueId(), language.getKey());
             config.save(configFile);
 
             playersLang.put(player, language);
@@ -45,7 +45,7 @@ public class LanguageChanger {
         assert configFile != null;
 
         if (playersLang.get(player) == null) {
-            return LanguageEnums.getLangFromKey(config.getString("player.lang." + player.getName()));
+            return LanguageEnums.getLangFromKey(config.getString("player.lang." + player.getUniqueId()));
         } else if (playersLang.get(player) != null) {
             return playersLang.get(player);
         } else {
@@ -54,8 +54,8 @@ public class LanguageChanger {
     }
 
     public static boolean hasPlayerLanguage(Player player) {
-        if (config.getString("player.lang." + player.getName()) != null) {
-            playersLang.put(player, LanguageEnums.getLangFromKey(config.getString("player.lang." + player.getName())));
+        if (config.getString("player.lang." + player.getUniqueId()) != null) {
+            playersLang.put(player, LanguageEnums.getLangFromKey(config.getString("player.lang." + player.getUniqueId())));
             return true;
         } else if (playersLang.get(player) != null) {
             return true;
