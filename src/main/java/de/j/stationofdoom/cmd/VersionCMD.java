@@ -37,7 +37,7 @@ public class VersionCMD implements CommandExecutor {
     }
 
     private String getLatestTagName() throws IOException {
-        final URL url = new URL("https://api.github.com/repos/12jking/StationofdoomPlugin/tags");
+        final URL url = new URL("https://api.github.com/repos/AtomPilz-DevTeam/StationofdoomPlugin/tags");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
 
