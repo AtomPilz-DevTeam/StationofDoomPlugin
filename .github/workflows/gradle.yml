@@ -27,7 +27,6 @@ jobs:
   createJar:
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v3.5.3
       - name: Set up JDK 17
@@ -44,3 +43,22 @@ jobs:
         with:
           name: StationofdoomPlugin
           path: build/libs
+
+  releaseJar:
+    runs-on: ubuntu-latest
+    needs: createJar
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Get file name
+        id: get_filename
+        run: |
+          FILE_PATH=$(find build/libs -name "*.jar" | head -n 1)
+          FILE_NAME=$(basename "$FILE_PATH")
+          echo "FILENAME=$FILE_NAME" >> $GITHUB_ENV
+      - name: Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/libs"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: true
+          tag: "v${{ env.FILENAME }}"
