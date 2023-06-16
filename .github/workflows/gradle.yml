@@ -49,6 +49,13 @@ jobs:
     needs: createJar
     if: github.ref == 'refs/heads/master'
     steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: StationofdoomPlugin
+          path: build/libs
+      - name: Check folder
+        run: ls build/libs
       - name: Get file name
         id: get_filename
         run: |
