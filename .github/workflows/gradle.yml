@@ -68,7 +68,7 @@ jobs:
       - name: Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/libs"
+          artifacts: "build/libs/*.jar"
           token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: true
           tag: "v${{ env.FILENAME }}"
