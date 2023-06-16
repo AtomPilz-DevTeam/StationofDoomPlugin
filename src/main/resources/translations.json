@@ -9,6 +9,8 @@
       "SwordDropMessage": "Drücke nochmal Q um dein Item zu droppen!",
       "OpenVoteRestart": "hat einen Restart Vote eröffnet!",
       "ClickHereToVote": "Klicke Hier zum voten",
+      "ClickHereToVoteYes": "Ja",
+      "ClickHereToVoteNo": "No",
       "ClickToVote": "Klicke zum voten",
       "AlreadyVotedForRestart": "Du hast bereits für den Restart gestimmt!",
       "RestartInMessage": "Restart in %s Sekunden",
@@ -21,7 +23,8 @@
       "OnlyOneArgument": "Gib ein Argument an",
       "JoinedDC": "%s ist gejoint!   %s   %s/%s",
       "QuitDC": "%s ist gequittet!   %s   %s/%s",
-      "NoRights": "Dazu hast du keine Rechte!"
+      "NoRights": "Dazu hast du keine Rechte!",
+      "RestartCancelled": "Der Restart Vote wurde geschlossen"
     }
   ],
   "en-US": [
@@ -34,6 +37,8 @@
       "SwordDropMessage": "Press Q again to drop the item",
       "OpenVoteRestart": "opened a restart vote",
       "ClickHereToVote": "Click here to vote",
+      "ClickHereToVoteYes": "Yes",
+      "ClickHereToVoteNo": "No",
       "ClickToVote": "Click to vote",
       "AlreadyVotedForRestart": "You voted already for the restart",
       "RestartInMessage": "Restart in %s seconds",
@@ -46,7 +51,8 @@
       "OnlyOneArgument": "Specify an argument",
       "JoinedDC": "%s joined!   %s   %s/%s",
       "QuitDC": "%s quited!   %s   %s/%s",
-      "NoRights": "You have no rights to do that!"
+      "NoRights": "You have no rights to do that!",
+      "RestartCancelled": "The restart vote got cancelled"
     }
   ]
 }
