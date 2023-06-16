@@ -60,8 +60,8 @@ jobs:
         id: get_filename
         run: |
           FILE_PATH=$(find build/libs -name "*.jar" | head -n 1)
-          FILE_NAME=$(echo "$FILE_PATH" | grep -o '[0-9.]\+')
-          echo "FILENAME=$FILE_NAME" >> $GITHUB_ENV
+          FILE_NAME=$(basename "$FILE_PATH")
+          echo "FILENAME=$FILE_NAME | grep -o '[0-9.]\+'" >> $GITHUB_ENV
       - name: Release
         uses: ncipollo/release-action@v1
         with:
