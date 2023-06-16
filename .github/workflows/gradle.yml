@@ -61,7 +61,9 @@ jobs:
         run: |
           FILE_PATH=$(find build/libs -name "*.jar" | head -n 1)
           FILE_NAME=$(basename "$FILE_PATH")
-          echo "FILENAME=$FILE_NAME | grep -o '[0-9.]\+'" >> $GITHUB_ENV
+          version=$(echo "$FILE_NAME" | grep -o '[0-9.]\+')
+          echo "$version"
+          echo "FILENAME=$version" >> $GITHUB_ENV
       - name: Release
         uses: ncipollo/release-action@v1
         with:
