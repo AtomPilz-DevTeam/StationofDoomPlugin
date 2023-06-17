@@ -27,7 +27,7 @@ public class VersionCMD implements CommandExecutor {
                 //player.sendMessage(ChatColor.GREEN + "Das Plugin ist auf Version " + Main.version + "!");
                 TranslationFactory translate = new TranslationFactory();
                 try {
-                    player.sendMessage(Component.text(translate.getTranslation(player, "ServerVersion", Main.version, getLatestTagName())).color(NamedTextColor.GREEN));
+                    player.sendMessage(Component.text(translate.getTranslation(player, "ServerVersion", "v" + Main.version, getLatestTagName())).color(NamedTextColor.GREEN));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -36,7 +36,7 @@ public class VersionCMD implements CommandExecutor {
         return false;
     }
 
-    private String getLatestTagName() throws IOException {
+    public static String getLatestTagName() throws IOException {
         final URL url = new URL("https://api.github.com/repos/AtomPilz-DevTeam/StationofdoomPlugin/tags");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
