@@ -29,12 +29,12 @@ public class ChatMessagesListener implements Listener {
                         .append(Component.text(" <").color(NamedTextColor.GRAY))
                         .append(Component.text(event.getPlayer().getName()))
                         .append(Component.text(">").color(NamedTextColor.GRAY))
-                        .append(Component.text(" ").append(event.message()));
+                        .append(Component.text(" ").append(event.message()).color(NamedTextColor.WHITE));
             } else {
                 return c.append(Component.text(" <").color(NamedTextColor.GRAY))
                         .append(Component.text(event.getPlayer().getName()))
                         .append(Component.text(">").color(NamedTextColor.GRAY))
-                        .append(Component.text(" ").append(event.message()));
+                        .append(Component.text(" ").append(event.message()).color(NamedTextColor.WHITE));
             }
         };
         event.renderer(renderer);

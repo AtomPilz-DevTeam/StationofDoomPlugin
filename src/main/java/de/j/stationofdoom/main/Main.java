@@ -15,6 +15,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public final class Main extends JavaPlugin {
@@ -26,7 +30,25 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        version = "1.11.1";
+        InputStreamReader in = new InputStreamReader(Objects.requireNonNull(Main.class.getResourceAsStream("/plugin.yml")));
+        BufferedReader reader = new BufferedReader(in);
+
+        try {
+            String line;
+            int lineNumber = 1;
+
+            while ((line = reader.readLine()) != null) {
+                if (lineNumber == 2) {
+                    version = line.replace("version: ", "");
+                    break;
+                }
+                lineNumber++;
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

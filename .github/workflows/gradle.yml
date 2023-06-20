@@ -50,7 +50,7 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: StationofdoomPlugin
           path: build/libs
@@ -61,11 +61,14 @@ jobs:
         run: |
           FILE_PATH=$(find build/libs -name "*.jar" | head -n 1)
           FILE_NAME=$(basename "$FILE_PATH")
-          echo "FILENAME=$FILE_NAME" >> $GITHUB_ENV
+          version=$(echo "$FILE_NAME" | grep -o '[0-9.]\+')
+          version="${version%.}"
+          echo "$version"
+          echo "FILENAME=$version" >> $GITHUB_ENV
       - name: Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/libs"
+          artifacts: "build/libs/*.jar"
           token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: true
           tag: "v${{ env.FILENAME }}"
