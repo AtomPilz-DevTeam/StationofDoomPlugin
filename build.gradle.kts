@@ -19,8 +19,8 @@ repositories {
 }
 
 dependencies {
-    implementation(files("lib/Discord-Webhooks-API-WithDependencies.jar"))
     library("com.google.code.gson:gson:2.10.1")
+    library("club.minnced:discord-webhooks:0.8.2")
     paperweightDevelopmentBundle("io.papermc.paper:dev-bundle:$minecraftVersion-R0.1-SNAPSHOT")
 }
 
