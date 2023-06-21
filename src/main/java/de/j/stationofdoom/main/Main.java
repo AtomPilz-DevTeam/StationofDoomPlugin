@@ -92,7 +92,9 @@ public final class Main extends JavaPlugin {
     }
 
     @Override
-    public void onDisable() {}
+    public void onDisable() {
+        WhoIsOnline.shutdown();
+    }
 
     public static Main getPlugin(){
         return plugin;
