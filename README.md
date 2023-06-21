@@ -10,11 +10,6 @@ A minecraft spigot survival plugin for private servers
 How To 
 ------
 Download the plugin from the [releases tab](https://github.com/12jking/StationofDoomPlugin/releases) and copy the plugin to your plugins folder.
-#####Remember You need a Mojang mapped server
-
-Thanks
-------
-Thanks to [RANKTW](https://github.com/RANKTW) for sending me his Java Discord Webhook API. (No longer available)
 
 How To (Compiling Jar From Source)
 ------

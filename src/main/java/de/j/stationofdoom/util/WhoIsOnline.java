@@ -1,27 +1,30 @@
 package de.j.stationofdoom.util;
 
+import club.minnced.discord.webhook.WebhookClient;
+import club.minnced.discord.webhook.WebhookClientBuilder;
+import club.minnced.discord.webhook.WebhookCluster;
+import club.minnced.discord.webhook.send.WebhookEmbed;
+import club.minnced.discord.webhook.send.WebhookEmbedBuilder;
+import club.minnced.discord.webhook.send.WebhookMessageBuilder;
 import de.j.stationofdoom.main.Main;
-import de.j.stationofdoom.util.translations.LanguageEnums;
 import de.j.stationofdoom.util.translations.TranslationFactory;
-import net.ranktw.DiscordWebHooks.DiscordEmbed;
-import net.ranktw.DiscordWebHooks.DiscordMessage;
-import net.ranktw.DiscordWebHooks.DiscordWebhook;
-import net.ranktw.DiscordWebHooks.embed.FooterEmbed;
-import net.ranktw.DiscordWebHooks.embed.ThumbnailEmbed;
+import okhttp3.OkHttpClient;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class WhoIsOnline {
 
-    private static DiscordEmbed embed;
+    private static WebhookEmbed embed;
     public static String[] webhookURL;
     private static final String AVATAR_URL = "https://www.mc-heads.net/avatar/";
     private static boolean enabled = false;
+    private static WebhookCluster cluster;
 
     public static void init() {
         FileConfiguration config = Main.getPlugin().getConfig();
@@ -31,7 +34,28 @@ public class WhoIsOnline {
                 webhookURL = config.getString("discord.webhook").replaceAll(" ", "").split(";");
                 if (config.getBoolean("discord.webhookEnabled")) {
                     enabled = true;
-                    Main.getMainLogger().info("Discord Webhook enabled");
+                    try {
+                        Main.getMainLogger().info("Enabling discord webhook cluster...");
+
+                        assert webhookURL != null;
+                        if (cluster == null) {
+                            cluster = new WebhookCluster(webhookURL.length);
+                            cluster.setDefaultHttpClient(new OkHttpClient());
+                            cluster.setDefaultDaemon(true);
+                        }
+
+                        for (String dcHook : webhookURL) {
+                            WebhookClient client = WebhookClient.withUrl(dcHook);
+                            cluster.addWebhooks(client);
+                        }
+
+                        Main.getMainLogger().info("Discord Webhook enabled");
+
+                    } catch (Exception e) {
+                        Main.getMainLogger().severe("Could not enable discord cluster");
+                        Main.getMainLogger().info(e.getMessage());
+                    }
+
                 } else
                     Main.getMainLogger().info("Discord Webhook disabled");
             }
@@ -44,16 +68,22 @@ public class WhoIsOnline {
 
     }
 
+    public static void shutdown() {
+        cluster.close();
+        enabled = false;
+    }
+
     public static void join(Player player) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
         LocalDateTime now = LocalDateTime.now();
         TranslationFactory translationFactory = new TranslationFactory();
-        embed = new DiscordEmbed.Builder()
-                .withColor(Color.GREEN)
-                .withTitle("Join")
-                .withDescription(translationFactory.getTranslation(translationFactory.getServerLang(), "JoinedDC", player.getName(), dtf.format(now), Bukkit.getServer().getOnlinePlayers().size(), Bukkit.getServer().getMaxPlayers()))
-                .withFooter(new FooterEmbed("Plugin by LuckyProgrammer aka 12jking", AVATAR_URL + "LuckyProgrammer"))
-                .withThumbnail(new ThumbnailEmbed(AVATAR_URL + player.getUniqueId(), 16, 16))
+
+        embed = new WebhookEmbedBuilder()
+                .setColor(Color.GREEN.hashCode())
+                .setTitle(new WebhookEmbed.EmbedTitle("Join", ""))
+                .setDescription(translationFactory.getTranslation(translationFactory.getServerLang(), "JoinedDC", player.getName(), dtf.format(now), Bukkit.getServer().getOnlinePlayers().size(), Bukkit.getServer().getMaxPlayers()))
+                .setFooter(new WebhookEmbed.EmbedFooter("Plugin by LuckyProgrammer aka 12jking", AVATAR_URL + "LuckyProgrammer"))
+                .setThumbnailUrl(AVATAR_URL + player.getUniqueId())
                 .build();
 
         send(player);
@@ -63,12 +93,13 @@ public class WhoIsOnline {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
         LocalDateTime now = LocalDateTime.now();
         TranslationFactory translationFactory = new TranslationFactory();
-        embed = new DiscordEmbed.Builder()
-                .withColor(Color.RED)
-                .withTitle("Quit")
-                .withDescription(translationFactory.getTranslation(translationFactory.getServerLang(), "QuitDC", player.getName(), dtf.format(now), Bukkit.getServer().getOnlinePlayers().size(), Bukkit.getServer().getMaxPlayers()))
-                .withFooter(new FooterEmbed("Plugin by LuckyProgrammer aka 12jking", AVATAR_URL + "LuckyProgrammer"))
-                .withThumbnail(new ThumbnailEmbed(AVATAR_URL + player.getUniqueId(), 16, 16))
+
+        embed = new WebhookEmbedBuilder()
+                .setColor(Color.RED.hashCode())
+                .setTitle(new WebhookEmbed.EmbedTitle("Quit", ""))
+                .setDescription(translationFactory.getTranslation(translationFactory.getServerLang(), "QuitDC", player.getName(), dtf.format(now), Bukkit.getServer().getOnlinePlayers().size(), Bukkit.getServer().getMaxPlayers()))
+                .setFooter(new WebhookEmbed.EmbedFooter("Plugin by LuckyProgrammer aka 12jking", AVATAR_URL + "LuckyProgrammer"))
+                .setThumbnailUrl(AVATAR_URL + player.getUniqueId())
                 .build();
 
         send(player);
@@ -76,36 +107,32 @@ public class WhoIsOnline {
 
     public static void restart() {
         TranslationFactory translationFactory = new TranslationFactory();
-        embed = new DiscordEmbed.Builder()
-                .withColor(Color.GRAY)
-                .withTitle("Restart")
-                .withDescription(translationFactory.getTranslation(translationFactory.getServerLang(), "ServerRestart"))
-                .withFooter(new FooterEmbed("Plugin by LuckyProgrammer aka 12jking", AVATAR_URL + "LuckyProgrammer"))
+
+        embed = new WebhookEmbedBuilder()
+                .setColor(Color.GRAY.hashCode())
+                .setTitle(new WebhookEmbed.EmbedTitle("Restart", ""))
+                .setDescription(translationFactory.getTranslation(translationFactory.getServerLang(), "ServerRestart"))
+                .setFooter(new WebhookEmbed.EmbedFooter("Plugin by LuckyProgrammer aka 12jking", AVATAR_URL + "LuckyProgrammer"))
                 .build();
+
         send();
     }
 
     private static boolean send(Player player) {
         if (enabled) {
             try {
-                assert webhookURL != null;
-                for (String dcHook : webhookURL) {
-                    DiscordWebhook webhook = new DiscordWebhook(dcHook);
-                    DiscordMessage message = new DiscordMessage.Builder()
-                            .withUsername("Minecraft")
-                            .withEmbed(embed)
-                            .withAvatarURL(AVATAR_URL + player.getUniqueId())
-                            .build();
+                assert cluster != null;
 
-                    Thread sendToDiscord = new Thread(() -> {
-                        webhook.sendMessage(message);
-                        Main.getPlugin().getLogger().info("Sending webhook to discord...");
-                    });
-                    sendToDiscord.start();
-                }
+                WebhookMessageBuilder builder = new WebhookMessageBuilder();
+                builder.setUsername("Minecraft");
+                builder.addEmbeds(embed);
+                builder.setAvatarUrl(AVATAR_URL + player.getUniqueId());
+
+                cluster.broadcast(builder.build());
                 return true;
             } catch (Exception e) {
-                Main.getPlugin().getLogger().severe("Failed to send webhook to discord...");
+                Main.getMainLogger().severe("Failed to send webhook to discord...");
+                Main.getMainLogger().info(e.getMessage());
                 return false;
             }
         } else
@@ -115,20 +142,13 @@ public class WhoIsOnline {
     private static boolean send() {
         if (enabled) {
             try {
-                assert webhookURL != null;
-                for (String dcHook : webhookURL) {
-                    DiscordWebhook webhook = new DiscordWebhook(dcHook);
-                    DiscordMessage message = new DiscordMessage.Builder()
-                            .withUsername("MinecraftServer")
-                            .withEmbed(embed)
-                            .build();
+                assert cluster != null;
 
-                    Thread sendToDiscord = new Thread(() -> {
-                        webhook.sendMessage(message);
-                        Main.getPlugin().getLogger().info("Sending webhook to discord...");
-                    });
-                    sendToDiscord.start();
-                }
+                WebhookMessageBuilder builder = new WebhookMessageBuilder();
+                builder.setUsername("Minecraft");
+                builder.addEmbeds(embed);
+
+                cluster.broadcast(builder.build());
                 return true;
             } catch (Exception e) {
                 Main.getPlugin().getLogger().severe("Failed to send webhook to discord...");
