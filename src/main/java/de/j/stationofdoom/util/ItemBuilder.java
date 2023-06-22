@@ -39,6 +39,11 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder setName(Component name){
+        meta.displayName(name);
+        return this;
+    }
+
     public ItemStack build() {
         item.setItemMeta(meta);
         return item;
