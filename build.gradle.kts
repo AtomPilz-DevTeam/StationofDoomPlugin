@@ -8,7 +8,7 @@ plugins {
 }
 
 val minecraftVersion = "1.20"
-val pluginVersion = "1.12"
+val pluginVersion = "1.12.2"
 
 group = "org.example"
 version = pluginVersion
