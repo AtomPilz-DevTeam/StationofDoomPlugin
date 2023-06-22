@@ -4,14 +4,15 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import de.j.stationofdoom.main.Main;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -50,6 +51,22 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder addLore(List<String> lore, NamedTextColor color) {
+        List<Component> l = new ArrayList<>();
+        lore.forEach(lo -> l.add(Component
+                .text(lo)
+                .color(color)));
+        meta.lore(l);
+        return this;
+    }
+
+    public ItemBuilder addPDC(String key, String value) {
+        NamespacedKey namespacedKey = new NamespacedKey(Main.getPlugin(), key);
+
+        meta.getPersistentDataContainer().set(namespacedKey, PersistentDataType.STRING, value);
+        return this;
+    }
+
     public ItemBuilder addEnchantment(Enchantment enchantment, int i, boolean b){
         meta.addEnchant(enchantment, i, b);
         return this;
@@ -79,6 +96,27 @@ public class ItemBuilder {
         }
         head.setItemMeta(headMeta);
         return head;
+    }
+
+    public ItemBuilder getHeadBuilder(String url, String name) {
+        item = new ItemStack(Material.PLAYER_HEAD, (short) 1);
+        if (url.isEmpty())
+            return null;
+        meta  = item.getItemMeta();
+        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+
+        profile.getProperties().put("textures", new Property("textures", url));
+
+        try {
+            assert meta != null;
+            Field profileField = meta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            profileField.set(meta, profile);
+        } catch (IllegalArgumentException | NoSuchFieldException | IllegalAccessException e) {
+            Main.getPlugin().getLogger().severe("An error approached while create head!");
+        }
+        item.setItemMeta(meta);
+        return this;
     }
 
     public static ItemStack getHead(String name) {
