@@ -8,6 +8,7 @@ import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.FurnaceEvents;
 import de.j.stationofdoom.enchants.TelepathyEvents;
 import de.j.stationofdoom.listener.*;
+import de.j.stationofdoom.util.translations.ChangeLanguageGUI;
 import de.j.stationofdoom.util.translations.LanguageChanger;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import de.j.stationofdoom.util.WhoIsOnline;
@@ -81,6 +82,7 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new FlightEvents(), this);
         pluginManager.registerEvents(new AntiSwordDropListener(), this);
         pluginManager.registerEvents(new FurnaceEvents(), this);
+        pluginManager.registerEvents(new ChangeLanguageGUI(), this);
 
         CustomEnchants.register();
 
