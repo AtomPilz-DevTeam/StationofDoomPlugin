@@ -8,7 +8,7 @@ plugins {
 }
 
 val minecraftVersion = "1.20"
-val pluginVersion = "1.12.1"
+val pluginVersion = "1.12.2"
 
 group = "org.example"
 version = pluginVersion
@@ -34,6 +34,10 @@ tasks {
     }
 
     withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
+
+    compileJava {
         options.encoding = "UTF-8"
     }
 }

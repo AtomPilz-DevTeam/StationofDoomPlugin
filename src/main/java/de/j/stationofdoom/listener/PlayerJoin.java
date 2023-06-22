@@ -5,6 +5,7 @@ import de.j.stationofdoom.cmd.VoteRestartCMD;
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.Tablist;
 import de.j.stationofdoom.util.WhoIsOnline;
+import de.j.stationofdoom.util.translations.ChangeLanguageGUI;
 import de.j.stationofdoom.util.translations.LanguageChanger;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
@@ -27,6 +28,9 @@ public class PlayerJoin implements Listener {
 
         if (LanguageChanger.hasPlayerLanguage(player)) {
             Main.getMainLogger().info("Loaded translation for " + player.getName());
+        } else {
+            player.openInventory(new ChangeLanguageGUI().getGUI(player));
+            Main.getMainLogger().info("Opened language gui for " + player.getName());
         }
 
         if (VoteRestartCMD.restarting) {
