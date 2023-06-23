@@ -21,7 +21,11 @@
       "OnlyOneArgument": "Gib ein Argument an",
       "JoinedDC": "%s ist gejoint!   %s   %s/%s",
       "QuitDC": "%s ist gequittet!   %s   %s/%s",
-      "NoRights": "Dazu hast du keine Rechte!"
+      "NoRights": "Dazu hast du keine Rechte!",
+      "ChangeLanguage": "Ändere deine Sprache",
+      "ClickToChangeLanguage": "Klicke um deine Sprache zu ändern!",
+      "en": "Englisch",
+      "de": "Deutsch"
     }
   ],
   "en-US": [
@@ -46,7 +50,11 @@
       "OnlyOneArgument": "Specify an argument",
       "JoinedDC": "%s joined!   %s   %s/%s",
       "QuitDC": "%s quited!   %s   %s/%s",
-      "NoRights": "You have no rights to do that!"
+      "NoRights": "You have no rights to do that!",
+      "ChangeLanguage": "Change your language",
+      "ClickToChangeLanguage": "Click to change your language",
+      "en": "English",
+      "de": "German"
     }
   ]
 }

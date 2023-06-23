@@ -8,6 +8,7 @@ import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.FurnaceEvents;
 import de.j.stationofdoom.enchants.TelepathyEvents;
 import de.j.stationofdoom.listener.*;
+import de.j.stationofdoom.util.translations.ChangeLanguageGUI;
 import de.j.stationofdoom.util.translations.LanguageChanger;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import de.j.stationofdoom.util.WhoIsOnline;
@@ -15,6 +16,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public final class Main extends JavaPlugin {
@@ -26,7 +31,25 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        version = "1.11.1";
+        InputStreamReader in = new InputStreamReader(Objects.requireNonNull(Main.class.getResourceAsStream("/plugin.yml")));
+        BufferedReader reader = new BufferedReader(in);
+
+        try {
+            String line;
+            int lineNumber = 1;
+
+            while ((line = reader.readLine()) != null) {
+                if (lineNumber == 2) {
+                    version = line.replace("version: ", "");
+                    break;
+                }
+                lineNumber++;
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -59,6 +82,7 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new FlightEvents(), this);
         pluginManager.registerEvents(new AntiSwordDropListener(), this);
         pluginManager.registerEvents(new FurnaceEvents(), this);
+        pluginManager.registerEvents(new ChangeLanguageGUI(), this);
 
         CustomEnchants.register();
 
@@ -70,7 +94,9 @@ public final class Main extends JavaPlugin {
     }
 
     @Override
-    public void onDisable() {}
+    public void onDisable() {
+        WhoIsOnline.shutdown();
+    }
 
     public static Main getPlugin(){
         return plugin;

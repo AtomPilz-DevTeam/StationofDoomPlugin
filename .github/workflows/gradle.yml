@@ -1,12 +1,12 @@
 name: CI
 on:
   push:
-    branches:
-      - master
+    branches: [ "**" ]
   pull_request:
     types:
       - opened
       - synchronize
+      - closed
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,9 +36,38 @@ jobs:
           cache: gradle
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1.0.6
-      - run: ./gradlew shadowJar
+      - run: ./gradlew jar
       - name: Upload artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           name: StationofdoomPlugin
           path: build/libs
+
+  releaseJar:
+    runs-on: ubuntu-latest
+    needs: createJar
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: StationofdoomPlugin
+          path: build/libs
+      - name: Check folder
+        run: ls build/libs
+      - name: Get file name
+        id: get_filename
+        run: |
+          FILE_PATH=$(find build/libs -name "*.jar" | head -n 1)
+          FILE_NAME=$(basename "$FILE_PATH")
+          version=$(echo "$FILE_NAME" | grep -o '[0-9.]\+')
+          version="${version%.}"
+          echo "$version"
+          echo "FILENAME=$version" >> $GITHUB_ENV
+      - name: Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/libs/*.jar"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: true
+          tag: "v${{ env.FILENAME }}"
