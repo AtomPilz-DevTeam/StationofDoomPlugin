@@ -30,15 +30,19 @@ public class VoteRestartCMD implements CommandExecutor {
             if (!active) {
                 active = true;
                 votedPlayers.add(player);
-                Bukkit.broadcast(Component.text("[").color(NamedTextColor.BLUE).decoration(TextDecoration.BOLD, true)
+                for (Player on : Bukkit.getOnlinePlayers()) { 
+	                on.sendMessage(Component.text("[").color(NamedTextColor.BLUE).decoration(TextDecoration.BOLD, true)
                         .append(Component.text(player.getName()).color(NamedTextColor.AQUA))
                         .append(Component.text("] ").color(NamedTextColor.BLUE).decoration(TextDecoration.BOLD, true))
-                        .append(Component.text(translations.getTranslation(player, "OpenVoteRestart")).color(NamedTextColor.GRAY)));
-                Bukkit.broadcast(Component.text(translations.getTranslation(player, "ClickHereToVote"))
+                        .append(Component.text(translations.getTranslation(on, "OpenVoteRestart")).color(NamedTextColor.GRAY)));
+                }
+                for (Player on : Bukkit.getOnlinePlayers()) { 
+	                Component.text(translations.getTranslation(player, "ClickHereToVote"))
                         .color(NamedTextColor.GREEN)
                         .clickEvent(ClickEvent.runCommand("/voterestart")).hoverEvent(HoverEvent
                                 .showText(Component.text(translations.getTranslation(player, "ClickToVote"))
-                                        .color(NamedTextColor.GREEN))));
+                                        .color(NamedTextColor.GREEN)));
+                }
 
             } else {
                 if (!votedPlayers.contains(player)) {
