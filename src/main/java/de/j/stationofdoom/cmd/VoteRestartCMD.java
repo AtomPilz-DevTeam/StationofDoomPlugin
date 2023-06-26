@@ -41,7 +41,7 @@ public class VoteRestartCMD implements CommandExecutor {
                         .color(NamedTextColor.GREEN)
                         .clickEvent(ClickEvent.runCommand("/voterestart")).hoverEvent(HoverEvent
                                 .showText(Component.text(translations.getTranslation(player, "ClickToVote"))
-                                        .color(NamedTextColor.GREEN)))
+                                        .color(NamedTextColor.GREEN)));
                 }
 
             } else {
