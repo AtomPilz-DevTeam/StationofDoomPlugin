@@ -20,7 +20,7 @@ repositories {
 
 dependencies {
     library("com.google.code.gson:gson:2.10.1")
-    library("club.minnced:discord-webhooks:0.8.2")
+    library("club.minnced:discord-webhooks:0.8.4")
     paperweightDevelopmentBundle("io.papermc.paper:dev-bundle:$minecraftVersion-R0.1-SNAPSHOT")
 }
 
