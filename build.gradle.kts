@@ -5,6 +5,7 @@ plugins {
     id("xyz.jpenilla.run-paper") version "2.1.0"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
     id("io.papermc.paperweight.userdev") version "1.5.5"
+    id("com.modrinth.minotaur") version "2.+"
 }
 
 val minecraftVersion = "1.20"
@@ -89,4 +90,13 @@ bukkit {
 
     }
 
+}
+
+modrinth {
+    token.set(System.getenv("MODRINTH_TOKEN")) // Remember to have the MODRINTH_TOKEN environment variable set or else this will fail - just make sure it stays private!
+    projectId.set("stationofdoom") // This can be the project ID or the slug. Either will work!
+    versionNumber.set(pluginVersion) // You don't need to set this manually. Will fail if Modrinth has this version already
+    versionType.set("release") // This is the default -- can also be `beta` or `alpha`
+    uploadFile.set(tasks.jar) // With Loom, this MUST be set to `remapJar` instead of `jar`!
+    gameVersions.addAll(arrayOf("1.18", "1.18.1", "1.19.1", "1.19.2", "1.19.3", "1.20.1")) // Must be an array, even with only one version
 }
