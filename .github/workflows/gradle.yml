@@ -38,7 +38,7 @@ jobs:
         uses: gradle/wrapper-validation-action@v1.1.0
       - run: ./gradlew jar
       - name: Upload artifact
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v3.1.3
         with:
           name: StationofdoomPlugin
           path: build/libs
