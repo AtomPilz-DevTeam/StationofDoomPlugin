@@ -61,19 +61,19 @@ public class VoteRestartCMD implements CommandExecutor {
                             Bukkit.broadcast(Component.text(translations.getTranslation(player, "RestartInMessage", timer)).color(NamedTextColor.RED));
                             timer --;
                         } else {
-                            Main.getPlugin().getLogger().info("Kicking players...");
+                            Main.getMainLogger().info("Kicking players...");
                             int players = 0;
                             for (Player on : Bukkit.getOnlinePlayers()) {
                                 on.kick(Component.text(translations.getTranslation(player, "ServerRestart") + "\n \n").color(NamedTextColor.DARK_RED)
                                         .append(Component.text(translations.getTranslation(player, "JoinAgain")).color(NamedTextColor.BLUE)));
                                 players ++;
                             }
-                            Main.getPlugin().getLogger().info("Kicked " + players + " players!");
+                            Main.getMainLogger().info("Kicked " + players + " players!");
                             WhoIsOnline.restart();
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {
-                                    Main.getPlugin().getLogger().info("Server is restarting");
+                                    Main.getMainLogger().info("Server is restarting");
                                     Bukkit.spigot().restart();
                                 }
                             }.runTaskLater(Main.getPlugin(), 5);

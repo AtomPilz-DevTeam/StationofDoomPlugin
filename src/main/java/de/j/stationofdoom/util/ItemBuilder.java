@@ -97,7 +97,7 @@ public class ItemBuilder {
             profileField.setAccessible(true);
             profileField.set(headMeta, profile);
         } catch (IllegalArgumentException | NoSuchFieldException | IllegalAccessException e) {
-            Main.getPlugin().getLogger().severe("An error approached while create head!");
+            Main.getMainLogger().severe("An error approached while create head!");
         }
         head.setItemMeta(headMeta);
         return head;
@@ -118,7 +118,7 @@ public class ItemBuilder {
             profileField.setAccessible(true);
             profileField.set(meta, profile);
         } catch (IllegalArgumentException | NoSuchFieldException | IllegalAccessException e) {
-            Main.getPlugin().getLogger().severe("An error approached while create head!");
+            Main.getMainLogger().severe("An error approached while create head!");
         }
         item.setItemMeta(meta);
         return this;
@@ -130,7 +130,7 @@ public class ItemBuilder {
                 return head.getItemStack();
             }
         }
-        Main.getPlugin().getLogger().severe("An error appeared in while getting a head");
+        Main.getMainLogger().severe("An error appeared in while getting a head");
         return null;
     }
 }

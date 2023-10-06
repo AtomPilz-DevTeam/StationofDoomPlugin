@@ -43,7 +43,7 @@ public class CustomEnchants {
             registered = false;
         }
         if (registered) {
-            Main.getPlugin().getLogger().info(enchantment.getKey() + " registered");
+            Main.getMainLogger().info(enchantment.getKey() + " registered");
         }
     }
 
