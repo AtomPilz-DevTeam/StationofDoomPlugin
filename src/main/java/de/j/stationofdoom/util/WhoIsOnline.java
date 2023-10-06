@@ -151,7 +151,7 @@ public class WhoIsOnline {
                 cluster.broadcast(builder.build());
                 return true;
             } catch (Exception e) {
-                Main.getPlugin().getLogger().severe("Failed to send webhook to discord...");
+                Main.getMainLogger().severe("Failed to send webhook to discord...");
                 return false;
             }
         } else
