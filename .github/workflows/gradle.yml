@@ -6,7 +6,6 @@ on:
     types:
       - opened
       - synchronize
-      - closed
 jobs:
   build:
     runs-on: ubuntu-latest
