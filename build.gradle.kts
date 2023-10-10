@@ -4,7 +4,7 @@ plugins {
     id("java")
     id("xyz.jpenilla.run-paper") version "2.2.0"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    id("io.papermc.paperweight.userdev") version "1.5.7"
+    id("io.papermc.paperweight.userdev") version "1.5.8"
 }
 
 val minecraftVersion = "1.20"
