@@ -8,6 +8,7 @@ import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.FurnaceEvents;
 import de.j.stationofdoom.enchants.TelepathyEvents;
 import de.j.stationofdoom.listener.*;
+import de.j.stationofdoom.util.UpdatePlugin;
 import de.j.stationofdoom.util.translations.ChangeLanguageGUI;
 import de.j.stationofdoom.util.translations.LanguageChanger;
 import de.j.stationofdoom.util.translations.TranslationFactory;
@@ -31,6 +32,8 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        plugin = this;
+
         InputStreamReader in = new InputStreamReader(Objects.requireNonNull(Main.class.getResourceAsStream("/plugin.yml")));
         BufferedReader reader = new BufferedReader(in);
 
@@ -48,14 +51,19 @@ public final class Main extends JavaPlugin {
 
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            getMainLogger().severe(e.getMessage());
+        }
+
+        try {
+            UpdatePlugin updatePlugin = new UpdatePlugin(true);
+            updatePlugin.run();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public void onEnable() {
-        plugin = this;
-
         getCommand("afk").setExecutor(new StatusCMD());
         getCommand("plversion").setExecutor(new VersionCMD());
         getCommand("sit").setExecutor(new PlayerSitListener());
