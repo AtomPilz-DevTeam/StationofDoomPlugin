@@ -7,8 +7,8 @@ plugins {
     id("io.papermc.paperweight.userdev") version "1.5.8"
 }
 
-val minecraftVersion = "1.20.2"
-val pluginVersion = "1.12.2"
+val minecraftVersion = "1.20"
+val pluginVersion = "1.12.3"
 
 group = "org.example"
 version = pluginVersion
