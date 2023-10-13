@@ -37,7 +37,7 @@ jobs:
         uses: gradle/wrapper-validation-action@v1.1.0
       - name: Create tag
         if: github.ref == 'refs/heads/master'
-        uses: riickstaa/action-create-tag@v1.6.4
+        uses: rickstaa/action-create-tag@v1.6.4
         with:
           tag_name: "v${{ env.FILENAME }}.${{ github.run_number }}"
 
