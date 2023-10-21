@@ -35,22 +35,6 @@ jobs:
           cache: gradle
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1.1.0
-      - name: Create tag
-        if: github.ref == 'refs/heads/master'
-        uses: rickstaa/action-create-tag@v1.6.4
-        with:
-          tag: "v${{ env.FILENAME }}.${{ github.run_number }}"
-
-      - name: Change version in code
-        if: github.ref == 'refs/heads/master'
-        run: |
-          pluginVersion=$(cat build.gradle.kts | grep -Po 'val pluginVersion = "(.*?)"')
-          pluginVersion="${{ env.FILENAME }}.${{ github.run_number }}"
-          echo "val pluginVersion = \"$pluginVersion\"" > build.gradle.kts
-          git add build.gradle.kts
-          git commit -m "Update pluginVersion variable"
-          git push
-
       - run: ./gradlew jar
       - name: Upload artifact
         uses: actions/upload-artifact@v3.1.3
