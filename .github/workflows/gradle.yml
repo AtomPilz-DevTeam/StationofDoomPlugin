@@ -35,6 +35,9 @@ jobs:
           cache: gradle
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1.1.0
+      - name: Set version env variable
+        run: |
+          echo "runnumber=${{ github.run_number }}" >> $GITHUB_ENV
       - run: ./gradlew jar
       - name: Upload artifact
         uses: actions/upload-artifact@v3.1.3
