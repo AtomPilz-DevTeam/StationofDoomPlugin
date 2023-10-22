@@ -72,4 +72,4 @@ jobs:
           artifacts: "build/libs/*.jar"
           token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: true
-          tag: "v${{ env.FILENAME }}.${{ github.run_number }}"
+          tag: "v${{ env.FILENAME }}"
