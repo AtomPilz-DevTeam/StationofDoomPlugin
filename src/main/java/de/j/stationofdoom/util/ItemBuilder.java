@@ -87,7 +87,7 @@ public class ItemBuilder {
         if (url.isEmpty())
             return head;
         SkullMeta headMeta = (SkullMeta) head.getItemMeta();
-        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        GameProfile profile = new GameProfile(UUID.randomUUID(), name);
 
         profile.getProperties().put("textures", new Property("textures", url));
 
@@ -108,7 +108,7 @@ public class ItemBuilder {
         if (url.isEmpty())
             return null;
         meta  = item.getItemMeta();
-        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        GameProfile profile = new GameProfile(UUID.randomUUID(), name);
 
         profile.getProperties().put("textures", new Property("textures", url));
 
