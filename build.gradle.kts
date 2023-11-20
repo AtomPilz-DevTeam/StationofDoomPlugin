@@ -7,7 +7,7 @@ plugins {
     id("io.papermc.paperweight.userdev") version "1.5.8"
 }
 
-val minecraftVersion = "1.20"
+val minecraftVersion = "1.20.2"
 val pluginVersion: String = "1.12.3" + if (System.getenv("runnumber") != null) "." + System.getenv("runnumber") else ""
 
 group = "org.example"
