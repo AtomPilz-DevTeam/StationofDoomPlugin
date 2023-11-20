@@ -6,6 +6,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -28,9 +29,13 @@ public class Tablist {
         scoreboard.registerNewTeam("4Spieler");
         scoreboard.registerNewTeam("5AFK");
 
+        MiniMessage mm = MiniMessage.miniMessage();
+
         scoreboard.getTeam("0Host").prefix(Component.text("Host ")
                 .color(NamedTextColor.DARK_RED).decoration(TextDecoration.BOLD, true)
                 .append(Component.text("| ").color(NamedTextColor.DARK_GRAY)));
+        //scoreboard.getTeam("0Host")
+        //        .prefix(mm.deserialize("<rainbow>Host </rainbow><dark_gray>| </dark_gray>"));
         scoreboard.getTeam("1Admin").prefix(Component.text("Admin ")
                 .color(NamedTextColor.RED)
                 .append(Component.text("| ").color(NamedTextColor.DARK_GRAY)));
@@ -77,18 +82,18 @@ public class Tablist {
     private void setTeam(Player player) {
         String team = null;
         switch (player.getUniqueId().toString()) {
-            case "0565369c-ec68-4e7e-a90f-3492eb7002d8" -> {//MDHD
+            case "050fee27-a1cc-4e78-953a-7cefaf0849a1" -> {//LP
                 team = "0Host";
                 rank.put(player, ChatColor.RED + "" + ChatColor.BOLD + "[Host]" + ChatColor.RESET + " ");
             }
-            case "46cd27ba-df0c-49ef-9f33-6cfa884e339b" -> {//PP
+            case "0565369c-ec68-4e7e-a90f-3492eb7002d8" -> {//MDHD
                 team = "1Admin";
                 rank.put(player, ChatColor.BLUE + "" + ChatColor.BOLD + "[Admin]" + ChatColor.RESET + " ");
             }
-            case "050fee27-a1cc-4e78-953a-7cefaf0849a1" -> {//LP
-                team = "2Developer";
-                rank.put(player, ChatColor.GRAY + "[Dev]" + ChatColor.RESET + " ");
-            }
+            //case "" -> {
+            //    team = "2Developer";
+            //    rank.put(player, ChatColor.GRAY + "[Dev]" + ChatColor.RESET + " ");
+            //}
         }
 
         if (team == null) {
@@ -104,7 +109,7 @@ public class Tablist {
         String team;
         if (afk) {
             team = "5AFK";
-            rank.put(player, "§1[§3AFK§1]");
+            rank.put(player, "§1[§3AFK§1]");//TODO: replace with component
 
             scoreboard.getTeam(team).addPlayer(player);
             player.setScoreboard(scoreboard);
@@ -112,11 +117,11 @@ public class Tablist {
             setTeam(player);
     }
 
-    public void tab(Audience player, TextComponent header, TextComponent footer) {
+    public void tab(Audience player, Component header, Component footer) {
         player.sendPlayerListHeaderAndFooter(header, footer);
     }
 
-    public void tabTPS(Audience player, TextComponent header, TextComponent footer) {
+    public void tabTPS(Audience player, Component header, Component footer) {
         player.sendPlayerListHeaderAndFooter(header, footer);
     }
 
