@@ -79,6 +79,16 @@ public class EnchantmentWrapper extends Enchantment {
     }
 
     @Override
+    public int getMinModifiedCost(int level) {
+        return 0;
+    }
+
+    @Override
+    public int getMaxModifiedCost(int level) {
+        return 0;
+    }
+
+    @Override
     public @NotNull EnchantmentRarity getRarity() {
         return null;
     }

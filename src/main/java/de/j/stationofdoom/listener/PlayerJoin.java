@@ -10,6 +10,7 @@ import de.j.stationofdoom.util.translations.LanguageChanger;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -44,7 +45,8 @@ public class PlayerJoin implements Listener {
         }
 
         Tablist tablist = new Tablist();
-        tablist.tab(event.getPlayer(), Component.text("     StationOfDoom     \n\n", NamedTextColor.DARK_BLUE), Component.text("\n\n     Hosted by MisterDoenerHD     \n Plugin by LuckyProgrammer", NamedTextColor.RED));
+        MiniMessage mm = MiniMessage.miniMessage();
+        //tablist.tab(event.getPlayer(), mm.deserialize("     <dark_blue>StationOfDoom</dark_blue>     \n\n"), mm.deserialize("\\n\\n     <red>Hosted by </red><rainbow>LuckyProgrammer</rainbow>     \\n <red>Plugin by </red><rainbow>LuckyProgrammer</rainbow>"));
         tablist.setScoreboard();
 
         WhoIsOnline.join(player);
@@ -64,8 +66,8 @@ public class PlayerJoin implements Listener {
             @Override
             public void run() {
                 int ping = player.getPing();
-                tablist.tabTPS(player, Component.text("     StationOfDoom     \n\n", NamedTextColor.DARK_BLUE), Component
-                        .text("\n\n     Hosted by MisterDoenerHD     \n Plugin by LuckyProgrammer", NamedTextColor.RED)
+                tablist.tabTPS(player, mm.deserialize("     <dark_blue>StationOfDoom</dark_blue>     <newline><newline>"),
+                        mm.deserialize("<newline><newline>     <red>Hosted by </red><rainbow>LuckyProgrammer</rainbow>     <newline> <red>Plugin by </red><rainbow>LuckyProgrammer</rainbow>")
                         .append(Component.text(String.format("\nTPS:  %s;  %s;  %s", (int) Main.getPlugin().getServer().getTPS()[0], (int) Main.getPlugin().getServer().getTPS()[1], (int) Main.getPlugin().getServer().getTPS()[2]), NamedTextColor.LIGHT_PURPLE))
                         .append(Component.text("\n Ping: ")
                                 .append(Component.text(String.valueOf(ping))

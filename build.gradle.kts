@@ -7,7 +7,7 @@ plugins {
     id("io.papermc.paperweight.userdev") version "1.5.9"
 }
 
-val minecraftVersion = "1.20"
+val minecraftVersion = "1.20.2"
 val pluginVersion: String = "1.12.3" + if (System.getenv("runnumber") != null) "." + System.getenv("runnumber") else ""
 
 group = "org.example"
@@ -22,6 +22,7 @@ dependencies {
     library("com.google.code.gson:gson:2.10.1")
     library("club.minnced:discord-webhooks:0.8.4")
     paperweightDevelopmentBundle("io.papermc.paper:dev-bundle:$minecraftVersion-R0.1-SNAPSHOT")
+    library("net.kyori:adventure-text-serializer-plain:4.14.0")
 }
 
 java {
