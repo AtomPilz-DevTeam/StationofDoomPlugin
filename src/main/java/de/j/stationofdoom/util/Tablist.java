@@ -109,7 +109,7 @@ public class Tablist {
         String team;
         if (afk) {
             team = "5AFK";
-            rank.put(player, "§1[§3AFK§1]");//TODO: replace with component
+            rank.put(player, ChatColor.DARK_BLUE + "[" + ChatColor.DARK_AQUA + "AFK" + ChatColor.DARK_BLUE + "]");
 
             scoreboard.getTeam(team).addPlayer(player);
             player.setScoreboard(scoreboard);
