@@ -22,7 +22,12 @@ public class ChatMessagesListener implements Listener {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
         LocalDateTime now = LocalDateTime.now();
         MiniMessage mm = MiniMessage.miniMessage();
-        String plainText = PlainTextComponentSerializer.plainText().serialize(event.message()).replace("<click", "").replace("<nbt", "").replace("<score", "");
+        String plainText = PlainTextComponentSerializer.plainText().serialize(event.message())
+                .replace("<click", "")
+                .replace("<nbt", "")
+                .replace("<score", "")
+                .replace("@a ", "")
+                .replace("@all ", "");
         ChatRenderer renderer = (source, sourceDisplayName, message, viewer) -> {
             Component c = Component.text("[").color(NamedTextColor.GRAY)
                     .append(Component.text(dtf.format(now)).color(NamedTextColor.DARK_GRAY))
