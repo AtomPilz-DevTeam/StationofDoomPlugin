@@ -63,17 +63,22 @@ public class PlayerJoin implements Listener {
         }
 
         new BukkitRunnable() {
+            int phase = 0;
             @Override
             public void run() {
                 int ping = player.getPing();
                 tablist.tabTPS(player, mm.deserialize("     <dark_blue>StationOfDoom</dark_blue>     <newline><newline>"),
-                        mm.deserialize("<newline><newline>     <red>Hosted by </red><rainbow>LuckyProgrammer</rainbow>     <newline> <red>Plugin by </red><rainbow>LuckyProgrammer</rainbow>")
+                        mm.deserialize("<newline><newline>     <red>Hosted by </red><rainbow:" + phase + ">LuckyProgrammer</rainbow>     <newline> <red>Plugin by </red><rainbow:!" + (phase + 2) + ">LuckyProgrammer</rainbow>")
                         .append(Component.text(String.format("\nTPS:  %s;  %s;  %s", (int) Main.getPlugin().getServer().getTPS()[0], (int) Main.getPlugin().getServer().getTPS()[1], (int) Main.getPlugin().getServer().getTPS()[2]), NamedTextColor.LIGHT_PURPLE))
                         .append(Component.text("\n Ping: ")
                                 .append(Component.text(String.valueOf(ping))
                                         .color(ping > 30 ? NamedTextColor.RED : NamedTextColor.GREEN))));
+                phase ++;
+                if (phase >= 14) {
+                    phase = 0;
+                }
             }
-        }.runTaskTimerAsynchronously(Main.getPlugin(), 20, 40);
+        }.runTaskTimerAsynchronously(Main.getPlugin(), 20, 10);
     }
 
 }
