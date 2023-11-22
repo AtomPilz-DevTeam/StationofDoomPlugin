@@ -46,7 +46,6 @@ public class PlayerJoin implements Listener {
 
         Tablist tablist = new Tablist();
         MiniMessage mm = MiniMessage.miniMessage();
-        //tablist.tab(event.getPlayer(), mm.deserialize("     <dark_blue>StationOfDoom</dark_blue>     \n\n"), mm.deserialize("\\n\\n     <red>Hosted by </red><rainbow>LuckyProgrammer</rainbow>     \\n <red>Plugin by </red><rainbow>LuckyProgrammer</rainbow>"));
         tablist.setScoreboard();
 
         WhoIsOnline.join(player);
