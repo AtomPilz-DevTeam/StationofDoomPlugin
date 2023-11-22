@@ -2,22 +2,24 @@ package de.j.stationofdoom.util;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 public class Tablist {
 
     private static Scoreboard scoreboard;
     public static HashMap<Player, String> rank;
+    //Map that contains the player as key and the header and footer as array
+    private final HashMap<Audience, Component[]> playerListMap = new HashMap<>();
 
     public void setScoreboard() {
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -122,7 +124,19 @@ public class Tablist {
     }
 
     public void tabTPS(Audience player, Component header, Component footer) {
-        player.sendPlayerListHeaderAndFooter(header, footer);
+        if (playerListMap.containsKey(player)) {
+            if (playerListMap.get(player) != Stream.of(header, footer).toArray(Component[]::new)) {
+                if (!PlainTextComponentSerializer.plainText().serialize(playerListMap.get(player)[0]).equals(PlainTextComponentSerializer.plainText().serialize(header))) {
+                    player.sendPlayerListHeader(header);
+                }
+                if (!PlainTextComponentSerializer.plainText().serialize(playerListMap.get(player)[1]).equals(PlainTextComponentSerializer.plainText().serialize(footer))) {
+                    player.sendPlayerListFooter(footer);
+                }
+            }
+
+        } else
+            player.sendPlayerListHeaderAndFooter(header, footer);
+        playerListMap.put(player, Stream.of(header, footer).toArray(Component[]::new));
     }
 
     public void setAFK(Player player, boolean afk) {
