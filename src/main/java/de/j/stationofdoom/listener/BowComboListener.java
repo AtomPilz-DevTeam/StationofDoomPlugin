@@ -29,7 +29,7 @@ public class BowComboListener implements Listener {
             public void run() {
                 shooterList.put(player, shooterList.get(player) - 1 >= 0 ? shooterList.get(player) : 0);
             }
-        }.runTaskLaterAsynchronously(Main.getPlugin(), 20*3);
+        }.runTaskLaterAsynchronously(Main.getPlugin(), 50);
     }
 
     @EventHandler
@@ -43,18 +43,20 @@ public class BowComboListener implements Listener {
                 player.sendActionBar(mm.deserialize("<rainbow>Combo: " + shooterList.get(player) + "</rainbow>"));
             }
         } else if (event.getHitEntity() != null) {
-            double dmg = calculateDamageMultiplier(shooterList.get(player), arrow);
-            player.sendActionBar(mm.deserialize("<rainbow>Combo: " + shooterList.get(player) + "</rainbow> <green>DMG:" + dmg));
-            arrow.setDamage(dmg);
-            shooterList.put(player, shooterList.containsKey(player) ? shooterList.get(player) + 1  : 1);
+            if (event.getHitEntity() != arrow.getShooter()) {
+                double dmg = calculateDamageMultiplier(shooterList.get(player), arrow);
+                player.sendActionBar(mm.deserialize("<rainbow>Combo: " + shooterList.get(player) + "</rainbow> <green>DMG:" + dmg));
+                arrow.setDamage(dmg);
+                shooterList.put(player, shooterList.containsKey(player) ? shooterList.get(player) + 1  : 1);
+            }
         }
     }
 
     private double calculateDamageMultiplier(int combo, Arrow arrow) {
         double dmg = arrow.getDamage();
-        double multiplier = 0.25D;
+        final double multiplier = 0.25D;
         assert combo >= 0;
         double calc = Math.max(dmg * (combo - 1 + multiplier), dmg);
-        return calc <= 8 ? calc : 8;
+        return calc <= dmg + 4.5 ? calc : dmg;
     }
 }
