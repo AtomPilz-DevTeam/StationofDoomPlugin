@@ -96,6 +96,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        BowComboListener.removeOldArmorStands();
         WhoIsOnline.shutdown();
     }
 
