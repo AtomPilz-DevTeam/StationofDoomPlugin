@@ -5,14 +5,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -21,6 +21,7 @@ public class BowComboListener implements Listener {
 
     /// Map that holds the player as key and the players' combo as value
     private final HashMap<Player, Integer> shooterList = new HashMap<>();
+    private final static String KEY = "HitMarker";
 
     @EventHandler
     public void onBowShot(EntityShootBowEvent event) {
@@ -61,6 +62,8 @@ public class BowComboListener implements Listener {
                 armorStand.setMarker(true);
                 armorStand.customName(Component.text("✠ ").color(TextColor.color(255, 102, 0)).append(Component.text(String.valueOf(dmg)).color(NamedTextColor.GRAY)));
                 armorStand.setCustomNameVisible(true);
+                armorStand.setGravity(false);
+                armorStand.getPersistentDataContainer().set(new NamespacedKey(Main.getPlugin(), KEY), PersistentDataType.BOOLEAN, true);
 
                 new BukkitRunnable() {
                     @Override
@@ -78,5 +81,18 @@ public class BowComboListener implements Listener {
         assert combo >= 0;
         double calc = Math.max(dmg * (combo - 1 + multiplier), dmg);
         return calc <= dmg + 4.5 ? calc : dmg;
+    }
+
+    public static void removeOldArmorStands() {
+        assert !Bukkit.getWorld("world").getEntities().isEmpty();
+        for (Entity e : Bukkit.getWorld("world").getEntities()) {
+            if (!(e instanceof ArmorStand a)) {
+                continue;
+            }
+            if (a.getPersistentDataContainer().getOrDefault(new NamespacedKey(Main.getPlugin(), KEY), PersistentDataType.BOOLEAN, false)) {
+                Main.getMainLogger().info("Removing old armor stand...");
+                a.remove();
+            }
+        }
     }
 }
