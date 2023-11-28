@@ -83,6 +83,7 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new AntiSwordDropListener(), this);
         pluginManager.registerEvents(new FurnaceEvents(), this);
         pluginManager.registerEvents(new ChangeLanguageGUI(), this);
+        pluginManager.registerEvents(new BowComboListener(), this);
 
         CustomEnchants.register();
 
