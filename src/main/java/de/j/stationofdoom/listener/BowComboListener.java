@@ -1,8 +1,13 @@
 package de.j.stationofdoom.listener;
 
 import de.j.stationofdoom.main.Main;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -48,6 +53,21 @@ public class BowComboListener implements Listener {
                 player.sendActionBar(mm.deserialize("<rainbow>Combo: " + shooterList.get(player) + "</rainbow> <green>DMG:" + dmg));
                 arrow.setDamage(dmg);
                 shooterList.put(player, shooterList.containsKey(player) ? shooterList.get(player) + 1  : 1);
+
+                //Spawn armorstand with dmg
+
+                ArmorStand armorStand = (ArmorStand) player.getWorld().spawnEntity(event.getEntity().getLocation(), EntityType.ARMOR_STAND);
+                armorStand.setVisible(false);
+                armorStand.setMarker(true);
+                armorStand.customName(Component.text("✠ ").color(TextColor.color(255, 102, 0)).append(Component.text(String.valueOf(dmg)).color(NamedTextColor.GRAY)));
+                armorStand.setCustomNameVisible(true);
+
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        armorStand.remove();
+                    }
+                }.runTaskLater(Main.getPlugin(), 20);
             }
         }
     }
