@@ -1,13 +1,19 @@
 package de.j.stationofdoom.listener;
 
 import de.j.stationofdoom.main.Main;
+import de.j.stationofdoom.util.EntityManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -16,6 +22,7 @@ public class BowComboListener implements Listener {
 
     /// Map that holds the player as key and the players' combo as value
     private final HashMap<Player, Integer> shooterList = new HashMap<>();
+    private final static String KEY = "HitMarker";
 
     @EventHandler
     public void onBowShot(EntityShootBowEvent event) {
@@ -48,6 +55,25 @@ public class BowComboListener implements Listener {
                 player.sendActionBar(mm.deserialize("<rainbow>Combo: " + shooterList.get(player) + "</rainbow> <green>DMG:" + dmg));
                 arrow.setDamage(dmg);
                 shooterList.put(player, shooterList.containsKey(player) ? shooterList.get(player) + 1  : 1);
+
+                //Spawn armorstand with dmg
+
+                ArmorStand armorStand = (ArmorStand) player.getWorld().spawnEntity(event.getEntity().getLocation(), EntityType.ARMOR_STAND);
+                armorStand.setVisible(false);
+                armorStand.setMarker(true);
+                armorStand.customName(Component.text("✠ ").color(TextColor.color(255, 102, 0)).append(Component.text(String.valueOf(dmg)).color(NamedTextColor.GRAY)));
+                armorStand.setCustomNameVisible(true);
+                armorStand.setGravity(false);
+                armorStand.getPersistentDataContainer().set(new NamespacedKey(Main.getPlugin(), KEY), PersistentDataType.BOOLEAN, true);
+
+                EntityManager.addEntity(new NamespacedKey(Main.getPlugin(), KEY), EntityType.ARMOR_STAND);
+
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        armorStand.remove();
+                    }
+                }.runTaskLater(Main.getPlugin(), 20);
             }
         }
     }
