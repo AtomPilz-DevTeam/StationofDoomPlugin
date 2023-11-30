@@ -8,6 +8,7 @@ import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.FurnaceEvents;
 import de.j.stationofdoom.enchants.TelepathyEvents;
 import de.j.stationofdoom.listener.*;
+import de.j.stationofdoom.util.EntityManager;
 import de.j.stationofdoom.util.translations.ChangeLanguageGUI;
 import de.j.stationofdoom.util.translations.LanguageChanger;
 import de.j.stationofdoom.util.translations.TranslationFactory;
@@ -96,7 +97,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        BowComboListener.removeOldArmorStands();
+        EntityManager.removeOldEntities();
         WhoIsOnline.shutdown();
     }
 

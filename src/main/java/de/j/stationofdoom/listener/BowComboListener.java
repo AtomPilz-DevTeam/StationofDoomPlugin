@@ -1,6 +1,7 @@
 package de.j.stationofdoom.listener;
 
 import de.j.stationofdoom.main.Main;
+import de.j.stationofdoom.util.EntityManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -65,6 +66,8 @@ public class BowComboListener implements Listener {
                 armorStand.setGravity(false);
                 armorStand.getPersistentDataContainer().set(new NamespacedKey(Main.getPlugin(), KEY), PersistentDataType.BOOLEAN, true);
 
+                EntityManager.addEntity(new NamespacedKey(Main.getPlugin(), KEY), EntityType.ARMOR_STAND);
+
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -81,18 +84,5 @@ public class BowComboListener implements Listener {
         assert combo >= 0;
         double calc = Math.max(dmg * (combo - 1 + multiplier), dmg);
         return calc <= dmg + 4.5 ? calc : dmg;
-    }
-
-    public static void removeOldArmorStands() {
-        assert !Bukkit.getWorld("world").getEntities().isEmpty();
-        for (Entity e : Bukkit.getWorld("world").getEntities()) {
-            if (!(e instanceof ArmorStand a)) {
-                continue;
-            }
-            if (a.getPersistentDataContainer().getOrDefault(new NamespacedKey(Main.getPlugin(), KEY), PersistentDataType.BOOLEAN, false)) {
-                Main.getMainLogger().info("Removing old armor stand...");
-                a.remove();
-            }
-        }
     }
 }
