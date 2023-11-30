@@ -69,8 +69,10 @@ public class WhoIsOnline {
     }
 
     public static void shutdown() {
-        cluster.close();
-        enabled = false;
+        if (enabled) {
+            cluster.close();
+            enabled = false;
+        }
     }
 
     public static void join(Player player) {
