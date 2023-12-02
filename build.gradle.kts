@@ -48,7 +48,10 @@ publishing {
         maven {
             name = "jfrepository"
             url = uri("https://repo.jonasfranke.xyz/releases")
-            credentials(PasswordCredentials::class)
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
             authentication {
                 create<BasicAuthentication>("basic")
             }
