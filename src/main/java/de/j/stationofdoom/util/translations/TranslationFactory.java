@@ -15,7 +15,8 @@ public class TranslationFactory {
 
     private static boolean initialized = false;
     /// Hashmap with translation key as key and the translation as value
-    private static Map<String, Map<String, String>> translations = new HashMap<>();
+    private static final Map<String, Map<String, String>> translations = new HashMap<>();
+    private static Map<String, Map<String, String>> customTranslations;
     private static LanguageEnums lang;
 
     public TranslationFactory() {
@@ -36,11 +37,27 @@ public class TranslationFactory {
         Main.getMainLogger().info("Loading translations!");
         try (InputStreamReader reader = new InputStreamReader(TranslationFactory.class.getResourceAsStream("/translations.json"))) {
             Gson gson = new Gson();
-            Map<String, Object> map = gson.fromJson(reader, new HashMap<String, Object>().getClass());
+            Map<String, Object> map = gson.fromJson(reader, HashMap.class);
 
+            Main.getMainLogger().info(map.entrySet() + "Entryset");
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String key = entry.getKey();
                 Map<String, String> value = ((List<Map<String, String>>) entry.getValue()).get(0);
+
+                if (customTranslations != null) {
+                    Main.getMainLogger().info("Registering custom translations");
+                    for (String k : customTranslations.keySet()) {
+                        if (k.equalsIgnoreCase(key)) {
+                            Main.getMainLogger().info("Customtranslations" + customTranslations.toString());
+                            Map<String, String> m = customTranslations.get(k);
+                            for (String k2 : m.keySet()) {
+                                Main.getMainLogger().info("Registering " + k + "," + m);
+                                value.put(k2, m.get(k2));
+                            }
+                        }
+                    }
+                }
+
                 translations.put(key, value);
             }
 
@@ -80,6 +97,13 @@ public class TranslationFactory {
 
     public LanguageEnums getServerLang() {
         return lang;
+    }
+
+    public void addTranslation(LanguageEnums lang, Map<String, String> translate) {
+        Main.getMainLogger().info(lang.getKey() + ": Adding translation " + translate);
+        if (customTranslations == null)
+            customTranslations = new HashMap<>();
+        customTranslations.put(lang.getKey(), translate);
     }
 
 }
