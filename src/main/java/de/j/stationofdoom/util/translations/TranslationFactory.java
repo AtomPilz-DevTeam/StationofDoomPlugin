@@ -39,7 +39,6 @@ public class TranslationFactory {
             Gson gson = new Gson();
             Map<String, Object> map = gson.fromJson(reader, HashMap.class);
 
-            Main.getMainLogger().info(map.entrySet() + "Entryset");
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String key = entry.getKey();
                 Map<String, String> value = ((List<Map<String, String>>) entry.getValue()).get(0);
@@ -48,10 +47,8 @@ public class TranslationFactory {
                     Main.getMainLogger().info("Registering custom translations");
                     for (String k : customTranslations.keySet()) {
                         if (k.equalsIgnoreCase(key)) {
-                            Main.getMainLogger().info("Customtranslations" + customTranslations.toString());
                             Map<String, String> m = customTranslations.get(k);
                             for (String k2 : m.keySet()) {
-                                Main.getMainLogger().info("Registering " + k + "," + m);
                                 value.put(k2, m.get(k2));
                             }
                         }
