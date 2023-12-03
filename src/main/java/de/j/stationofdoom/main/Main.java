@@ -11,6 +11,7 @@ import de.j.stationofdoom.listener.*;
 import de.j.stationofdoom.util.EntityManager;
 import de.j.stationofdoom.util.translations.ChangeLanguageGUI;
 import de.j.stationofdoom.util.translations.LanguageChanger;
+import de.j.stationofdoom.util.translations.LanguageEnums;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import de.j.stationofdoom.util.WhoIsOnline;
 import org.bukkit.Bukkit;
@@ -20,6 +21,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
