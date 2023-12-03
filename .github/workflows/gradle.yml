@@ -61,9 +61,10 @@ jobs:
         uses: gradle/wrapper-validation-action@v1.1.0
       - name: Publish
         run: |
-          ./gradlew publish \
-            -PgithubUsername=${{ secrets.REPOSECRET }} \
-            -PgithubToken=${{ secrets.REPOTOKEN }}
+          ./gradlew publish
+        env:
+          MAVEN_USERNAME: ${{ secrets.REPOTOKEN }}
+          MAVEN_PASSWORD: ${{ secrets.REPOSECRET }}
 
   releaseJar:
     runs-on: ubuntu-latest
