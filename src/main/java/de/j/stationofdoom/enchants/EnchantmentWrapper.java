@@ -1,6 +1,7 @@
 package de.j.stationofdoom.enchants;
 
 import io.papermc.paper.enchantments.EnchantmentRarity;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -18,7 +19,7 @@ public class EnchantmentWrapper extends Enchantment {
     private final int MAX_LVL;
 
     public EnchantmentWrapper(String namespace, String name, int lvl) {
-        super(NamespacedKey.minecraft(namespace));
+        super();
         this.NAME = name;
         this.MAX_LVL = lvl;
     }
@@ -106,5 +107,15 @@ public class EnchantmentWrapper extends Enchantment {
     @Override
     public @NotNull String translationKey() {
         return null;
+    }
+
+    @Override
+    public @NotNull NamespacedKey getKey() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Key key() {
+        return super.key();
     }
 }

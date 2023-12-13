@@ -11,18 +11,16 @@ import de.j.stationofdoom.listener.*;
 import de.j.stationofdoom.util.EntityManager;
 import de.j.stationofdoom.util.translations.ChangeLanguageGUI;
 import de.j.stationofdoom.util.translations.LanguageChanger;
-import de.j.stationofdoom.util.translations.LanguageEnums;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import de.j.stationofdoom.util.WhoIsOnline;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -35,6 +33,10 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        plugin = this;
+        StationOfDoomAPI.setMainPlugin(plugin);
+        StationOfDoomAPI.setCanAddTranslation(true);
+
         InputStreamReader in = new InputStreamReader(Objects.requireNonNull(Main.class.getResourceAsStream("/plugin.yml")));
         BufferedReader reader = new BufferedReader(in);
 
@@ -58,7 +60,6 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        plugin = this;
 
         getCommand("afk").setExecutor(new StatusCMD());
         getCommand("plversion").setExecutor(new VersionCMD());
@@ -89,13 +90,24 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new ChangeLanguageGUI(), this);
         pluginManager.registerEvents(new BowComboListener(), this);
 
-        CustomEnchants.register();
+        //CustomEnchants.register(); -> see custom enchants class for more info
 
         WhoIsOnline.init();
 
-        TranslationFactory.initTranslations();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!StationOfDoomAPI.canAddTranslation() || !StationOfDoomAPI.isAPIUsed()) {
+                    TranslationFactory.initTranslations();
 
-        LanguageChanger.init();
+                    LanguageChanger.init();
+
+                    cancel();
+                } else
+                    getMainLogger().info("[TranslationFactory] waiting for add translation to be false");
+            }
+        }.runTaskTimer(this, 10, 10);
+
     }
 
     @Override

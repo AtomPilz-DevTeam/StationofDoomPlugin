@@ -38,7 +38,11 @@ public class CustomEnchants {
             Field field = Enchantment.class.getDeclaredField("acceptingNew");
             field.setAccessible(true);
             field.set(null, true);
-            Enchantment.registerEnchantment(enchantment);
+            //Enchantment.registerEnchantment(enchantment);
+            /*
+                CustomEnchantments have been removed due to the removal of the .registerEnchantment() method from paper.
+                Waiting for https://github.com/PaperMC/Paper/pull/8920 to be merged.
+             */
         } catch (Exception e) {
             registered = false;
         }
