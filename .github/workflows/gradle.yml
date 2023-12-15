@@ -112,4 +112,5 @@ jobs:
       - name: Set version env variable
         run: |
           echo "runnumber=${{ github.run_number }}" >> $GITHUB_ENV
+          echo "MODRINTH_TOKEN=${{ secrets.MODRINTH_TOKEN }}" >> $MODRINTH_TOKEN
       - run: ./gradlew modrinth
