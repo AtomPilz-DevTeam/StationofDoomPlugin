@@ -67,8 +67,8 @@ public final class Main extends JavaPlugin {
         getCommand("deathpoint").setExecutor(new DeathPointCMD());
         getCommand("voterestart").setExecutor(new VoteRestartCMD());
         getCommand("ping").setExecutor(new PingCommand());
-        getCommand("customenchant").setExecutor(new GetCustomEnchantsCMD());
-        getCommand("customenchant").setTabCompleter(new GetCustomEnchantsTAB());
+        //getCommand("customenchant").setExecutor(new GetCustomEnchantsCMD());
+        //getCommand("customenchant").setTabCompleter(new GetCustomEnchantsTAB());
         getCommand("language").setExecutor(new ChangeLanguageCMD());
         getCommand("language").setTabCompleter(new ChangeLanguageTAB());
 
@@ -83,10 +83,10 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new PlayerSitListener(), this);
         pluginManager.registerEvents(new PlayerSitListener(), this);
         pluginManager.registerEvents(new DeathPointCMD(), this);
-        pluginManager.registerEvents(new TelepathyEvents(), this);
-        pluginManager.registerEvents(new FlightEvents(), this);
+        //pluginManager.registerEvents(new TelepathyEvents(), this);
+        //pluginManager.registerEvents(new FlightEvents(), this);
         pluginManager.registerEvents(new AntiSwordDropListener(), this);
-        pluginManager.registerEvents(new FurnaceEvents(), this);
+        //pluginManager.registerEvents(new FurnaceEvents(), this);
         pluginManager.registerEvents(new ChangeLanguageGUI(), this);
         pluginManager.registerEvents(new BowComboListener(), this);
 
