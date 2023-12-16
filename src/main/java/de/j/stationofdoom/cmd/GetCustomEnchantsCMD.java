@@ -3,10 +3,11 @@ package de.j.stationofdoom.cmd;
 import de.j.stationofdoom.enchants.CustomEnchants;
 import de.j.stationofdoom.enchants.CustomEnchantsEnum;
 import de.j.stationofdoom.main.Main;
+import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,11 +15,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GetCustomEnchantsCMD implements CommandExecutor {
     //TODO: replace ChatColor with adventure components (MiniMessage will make it easier :) )
@@ -27,10 +23,12 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         if (sender instanceof Player player) {
+            TranslationFactory translations = new TranslationFactory();
             if (args.length == 1) {
+                MiniMessage mm = MiniMessage.miniMessage();
                 switch (args[0].toLowerCase()) {
                     case "telepathy" -> {
-                        player.sendMessage(ChatColor.RED + "Möchtest du " + ChatColor.AQUA + "Telepathy" + ChatColor.RED + " für " + ChatColor.BOLD + CustomEnchantsEnum.TELEPATHY.getPrice() + " " + ChatColor.RESET + ChatColor.RED + "Dias kaufen");
+                        player.sendMessage(mm.deserialize(translations.getTranslation(player, "BuyCustomEnchant", "<red>", "<aqua>", "Telepathy", "<red>", "<bold>", CustomEnchantsEnum.TELEPATHY.getPrice(), "<reset>", "<red>")));
                         Component f = Component
                                 .text("Dann klicke diese Nachricht!")
                                 .color(NamedTextColor.RED)
@@ -38,7 +36,7 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
                         player.sendMessage(f);
                     }
                     case "flight" -> {
-                        player.sendMessage(ChatColor.RED + "Möchtest du " + ChatColor.AQUA + "Flight" + ChatColor.RED + " für " + ChatColor.BOLD + CustomEnchantsEnum.FLIGHT.getPrice() + " " + ChatColor.RESET + ChatColor.RED + "Dias kaufen");
+                        player.sendMessage(mm.deserialize(translations.getTranslation(player, "BuyCustomEnchant", "<red>", "<aqua>", "Flight", "<red>", "<bold>", CustomEnchantsEnum.FLIGHT.getPrice(), "<reset>", "<red>")));
                         Component f = Component
                                 .text("Dann klicke diese Nachricht!")
                                 .color(NamedTextColor.RED)
@@ -46,7 +44,7 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
                         player.sendMessage(f);
                     }
                     case "furnace" -> {
-                        player.sendMessage(ChatColor.RED + "Möchtest du " + ChatColor.AQUA + "Furnace" + ChatColor.RED + " für " + ChatColor.BOLD + CustomEnchantsEnum.FURNACE.getPrice() + " " + ChatColor.RESET + ChatColor.RED + "Dias kaufen");
+                        player.sendMessage(mm.deserialize(translations.getTranslation(player, "BuyCustomEnchant", "<red>", "<aqua>", "Furnace", "<red>", "<bold>", CustomEnchantsEnum.FURNACE.getPrice(), "<reset>", "<red>")));
                         Component f = Component
                                 .text("Dann klicke diese Nachricht!")
                                 .color(NamedTextColor.RED)
@@ -80,7 +78,8 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
                                                     //player.getInventory().getItemInMainHand().setItemMeta(meta);
                                                     itemStack.setAmount(itemStack.getAmount() - CustomEnchantsEnum.TELEPATHY.getPrice());
                                                 } else
-                                                    player.sendMessage(ChatColor.RED + "Bitte nehme ein Dia oder Netherite Tool in die Hand!");
+                                                    player.sendMessage(Component.text(translations.getTranslation(player, "TakeDiaOrNetheriteToolInHand"))
+                                                            .color(NamedTextColor.RED));
                                                 break;
                                             }
                                         }
@@ -88,7 +87,7 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
 
                                 }
                             } else
-                                player.sendMessage(ChatColor.RED + "Du hast keine Dias in deinem Inventar!");
+                                player.sendMessage(Component.text(translations.getTranslation(player, "NoDia")));
                             break;
                         }
 
@@ -105,7 +104,8 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
                                                     CustomEnchants.enchant(item, CustomEnchantsEnum.FLIGHT);
                                                     itemStack.setAmount(itemStack.getAmount() - CustomEnchantsEnum.FLIGHT.getPrice());
                                                 } else
-                                                    player.sendMessage(ChatColor.RED + "Bitte nehme eine Dia oder Netherite Schwert in die Hand!");
+                                                    player.sendMessage(Component.text(translations.getTranslation(player, "TakeDiaOrNetheriteSwordInHand"))
+                                                            .color(NamedTextColor.RED));
                                                 break;
                                             }
                                         }
@@ -113,7 +113,7 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
 
                                 }
                             } else
-                                player.sendMessage(ChatColor.RED + "Du hast keine Dias in deinem Inventar!");
+                                player.sendMessage(Component.text(translations.getTranslation(player, "NoDia")));
                             break;
                         }
 
@@ -130,7 +130,8 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
                                                     CustomEnchants.enchant(item, CustomEnchantsEnum.FURNACE);
                                                     itemStack.setAmount(itemStack.getAmount() - CustomEnchantsEnum.FURNACE.getPrice());
                                                 } else
-                                                    player.sendMessage(ChatColor.RED + "Bitte nehme eine Dia oder Netherite Pickaxe in die Hand!");
+                                                    player.sendMessage(Component.text(translations.getTranslation(player, "TakeDiaOrNetheritePickaxeInHand"))
+                                                            .color(NamedTextColor.RED));
                                                 break;
                                             }
                                         }
@@ -138,7 +139,7 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
 
                                 }
                             } else
-                                player.sendMessage(ChatColor.RED + "Du hast keine Dias in deinem Inventar!");
+                                player.sendMessage(Component.text(translations.getTranslation(player, "NoDia")));
                             break;
                         }
 
