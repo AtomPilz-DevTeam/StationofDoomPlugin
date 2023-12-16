@@ -7,7 +7,22 @@ A minecraft paper survival plugin for private servers
 **Support and Project Discussion:**
 - [Discord](https://discord.gg/uYwAKpRyak)
 
-How To 
+Installation and Usage
+------
+First download the latest version and move it to your server's plugins folder.
+> Make sure to have a server based on the paper software
+
+Finding the configuration file
+------
+First make sure that the jar is in the correct directory, then start the server.
+If everything works there should be a `config.yml` file in the `StationOfDoom` directory.
+
+Enabling discord webhooks
+------
+Go to your Discord channel where you want to receive the messages and create a new webhook. Copy the url, paste it into the `config.yml` and set enabled to `true`.
+
+<!-- modrinth_exclude.start -->
+How To (GitHub download)
 ------
 Download the plugin from the [releases tab](https://github.com/12jking/StationofDoomPlugin/releases) and copy the plugin to your plugins folder.
 
@@ -21,3 +36,4 @@ Support Me
 ------
 Contributions, issues, and feature requests are welcome!
 Give a ⭐️ if you like this project!
+<!-- modrinth_exclude.end -->

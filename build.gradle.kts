@@ -4,8 +4,9 @@ plugins {
     id("java")
     id("xyz.jpenilla.run-paper") version "2.2.2"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    id("io.papermc.paperweight.userdev") version "1.5.10"
+    id("io.papermc.paperweight.userdev") version "1.5.11"
     id("maven-publish")
+    id("com.modrinth.minotaur") version "2.+"
 }
 
 val minecraftVersion = "1.20.4"
@@ -41,6 +42,17 @@ tasks {
     compileJava {
         options.encoding = "UTF-8"
     }
+}
+
+modrinth {
+    token.set(System.getenv("MODRINTH_TOKEN"))
+    projectId.set("NgIVqJpi")
+    versionNumber.set(pluginVersion)
+    versionType.set("release")
+    uploadFile.set(tasks.jar)
+    gameVersions.add(minecraftVersion)
+    loaders.addAll("paper", "purpur")
+    syncBodyFrom = rootProject.file("README.md").readText()
 }
 
 publishing {
