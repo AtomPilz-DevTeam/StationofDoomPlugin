@@ -15,11 +15,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GetCustomEnchantsCMD implements CommandExecutor {
+    //TODO: replace ChatColor with adventure components (MiniMessage will make it easier :) )
+    //TODO: add translations
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
@@ -65,14 +68,16 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
                                             if (itemStack.getAmount() >= 10) {
                                                 ItemStack item = player.getInventory().getItemInMainHand();
                                                 if (item.getType() == Material.DIAMOND_PICKAXE || item.getType() == Material.NETHERITE_PICKAXE || item.getType() == Material.DIAMOND_AXE || item.getType() == Material.NETHERITE_AXE || item.getType() == Material.DIAMOND_SHOVEL || item.getType() == Material.NETHERITE_SHOVEL) {
-                                                    item.addUnsafeEnchantment(CustomEnchants.TELEPATHY, 1);
+                                                    //item.addUnsafeEnchantment(CustomEnchants.TELEPATHY, 1);
 
-                                                    ItemMeta meta = item.getItemMeta();
-                                                    List<String> lore = new ArrayList<>();
-                                                    lore.add(CustomEnchantsEnum.TELEPATHY.getLoreName());
-                                                    assert meta != null;
-                                                    meta.setLore(lore);
-                                                    player.getInventory().getItemInMainHand().setItemMeta(meta);
+                                                    CustomEnchants.enchant(item, CustomEnchantsEnum.TELEPATHY);
+
+                                                    //ItemMeta meta = item.getItemMeta();
+                                                    //List<String> lore = new ArrayList<>();
+                                                    //lore.add(CustomEnchantsEnum.TELEPATHY.getLoreName());
+                                                    //assert meta != null;
+                                                    //meta.setLore(lore);
+                                                    //player.getInventory().getItemInMainHand().setItemMeta(meta);
                                                     itemStack.setAmount(itemStack.getAmount() - CustomEnchantsEnum.TELEPATHY.getPrice());
                                                 } else
                                                     player.sendMessage(ChatColor.RED + "Bitte nehme ein Dia oder Netherite Tool in die Hand!");
@@ -97,14 +102,7 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
                                             if (itemStack.getAmount() >= 10) {
                                                 ItemStack item = player.getInventory().getItemInMainHand();
                                                 if (item.getType() == Material.DIAMOND_SWORD || item.getType() == Material.NETHERITE_SWORD) {
-                                                    item.addUnsafeEnchantment(CustomEnchants.FLIGHT, 1);
-
-                                                    ItemMeta meta = item.getItemMeta();
-                                                    List<String> lore = new ArrayList<>();
-                                                    lore.add(CustomEnchantsEnum.FLIGHT.getLoreName());
-                                                    assert meta != null;
-                                                    meta.setLore(lore);
-                                                    player.getInventory().getItemInMainHand().setItemMeta(meta);
+                                                    CustomEnchants.enchant(item, CustomEnchantsEnum.FLIGHT);
                                                     itemStack.setAmount(itemStack.getAmount() - CustomEnchantsEnum.FLIGHT.getPrice());
                                                 } else
                                                     player.sendMessage(ChatColor.RED + "Bitte nehme eine Dia oder Netherite Schwert in die Hand!");
@@ -129,14 +127,7 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
                                             if (itemStack.getAmount() >= CustomEnchantsEnum.FURNACE.getPrice()) {
                                                 ItemStack item = player.getInventory().getItemInMainHand();
                                                 if (item.getType() == Material.DIAMOND_PICKAXE || item.getType() == Material.NETHERITE_PICKAXE) {
-                                                    item.addUnsafeEnchantment(CustomEnchants.FURNACE, 1);
-
-                                                    ItemMeta meta = item.getItemMeta();
-                                                    List<String> lore = new ArrayList<>();
-                                                    lore.add(CustomEnchantsEnum.FURNACE.getLoreName());
-                                                    assert meta != null;
-                                                    meta.setLore(lore);
-                                                    player.getInventory().getItemInMainHand().setItemMeta(meta);
+                                                    CustomEnchants.enchant(item, CustomEnchantsEnum.FURNACE);
                                                     itemStack.setAmount(itemStack.getAmount() - CustomEnchantsEnum.FURNACE.getPrice());
                                                 } else
                                                     player.sendMessage(ChatColor.RED + "Bitte nehme eine Dia oder Netherite Pickaxe in die Hand!");

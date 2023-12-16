@@ -103,9 +103,9 @@ bukkit {
         register("voterestart") {
             description = "Vote für restarts"
         }
-        //register("customenchant") {
-        //    description = ""
-        //}
+        register("customenchant") {
+            description = ""
+        }
         register("ping") {
             description = "Ping"
         }
