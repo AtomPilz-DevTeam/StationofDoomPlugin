@@ -17,8 +17,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class GetCustomEnchantsCMD implements CommandExecutor {
-    //TODO: replace ChatColor with adventure components (MiniMessage will make it easier :) )
-    //TODO: add translations
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
@@ -66,16 +64,9 @@ public class GetCustomEnchantsCMD implements CommandExecutor {
                                             if (itemStack.getAmount() >= 10) {
                                                 ItemStack item = player.getInventory().getItemInMainHand();
                                                 if (item.getType() == Material.DIAMOND_PICKAXE || item.getType() == Material.NETHERITE_PICKAXE || item.getType() == Material.DIAMOND_AXE || item.getType() == Material.NETHERITE_AXE || item.getType() == Material.DIAMOND_SHOVEL || item.getType() == Material.NETHERITE_SHOVEL) {
-                                                    //item.addUnsafeEnchantment(CustomEnchants.TELEPATHY, 1);
 
                                                     CustomEnchants.enchant(item, CustomEnchantsEnum.TELEPATHY);
 
-                                                    //ItemMeta meta = item.getItemMeta();
-                                                    //List<String> lore = new ArrayList<>();
-                                                    //lore.add(CustomEnchantsEnum.TELEPATHY.getLoreName());
-                                                    //assert meta != null;
-                                                    //meta.setLore(lore);
-                                                    //player.getInventory().getItemInMainHand().setItemMeta(meta);
                                                     itemStack.setAmount(itemStack.getAmount() - CustomEnchantsEnum.TELEPATHY.getPrice());
                                                 } else
                                                     player.sendMessage(Component.text(translations.getTranslation(player, "TakeDiaOrNetheriteToolInHand"))
