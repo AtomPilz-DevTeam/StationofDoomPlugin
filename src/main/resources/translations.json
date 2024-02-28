@@ -25,7 +25,12 @@
       "ChangeLanguage": "Ändere deine Sprache",
       "ClickToChangeLanguage": "Klicke um deine Sprache zu ändern!",
       "en": "Englisch",
-      "de": "Deutsch"
+      "de": "Deutsch",
+      "BuyCustomEnchant": "%sMöchtest du %s%s%s für %s%s%s%s Dias kaufen",
+      "TakeDiaOrNetheriteToolInHand": "Bitte nehme ein Dia oder Netherite Tool in die Hand!",
+      "TakeDiaOrNetheriteSwordInHand": "Bitte nehme ein Dia oder Netherite Schwert in die Hand!",
+      "TakeDiaOrNetheritePickaxeInHand": "Bitte nehme ein Dia oder Netherite Pickaxe in die Hand!",
+      "NoDia": "Du hast keine Dias in deinem Inventar!"
     }
   ],
   "en-US": [
@@ -54,7 +59,12 @@
       "ChangeLanguage": "Change your language",
       "ClickToChangeLanguage": "Click to change your language",
       "en": "English",
-      "de": "German"
+      "de": "German",
+      "BuyCustomEnchant": "%sDo you want to buy %s%s%s for %s%s%s%s dias",
+      "TakeDiaOrNetheriteToolInHand": "Please take a dia or netherite tool in your hand",
+      "TakeDiaOrNetheriteSwordInHand": "Please take a dia or netherite sword in your hand",
+      "TakeDiaOrNetheritePickaxeInHand": "Please take a dia or netherite pickaxe in your hand",
+      "NoDia": "You don't have dias in your inventory"
     }
   ]
 }
