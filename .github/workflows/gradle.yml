@@ -18,7 +18,7 @@ jobs:
           distribution: 'adopt'
           cache: gradle
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v2.1.2
+        uses: gradle/wrapper-validation-action@v2.1.3
       - name: Build with Gradle
         run: ./gradlew build --warning-mode all
 
@@ -34,7 +34,7 @@ jobs:
           distribution: 'adopt'
           cache: gradle
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v2.1.2
+        uses: gradle/wrapper-validation-action@v2.1.3
       - name: Set version env variable
         run: |
           echo "runnumber=${{ github.run_number }}" >> $GITHUB_ENV
@@ -58,7 +58,7 @@ jobs:
           distribution: 'adopt'
           cache: gradle
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v2.1.2
+        uses: gradle/wrapper-validation-action@v2.1.3
       - name: Publish
         run: |
           ./gradlew publish
@@ -108,7 +108,7 @@ jobs:
           distribution: 'adopt'
           cache: gradle
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v2.1.2
+        uses: gradle/wrapper-validation-action@v2.1.3
       - name: Set env variables
         run: |
           echo "runnumber=${{ github.run_number }}" >> $GITHUB_ENV
