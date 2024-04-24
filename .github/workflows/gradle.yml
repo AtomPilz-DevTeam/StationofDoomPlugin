@@ -22,6 +22,20 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build --warning-mode all
 
+  paths-filter:
+    runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.filter.outputs.java }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            java:
+              - 'src/java/**'
+              - 'build.gradle.kts'
+
   createJar:
     runs-on: ubuntu-latest
     needs: build
@@ -68,8 +82,8 @@ jobs:
 
   releaseJar:
     runs-on: ubuntu-latest
-    needs: createJar
-    if: github.ref == 'refs/heads/master'
+    needs: [createJar, paths-filter]
+    if: ${{ github.ref == 'refs/heads/master' && needs.paths-filter.outputs.output1 == 'true' }}
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
