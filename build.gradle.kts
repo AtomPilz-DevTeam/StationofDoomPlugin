@@ -2,9 +2,9 @@ import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 
 plugins {
     id("java")
-    id("xyz.jpenilla.run-paper") version "2.2.4"
+    id("xyz.jpenilla.run-paper") version "2.3.0"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    id("io.papermc.paperweight.userdev") version "1.6.3"
+    id("io.papermc.paperweight.userdev") version "1.7.0"
     id("maven-publish")
     id("com.modrinth.minotaur") version "2.+"
 }
