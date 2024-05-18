@@ -7,6 +7,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.EntityCategory;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -95,7 +96,12 @@ public class EnchantmentWrapper extends Enchantment {
     }
 
     @Override
-    public float getDamageIncrease(int level, @NotNull EntityCategory entityCategory) {
+    public float getDamageIncrease(int i, @NotNull EntityCategory entityCategory) {
+        return 0;
+    }
+
+    @Override
+    public float getDamageIncrease(int i, @NotNull EntityType entityType) {
         return 0;
     }
 
@@ -117,5 +123,10 @@ public class EnchantmentWrapper extends Enchantment {
     @Override
     public @NotNull Key key() {
         return super.key();
+    }
+
+    @Override
+    public @NotNull String getTranslationKey() {
+        return "";
     }
 }

@@ -9,7 +9,7 @@ plugins {
     id("com.modrinth.minotaur") version "2.+"
 }
 
-val minecraftVersion = "1.20.4"
+val minecraftVersion = "1.20.6"
 val pluginVersion: String = "1.13.1.4" + if (System.getenv("runnumber") != null) "." + System.getenv("runnumber") else ""
 
 group = "org.example"
@@ -23,11 +23,11 @@ repositories {
 dependencies {
     library("com.google.code.gson:gson:2.10.1")
     library("club.minnced:discord-webhooks:0.8.4")
-    paperweightDevelopmentBundle("io.papermc.paper:dev-bundle:$minecraftVersion-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("$minecraftVersion-R0.1-SNAPSHOT")
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
 tasks {
