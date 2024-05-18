@@ -111,7 +111,7 @@ jobs:
 
   publishToModrinth:
     runs-on: ubuntu-latest
-    needs: createJar
+    needs: [createJar, releaseJar]
     if: ${{ github.ref == 'refs/heads/master' && needs.paths-filter.outputs.output1 == 'true' }}
     steps:
       - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
