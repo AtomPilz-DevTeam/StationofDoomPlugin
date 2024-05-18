@@ -23,7 +23,7 @@ public class FurnaceEvents implements Listener {
        add(Material.DIAMOND_PICKAXE);
        add(Material.NETHERITE_PICKAXE);
     }};
-    private ArrayList<Material> ores = new ArrayList<>() {{
+    private final ArrayList<Material> ores = new ArrayList<>() {{
        add(Material.IRON_ORE);
        add(Material.DEEPSLATE_IRON_ORE);
        add(Material.COPPER_ORE);
