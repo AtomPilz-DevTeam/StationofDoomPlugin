@@ -10,7 +10,7 @@ plugins {
 }
 
 val minecraftVersion = "1.20.6"
-val pluginVersion: String = "1.13.1.4" + if (System.getenv("runnumber") != null) "." + System.getenv("runnumber") else ""
+val pluginVersion: String = "1.14.1" + if (System.getenv("runnumber") != null) "." + System.getenv("runnumber") else ""
 
 group = "org.example"
 version = pluginVersion
