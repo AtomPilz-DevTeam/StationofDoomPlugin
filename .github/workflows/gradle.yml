@@ -33,7 +33,7 @@ jobs:
         with:
           filters: |
             java:
-              - 'src/java/**'
+              - 'src/**'
               - 'build.gradle.kts'
 
   createJar:
