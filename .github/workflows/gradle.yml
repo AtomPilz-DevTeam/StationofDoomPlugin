@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4.2.1
         with:
-          java-version: 17
+          java-version: 21
           distribution: 'adopt'
           cache: gradle
       - name: Validate Gradle wrapper
@@ -41,10 +41,10 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4.2.1
         with:
-          java-version: 17
+          java-version: 21
           distribution: 'adopt'
           cache: gradle
       - name: Validate Gradle wrapper
@@ -65,10 +65,10 @@ jobs:
     if: false
     steps:
       - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4.2.1
         with:
-          java-version: 17
+          java-version: 21
           distribution: 'adopt'
           cache: gradle
       - name: Validate Gradle wrapper
@@ -115,10 +115,10 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' }}
     steps:
       - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4.2.1
         with:
-          java-version: 17
+          java-version: 21
           distribution: 'adopt'
           cache: gradle
       - name: Validate Gradle wrapper

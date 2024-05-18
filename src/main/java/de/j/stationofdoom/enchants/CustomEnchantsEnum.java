@@ -2,11 +2,9 @@ package de.j.stationofdoom.enchants;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.ChatColor;
-import org.bukkit.enchantments.Enchantment;
 
 public enum CustomEnchantsEnum {
-    //TODO: replace deprecated chatcolor with adventure api color
+
     TELEPATHY("Telepathy", "Telepathy I", 10),
     FLIGHT("Flight", "Flight I", 32),
     FURNACE("Furnace", "Furnace I", 20);
