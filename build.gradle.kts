@@ -48,7 +48,8 @@ modrinth {
     token.set(System.getenv("MODRINTH_TOKEN"))
     projectId.set("NgIVqJpi")
     versionNumber.set(pluginVersion)
-    versionType.set("release")
+    val releaseType = if (System.getenv("modrinthrelease") == "release") "release" else "alpha"
+    versionType.set(releaseType)
     uploadFile.set(tasks.jar)
     gameVersions.add(minecraftVersion)
     loaders.addAll("paper", "purpur")
