@@ -2,11 +2,13 @@ package de.j.stationofdoom.util.translations;
 
 import com.google.gson.Gson;
 import de.j.stationofdoom.main.Main;
+import de.j.stationofdoom.main.StationOfDoomAPI;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +18,6 @@ public class TranslationFactory {
     private static boolean initialized = false;
     /// Hashmap with translation key as key and the translation as value
     private static final Map<String, Map<String, String>> translations = new HashMap<>();
-    private static Map<String, Map<String, String>> customTranslations;
     private static LanguageEnums lang;
 
     public TranslationFactory() {
@@ -35,13 +36,15 @@ public class TranslationFactory {
 
     public static void initTranslations() {
         Main.getMainLogger().info("Loading translations!");
-        try (InputStreamReader reader = new InputStreamReader(TranslationFactory.class.getResourceAsStream("/translations.json"))) {
+        try (InputStreamReader reader = new InputStreamReader(TranslationFactory.class.getResourceAsStream("/translations.json"), StandardCharsets.UTF_8)) {
             Gson gson = new Gson();
             Map<String, Object> map = gson.fromJson(reader, HashMap.class);
 
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String key = entry.getKey();
                 Map<String, String> value = ((List<Map<String, String>>) entry.getValue()).get(0);
+
+                HashMap<String, Map<String, String>> customTranslations = new StationOfDoomAPI().getCustomTranslations();
 
                 if (customTranslations != null) {
                     Main.getMainLogger().info("Registering custom translations");
@@ -94,13 +97,6 @@ public class TranslationFactory {
 
     public LanguageEnums getServerLang() {
         return lang;
-    }
-
-    public void addTranslation(LanguageEnums lang, Map<String, String> translate) {
-        Main.getMainLogger().info(lang.getKey() + ": Adding translation " + translate);
-        if (customTranslations == null)
-            customTranslations = new HashMap<>();
-        customTranslations.put(lang.getKey(), translate);
     }
 
 }

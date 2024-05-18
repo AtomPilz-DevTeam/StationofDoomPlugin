@@ -22,7 +22,5 @@ public class FlightEvents implements Listener {
             entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 15, 8));
         }
 
-
-
     }
 }

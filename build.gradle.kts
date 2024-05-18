@@ -9,8 +9,8 @@ plugins {
     id("com.modrinth.minotaur") version "2.+"
 }
 
-val minecraftVersion = "1.20.2"
-val pluginVersion: String = "1.13" + if (System.getenv("runnumber") != null) "." + System.getenv("runnumber") else ""
+val minecraftVersion = "1.20.4"
+val pluginVersion: String = "1.13.1.4" + if (System.getenv("runnumber") != null) "." + System.getenv("runnumber") else ""
 
 group = "org.example"
 version = pluginVersion
