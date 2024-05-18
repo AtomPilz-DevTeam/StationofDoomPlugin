@@ -3,6 +3,40 @@ Stationofdoom Plugin [![Discord](https://img.shields.io/discord/8279413578247700
 
 A minecraft paper survival plugin for private servers
 
+**List of features**
+- <details>
+    <summary>Custom enchantments</summary>
+    Flight -> Entities you hit fly up and receive fall damage as they fall down
+    <br>
+    Furnace -> Ore are smelted directly when you break them
+    <br>
+    Telepathy -> Items you break go directly to your inventory
+  </details>
+- <details>
+    <summary>Support for multiple languages</summary>
+    <br>
+    Currently, German and English are supported. Use /language to change your language
+  </details>
+- <details>
+    <summary>Quality of life improvements</summary>
+      - /ping -> Get your current ping
+      <br>
+      - /voterestart -> Vote for a serverrestart - if the majority of online players vote for a restart the server will be restartet
+      <br>
+      - /sit -> Allows you to sit
+      <br>
+      - /afk -> Show in the tablist that you are afk
+      <br>
+      - Custom tab list
+      <br>
+      - Custom join/quit messages
+      <br>
+      - Support for MiniMessage in chat messages
+  </details>
+- <details>
+  <summary>Bow combo</summary>
+  Deal more damage with your bow when you hit a combo
+  </details>
 
 **Support and Project Discussion:**
 - [Discord](https://discord.gg/uYwAKpRyak)
