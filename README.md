@@ -61,7 +61,7 @@ Download the plugin from the [releases tab](https://github.com/12jking/Stationof
 
 How To (Compiling Jar From Source)
 ------
-To compile the plugin, you need JDK 17 and an internet connection.
+To compile the plugin, you need JDK 21 and an internet connection.
 
 Clone this repo and run `gradle jar` from your terminal. You can find the compiled jar in the project root's `build/libs` directory.
 
