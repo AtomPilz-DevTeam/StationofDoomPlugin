@@ -1,11 +1,11 @@
 package de.j.stationofdoom.cmd;
 
+import de.j.stationofdoom.util.translations.TranslationFactory;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,10 +28,11 @@ public class DeathPointCMD implements BasicCommand, Listener {
     public void execute(@NotNull CommandSourceStack commandSourceStack, @NotNull String[] strings) {
         assert commandSourceStack.getSender() instanceof Player;
         Player player = (Player) commandSourceStack.getSender();
+        TranslationFactory translationFactory = new TranslationFactory();
         if (deathPoints.get(player) != null) {
-            player.sendMessage(ChatColor.GREEN + deathPoints.get(player).toString());
+            player.sendMessage(Component.text(deathPoints.get(player).toString()).color(NamedTextColor.GREEN));
         } else {
-            player.sendMessage(ChatColor.RED + "Du bist nicht gestorben");
+            player.sendMessage(Component.text(translationFactory.getTranslation(player, "DidNotDie")).color(NamedTextColor.RED));
         }
     }
 
