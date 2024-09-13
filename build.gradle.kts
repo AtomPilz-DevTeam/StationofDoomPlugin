@@ -95,37 +95,6 @@ bukkit {
     apiVersion = "1.21"
 
     load = BukkitPluginDescription.PluginLoadOrder.STARTUP
-    authors = listOf("12jking", "LuckyProgrammer")
-
-    commands {
-        register("afk") {
-            description = "Toggle AFK"
-        }
-        register("plversion") {
-            description = "Shows you the plugin version"
-        }
-        register("lag") {
-            description = "Kick players when lag"
-        }
-        register("sit") {
-            description = "Setze dich hin"
-        }
-        register("deathpoint") {
-            description = "Gibt dir deinen Death Point"
-        }
-        register("voterestart") {
-            description = "Vote für restarts"
-        }
-        register("customenchant") {
-            description = ""
-        }
-        register("ping") {
-            description = "Ping"
-        }
-        register("language") {
-            description = "Change language"
-        }
-
-    }
+    authors = listOf("LuckyProgrammer")
 
 }
