@@ -5,12 +5,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
+import io.papermc.paper.command.brigadier.BasicCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,26 +21,29 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class VersionCMD implements CommandExecutor {
+public class VersionCMD implements BasicCommand {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player player){
-            if (player.isOp()){
-                //player.sendMessage(ChatColor.GREEN + "Das Plugin ist auf Version " + Main.version + "!");
-                TranslationFactory translate = new TranslationFactory();
-                try {
-                    player.sendMessage(Component.text(translate.getTranslation(player, "ServerVersion", "v" + Main.version, getLatestTagName())).color(NamedTextColor.GREEN));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+    public void execute(@NotNull CommandSourceStack commandSourceStack, @NotNull String[] strings) {
+        assert commandSourceStack.getSender() instanceof Player;
+        Player player = (Player) commandSourceStack.getSender();
+        if (player.isOp()) {
+            TranslationFactory translate = new TranslationFactory();
+            try {
+                player.sendMessage(Component.text(translate.getTranslation(player, "ServerVersion", "v" + Main.version, getLatestTagName())).color(NamedTextColor.GREEN));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
-        return false;
+    }
+
+    @Override
+    public boolean canUse(@NotNull CommandSender sender) {
+        return sender instanceof Player;
     }
 
     public static String getLatestTagName() throws IOException {
-        final URL url = new URL("https://api.github.com/repos/AtomPilz-DevTeam/StationofdoomPlugin/tags");
+        final URL url = new URL("https://api.github.com/repos/AtomPilz-DevTeam/StationofdoomPlugin/tags");//TODO: replace URL
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
 
