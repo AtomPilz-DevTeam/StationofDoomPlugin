@@ -9,17 +9,16 @@ import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public class VersionCMD implements BasicCommand {
 
@@ -31,7 +30,7 @@ public class VersionCMD implements BasicCommand {
             TranslationFactory translate = new TranslationFactory();
             try {
                 player.sendMessage(Component.text(translate.getTranslation(player, "ServerVersion", "v" + Main.version, getLatestTagName())).color(NamedTextColor.GREEN));
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -42,22 +41,18 @@ public class VersionCMD implements BasicCommand {
         return sender instanceof Player;
     }
 
-    public static String getLatestTagName() throws IOException {
-        final URL url = new URL("https://api.github.com/repos/AtomPilz-DevTeam/StationofdoomPlugin/tags");//TODO: replace URL
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
+    public static String getLatestTagName() throws IOException, InterruptedException {
+        final URI uri = URI.create("https://api.github.com/repos/AtomPilz-DevTeam/StationofdoomPlugin/tags");
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .GET()
+                .build();
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-        StringBuilder responseBuilder = new StringBuilder();
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            responseBuilder.append(inputLine);
-        }
-        in.close();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         Gson gson = new Gson();
-        JsonArray jsonArray = gson.fromJson(responseBuilder.toString(), JsonArray.class);
+        JsonArray jsonArray = gson.fromJson(response.body(), JsonArray.class);
 
         if (jsonArray.size() > 0) {
             JsonObject latestTag = jsonArray.get(0).getAsJsonObject();
