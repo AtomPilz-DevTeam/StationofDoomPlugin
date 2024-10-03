@@ -146,4 +146,10 @@ public class Tablist {
             setScoreboard(player, false);
 
     }
+
+    public Component getTimeComponent(Player player) {
+        double time = (player.getWorld().getFullTime() / 1000.0 + 6) % 24;
+        String formattedTime = String.format("%02d:%02d", (int) time, (int) ((time % 1) * 60));
+        return Component.text(formattedTime).color(NamedTextColor.GOLD);
+    }
 }
