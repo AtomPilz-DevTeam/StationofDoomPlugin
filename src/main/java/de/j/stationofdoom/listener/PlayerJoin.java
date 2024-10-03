@@ -70,7 +70,9 @@ public class PlayerJoin implements Listener {
                         .append(Component.text(String.format("\nTPS:  %s;  %s;  %s", (int) Main.getPlugin().getServer().getTPS()[0], (int) Main.getPlugin().getServer().getTPS()[1], (int) Main.getPlugin().getServer().getTPS()[2]), NamedTextColor.LIGHT_PURPLE))
                         .append(Component.text("\n Ping: ")
                                 .append(Component.text(String.valueOf(ping))
-                                        .color(ping > 30 ? NamedTextColor.RED : NamedTextColor.GREEN))));
+                                        .color(ping > 30 ? NamedTextColor.RED : NamedTextColor.GREEN)))
+                        .append(Component.text("\n")
+                                .append(tablist.getTimeComponent(player))));
                 phase ++;
                 if (phase >= 14) {
                     phase = 0;
