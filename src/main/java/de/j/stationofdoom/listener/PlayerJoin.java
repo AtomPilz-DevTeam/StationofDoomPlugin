@@ -8,6 +8,7 @@ import de.j.stationofdoom.util.WhoIsOnline;
 import de.j.stationofdoom.util.translations.ChangeLanguageGUI;
 import de.j.stationofdoom.util.translations.LanguageChanger;
 import de.j.stationofdoom.util.translations.TranslationFactory;
+import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -15,9 +16,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PlayerJoin implements Listener {
 
@@ -60,25 +62,23 @@ public class PlayerJoin implements Listener {
             }
         }
 
-        new BukkitRunnable() {
-            int phase = 0;
-            @Override
-            public void run() {
-                int ping = player.getPing();
-                tablist.tabTPS(player, mm.deserialize("     <dark_blue>StationOfDoom</dark_blue>     <newline><newline>"),
-                        mm.deserialize("<newline><newline>     <red>Hosted by </red><rainbow:" + phase + ">LuckyProgrammer</rainbow>     <newline> <red>Plugin by </red><rainbow:!" + (phase + 2) + ">LuckyProgrammer</rainbow>")
-                        .append(Component.text(String.format("\nTPS:  %s;  %s;  %s", (int) Main.getPlugin().getServer().getTPS()[0], (int) Main.getPlugin().getServer().getTPS()[1], (int) Main.getPlugin().getServer().getTPS()[2]), NamedTextColor.LIGHT_PURPLE))
-                        .append(Component.text("\n Ping: ")
-                                .append(Component.text(String.valueOf(ping))
-                                        .color(ping > 30 ? NamedTextColor.RED : NamedTextColor.GREEN)))
-                        .append(Component.text("\n")
-                                .append(tablist.getTimeComponent(player))));
-                phase ++;
-                if (phase >= 14) {
-                    phase = 0;
-                }
+        AsyncScheduler asyncScheduler = Main.getAsyncScheduler();
+        AtomicInteger phase = new AtomicInteger();
+        asyncScheduler.runAtFixedRate(Main.getPlugin(), scheduledTask -> {
+            int ping = player.getPing();
+            tablist.tabTPS(player, mm.deserialize("     <dark_blue>StationOfDoom</dark_blue>     <newline><newline>"),
+                    mm.deserialize("<newline><newline>     <red>Hosted by </red><rainbow:" + phase + ">LuckyProgrammer</rainbow>     <newline> <red>Plugin by </red><rainbow:!" + (phase.get() + 2) + ">LuckyProgrammer</rainbow>")
+                            .append(Component.text(String.format("\nTPS:  %s;  %s;  %s", (int) Main.getPlugin().getServer().getTPS()[0], (int) Main.getPlugin().getServer().getTPS()[1], (int) Main.getPlugin().getServer().getTPS()[2]), NamedTextColor.LIGHT_PURPLE))
+                            .append(Component.text("\n Ping: ")
+                                    .append(Component.text(String.valueOf(ping))
+                                            .color(ping > 30 ? NamedTextColor.RED : NamedTextColor.GREEN)))
+                            .append(Component.text("\n")
+                                    .append(tablist.getTimeComponent(player))));
+            phase.getAndIncrement();
+            if (phase.get() >= 14) {
+                phase.set(0);
             }
-        }.runTaskTimerAsynchronously(Main.getPlugin(), 20, 10);
+        }, 1000, 500, TimeUnit.MILLISECONDS);
     }
 
 }

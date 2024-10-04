@@ -2,11 +2,11 @@ package de.j.stationofdoom.listener;
 
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.EntityManager;
+import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -14,9 +14,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 public class BowComboListener implements Listener {
 
@@ -31,12 +31,10 @@ public class BowComboListener implements Listener {
 
         shooterList.put(player, shooterList.getOrDefault(player, 0));
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                shooterList.put(player, shooterList.get(player) - 1 >= 0 ? shooterList.get(player) : 0);
-            }
-        }.runTaskLaterAsynchronously(Main.getPlugin(), 50);
+        AsyncScheduler asyncScheduler = Main.getAsyncScheduler();
+        asyncScheduler.runDelayed(Main.getPlugin(), scheduledTask -> {
+            shooterList.put(player, shooterList.get(player) - 1 >= 0 ? shooterList.get(player) : 0);
+        }, 2, TimeUnit.SECONDS);
     }
 
     @EventHandler
@@ -68,12 +66,10 @@ public class BowComboListener implements Listener {
 
                 EntityManager.addEntity(new NamespacedKey(Main.getPlugin(), KEY), EntityType.ARMOR_STAND);
 
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        armorStand.remove();
-                    }
-                }.runTaskLater(Main.getPlugin(), 20);
+                AsyncScheduler asyncScheduler = Main.getAsyncScheduler();
+                asyncScheduler.runDelayed(Main.getPlugin(), scheduledTask -> {
+                    armorStand.remove();
+                }, 1, TimeUnit.SECONDS);
             }
         }
     }

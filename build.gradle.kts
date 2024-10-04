@@ -10,7 +10,7 @@ plugins {
 }
 
 val minecraftVersion = "1.21.1"
-val pluginVersion: String = "1.14.2.1" + if (System.getenv("runnumber") != null) "." + System.getenv("runnumber") else ""
+val pluginVersion: String = "1.14.3" + if (System.getenv("runnumber") != null) "." + System.getenv("runnumber") else ""
 
 group = "com.github.atompilz-devteam"
 version = pluginVersion
@@ -90,9 +90,9 @@ bukkit {
 
     generateLibrariesJson = true
 
-    foliaSupported = false
+    foliaSupported = true
 
-    apiVersion = "1.21"
+    apiVersion = "1.20"
 
     load = BukkitPluginDescription.PluginLoadOrder.STARTUP
     authors = listOf("LuckyProgrammer")
