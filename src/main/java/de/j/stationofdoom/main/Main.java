@@ -66,8 +66,7 @@ public final class Main extends JavaPlugin {
         LifecycleEventManager<Plugin> manager = getLifecycleManager();
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
             final Commands COMMANDS = event.registrar();
-            if (!isFolia())
-                COMMANDS.register("afk", "", new StatusCMD());
+            COMMANDS.register("afk", "", new StatusCMD());
             COMMANDS.register("ping", new PingCommand());
             COMMANDS.register("plversion", new VersionCMD());
             COMMANDS.register("language", new ChangeLanguageCMD());

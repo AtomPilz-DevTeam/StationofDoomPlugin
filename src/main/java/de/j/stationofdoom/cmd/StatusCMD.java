@@ -25,7 +25,8 @@ public class StatusCMD implements BasicCommand {
         TranslationFactory translations = new TranslationFactory();
         if (!afk.contains(player)) {
             afk.add(player);
-            tablist.setAFK(player, true);
+            if (!Main.isFolia())
+                tablist.setAFK(player, true);
             player.sendMessage(Component.text("[").color(NamedTextColor.DARK_AQUA)
                     .append(Component.text("AFK").color(NamedTextColor.DARK_BLUE))
                     .append(Component.text("] ").color(NamedTextColor.DARK_AQUA))
@@ -33,7 +34,8 @@ public class StatusCMD implements BasicCommand {
 
         } else {
             afk.remove(player);
-            tablist.setAFK(player, false);
+            if (!Main.isFolia())
+                tablist.setAFK(player, false);
             player.sendMessage(Component.text("[").color(NamedTextColor.DARK_AQUA)
                     .append(Component.text("AFK").color(NamedTextColor.DARK_BLUE))
                     .append(Component.text("] ").color(NamedTextColor.DARK_AQUA))
