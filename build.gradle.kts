@@ -52,7 +52,7 @@ modrinth {
     versionType.set(releaseType)
     uploadFile.set(tasks.jar)
     gameVersions.add(minecraftVersion)
-    loaders.addAll("paper", "purpur")
+    loaders.addAll("paper", "purpur", "folia")
     syncBodyFrom = rootProject.file("README.md").readText()
 }
 
