@@ -47,7 +47,9 @@ public class PlayerJoin implements Listener {
 
         Tablist tablist = new Tablist();
         MiniMessage mm = MiniMessage.miniMessage();
-        tablist.setScoreboard();
+        if (!Main.isFolia()) {
+            tablist.setScoreboard();
+        }
 
         WhoIsOnline.join(player);
 
