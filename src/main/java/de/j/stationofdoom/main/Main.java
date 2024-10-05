@@ -13,11 +13,12 @@ import de.j.stationofdoom.util.WhoIsOnline;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
+import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -97,20 +98,8 @@ public final class Main extends JavaPlugin {
 
         WhoIsOnline.init();
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!StationOfDoomAPI.canAddTranslation() || !StationOfDoomAPI.isAPIUsed()) {
-                    TranslationFactory.initTranslations();
-
-                    LanguageChanger.init();
-
-                    cancel();
-                } else
-                    getMainLogger().info("[TranslationFactory] waiting for add translation to be false");
-            }
-        }.runTaskTimer(this, 10, 10);
-
+        TranslationFactory.initTranslations();
+        LanguageChanger.init();
     }
 
     @Override
@@ -125,5 +114,22 @@ public final class Main extends JavaPlugin {
 
     public static Logger getMainLogger() {
         return getPlugin().getLogger();
+    }
+
+    public static boolean isFolia() {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
+    public static AsyncScheduler getAsyncScheduler() {
+        return getPlugin().getServer().getAsyncScheduler();
+    }
+
+    public static GlobalRegionScheduler getGlobalRegionScheduler() {
+        return getPlugin().getServer().getGlobalRegionScheduler();
     }
 }

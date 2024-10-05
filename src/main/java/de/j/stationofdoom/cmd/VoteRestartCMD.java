@@ -5,20 +5,19 @@ import de.j.stationofdoom.util.WhoIsOnline;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class VoteRestartCMD implements BasicCommand {
 
@@ -74,14 +73,11 @@ public class VoteRestartCMD implements BasicCommand {
                         }
                         Main.getMainLogger().info("Kicked " + players + " players!");
                         WhoIsOnline.restart();
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                Main.getMainLogger().info("Server is restarting");
-                                Bukkit.spigot().restart();
-                            }
-                        }.runTaskLater(Main.getPlugin(), 5);
-
+                        GlobalRegionScheduler globalScheduler = Main.getGlobalRegionScheduler();
+                        globalScheduler.runDelayed(Main.getPlugin(), scheduledTask -> {
+                            Main.getMainLogger().info("Server is restarting");
+                            Bukkit.spigot().restart();
+                        }, 5);
                     }
                 }
             },0, 20);
