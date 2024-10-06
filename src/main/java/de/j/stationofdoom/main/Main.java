@@ -36,8 +36,6 @@ public final class Main extends JavaPlugin {
     @Override
     public void onLoad() {
         plugin = this;
-        StationOfDoomAPI.setMainPlugin(plugin);
-        StationOfDoomAPI.setCanAddTranslation(true);
 
         InputStreamReader in = new InputStreamReader(Objects.requireNonNull(Main.class.getResourceAsStream("/plugin.yml")));
         BufferedReader reader = new BufferedReader(in);

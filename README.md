@@ -1,4 +1,4 @@
-Stationofdoom Plugin [![Discord](https://img.shields.io/discord/827941357824770098?label=Discord&logo=Discord)](https://discord.gg/uYwAKpRyak)  [![wakatime](https://wakatime.com/badge/user/49ee5b93-5588-4f44-a2a6-bceec1836f4a/project/74ea39da-4817-4a56-b2b0-9bd35bb4ef71.svg)](https://wakatime.com/badge/user/49ee5b93-5588-4f44-a2a6-bceec1836f4a/project/74ea39da-4817-4a56-b2b0-9bd35bb4ef71) [![CodeFactor](https://www.codefactor.io/repository/github/atompilz-devteam/stationofdoomplugin/badge)](https://www.codefactor.io/repository/github/atompilz-devteam/stationofdoomplugin)
+Stationofdoom Plugin [![Discord](https://img.shields.io/discord/827941357824770098?label=Discord&logo=Discord)](https://discord.gg/uYwAKpRyak)  [![wakatime](https://wakatime.com/badge/user/49ee5b93-5588-4f44-a2a6-bceec1836f4a/project/74ea39da-4817-4a56-b2b0-9bd35bb4ef71.svg)](https://wakatime.com/badge/user/49ee5b93-5588-4f44-a2a6-bceec1836f4a/project/74ea39da-4817-4a56-b2b0-9bd35bb4ef71) [![CodeFactor](https://www.codefactor.io/repository/github/atompilz-devteam/stationofdoomplugin/badge)](https://www.codefactor.io/repository/github/atompilz-devteam/stationofdoomplugin) [![](https://www.jitpack.io/v/AtomPilz-DevTeam/StationofDoomPlugin.svg)](https://www.jitpack.io/#AtomPilz-DevTeam/StationofDoomPlugin)
 ===========
 A minecraft paper survival plugin for private servers
 
@@ -64,6 +64,46 @@ How To (Compiling Jar From Source)
 To compile the plugin, you need JDK 21 and an internet connection.
 
 Clone this repo and run `gradle jar` from your terminal. You can find the compiled jar in the project root's `build/libs` directory.
+
+# API Usage
+Add the plugin as a dependency to your plugin
+Gradle (Groovy dsl):
+```groovy
+repositories {
+    maven { url 'https://www.jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.AtomPilz-DevTeam:StationofDoomPlugin:Tag'
+}
+```
+
+Gradle (Kotlin dsl):
+```kotlin
+repositories {
+    maven { url = uri("https://www.jitpack.io") }
+}
+
+dependencies {
+    implementation("com.github.AtomPilz-DevTeam:StationofDoomPlugin:Tag")
+}
+```
+
+Maven:
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://www.jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.github.AtomPilz-DevTeam</groupId>
+    <artifactId>StationofDoomPlugin</artifactId>
+    <version>Tag</version>
+</dependency>
+```
 
 Support Me
 ------
