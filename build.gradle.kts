@@ -59,11 +59,11 @@ modrinth {
 publishing {
     repositories {
         maven {
-            name = "jfrepository"
+            name = "jf-repo"
             url = uri("https://repo.jonasfranke.xyz/releases")
             credentials {
-                username = System.getenv("MAVEN_USERNAME")
-                password = System.getenv("MAVEN_PASSWORD")
+                username = System.getenv("REPOSILITE_USER")
+                password = System.getenv("REPOSILITE_PW")
             }
             authentication {
                 create<BasicAuthentication>("basic")
@@ -72,7 +72,7 @@ publishing {
     }
     publications {
         create<MavenPublication>("maven") {
-            groupId = "de.j"
+            groupId = "com.github.atompilz-devteam"
             artifactId = "stationofdoom"
             version = pluginVersion
             from(components["java"])
