@@ -39,7 +39,7 @@ public final class Main extends JavaPlugin {
         StationOfDoomAPI.setMainPlugin(plugin);
         StationOfDoomAPI.setCanAddTranslation(true);
 
-        InputStreamReader in = new InputStreamReader(Objects.requireNonNull(Main.class.getResourceAsStream("/plugin.yml")));
+        InputStreamReader in = new InputStreamReader(Objects.requireNonNull(Main.class.getResourceAsStream("/paper-plugin.yml")));
         BufferedReader reader = new BufferedReader(in);
 
         try {

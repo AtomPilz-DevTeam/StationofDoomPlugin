@@ -1,9 +1,10 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
+import net.minecrell.pluginyml.paper.PaperPluginDescription
 
 plugins {
     id("java")
     id("xyz.jpenilla.run-paper") version "2.3.1"
-    id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
+    id("net.minecrell.plugin-yml.paper") version "0.6.0"
     id("io.papermc.paperweight.userdev") version "1.7.3"
     id("maven-publish")
     id("com.modrinth.minotaur") version "2.+"
@@ -21,8 +22,8 @@ repositories {
 }
 
 dependencies {
-    library("com.google.code.gson:gson:2.11.0")
-    library("club.minnced:discord-webhooks:0.8.4")
+    paperLibrary("com.google.code.gson:gson:2.11.0")
+    paperLibrary("club.minnced:discord-webhooks:0.8.4")
     paperweight.paperDevBundle("$minecraftVersion-R0.1-SNAPSHOT")
 }
 
@@ -80,8 +81,7 @@ publishing {
     }
 }
 
-
-bukkit {
+paper {
     name = "StationOfDoom"
     version = pluginVersion
     description = ""
@@ -96,5 +96,4 @@ bukkit {
 
     load = BukkitPluginDescription.PluginLoadOrder.STARTUP
     authors = listOf("LuckyProgrammer")
-
 }
