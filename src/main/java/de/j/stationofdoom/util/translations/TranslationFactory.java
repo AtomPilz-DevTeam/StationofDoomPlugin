@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class TranslationFactory {
 
@@ -98,6 +99,29 @@ public class TranslationFactory {
      */
     public void addTranslation(Translation  translation) {
         translations.put(translation.getKey(), translation.getTranslations());
+    }
+
+    public void addTranslationsFromFile(InputStreamReader reader) {
+        Main.getMainLogger().info("Loading translations from file!");
+        Gson gson = new Gson();
+        Map<String, Object> map = gson.fromJson(reader, HashMap.class);
+
+        for (String l : map.keySet()) {
+            Map<String, String> value = ((List<Map<String, String>>) map.get(l)).get(0);
+
+            for (String key : value.keySet()) {
+                if (!translations.containsKey(key)) {
+                    Map<LanguageEnums, String> t = new HashMap<>();
+                    t.put(LanguageEnums.getLangFromKey(l), value.get(key));
+                    translations.put(key, t);
+                } else {
+                    Main.getMainLogger().log(Level.WARNING, "Could not add " + key + " to translations! Translation key already exists");
+                }
+
+            }
+        }
+
+        Main.getMainLogger().info("Loaded translations from file!");
     }
 
 }
