@@ -10,7 +10,5 @@ public class GameMode implements Listener {
     public void onGmchange(PlayerGameModeChangeEvent event){
         event.getPlayer().setGameMode(org.bukkit.GameMode.SURVIVAL);
         event.setCancelled(true);
-        //event.getPlayer().sendMessage("§cNö");
-
     }
 }
