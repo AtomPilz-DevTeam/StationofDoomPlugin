@@ -65,6 +65,57 @@ To compile the plugin, you need JDK 21 and an internet connection.
 
 Clone this repo and run `gradle jar` from your terminal. You can find the compiled jar in the project root's `build/libs` directory.
 
+# API Usage
+Add the plugin as a dependency to your plugin
+<details>
+<summary>Gradle (Groovy dsl)</summary>
+
+```groovy
+maven {
+    name "reposiliteRepositoryReleases"
+    url "https://repo.jonasfranke.xyz/releases"
+}
+
+
+dependencies {
+    implementation "com.github.atompilz-devteam:TAG"
+}
+```
+</details>
+<details>
+<summary>Gradle (Kotlin dsl)</summary>
+
+```kotlin
+maven {
+    name = "reposiliteRepositoryReleases"
+    url = uri("https://repo.jonasfranke.xyz/releases")
+}
+
+dependencies {
+    implementation("com.github.atompilz-devteam:TAG")
+}
+```
+</details>
+<details>
+<summary>Maven</summary>
+
+```xml
+<repository>
+    <id>reposilite-repository</id>
+    <name>Jonas Franke Repository</name>
+    <url>https://repo.jonasfranke.xyz/<repository></url>
+</repository>
+
+<dependency>
+    <groupId>com.github.atompilz-devteam</groupId>
+    <artifactId>stationofdoom</artifactId>
+    <version>TAG</version>
+</dependency>
+
+```
+</details>
+
+
 Support Me
 ------
 Contributions, issues, and feature requests are welcome!
