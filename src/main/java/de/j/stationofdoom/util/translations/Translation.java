@@ -17,8 +17,9 @@ public class Translation {
      * @param lang The language as{@link de.j.stationofdoom.util.translations.LanguageEnums LanguageEnums}
      * @param translation Translation as{@link java.lang.String String}
      */
-    public void addTranslation(LanguageEnums lang, String translation) {
+    public Translation addTranslation(LanguageEnums lang, String translation) {
         translations.put(lang, translation);
+        return this;
     }
 
     /**
