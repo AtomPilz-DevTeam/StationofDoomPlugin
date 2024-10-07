@@ -2,15 +2,12 @@ package de.j.stationofdoom.cmd;
 
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.ChangeLanguageGUI;
-import de.j.stationofdoom.util.translations.LanguageChanger;
 import de.j.stationofdoom.util.translations.LanguageEnums;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
