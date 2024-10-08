@@ -103,7 +103,7 @@ public class TranslationFactory {
 
     /**
      * Add your own language files
-     * @param reader {@link java.io.InputStreamReader InputStreamReader} which has the{@link java.lang.Class#getResourceAsStream(String) Class.getResourceAsStream()} as the argument
+     * @param reader {@link java.io.InputStreamReader InputStreamReader}which has the{@link java.lang.Class#getResourceAsStream(String) Class.getResourceAsStream()}as the argument
      */
     public void addTranslationsFromFile(InputStreamReader reader) {
         Main.getMainLogger().info("Loading translations from file!");
@@ -114,14 +114,21 @@ public class TranslationFactory {
             Map<String, String> value = ((List<Map<String, String>>) map.get(l)).get(0);
 
             for (String key : value.keySet()) {
-                if (!translations.containsKey(key)) {
-                    Map<LanguageEnums, String> t = new HashMap<>();
-                    t.put(LanguageEnums.getLangFromKey(l), value.get(key));
-                    translations.put(key, t);
-                } else {
-                    Main.getMainLogger().log(Level.WARNING, "Could not add " + key + " to translations! Translation key already exists");
+                if (translations.containsKey(key)) {
+                    Main.getMainLogger().warning("Key " + key + " already exists! It'll be overwritten");
                 }
+            }
 
+            for (String key : value.keySet()) {
+                System.out.println("key " + key);
+                Map<LanguageEnums, String> t;
+                if (!translations.containsKey(key)) {
+                    t = new HashMap<>();
+                } else {
+                    t = translations.get(key);
+                }
+                t.put(LanguageEnums.getLangFromKey(l), value.get(key));
+                translations.put(key, t);
             }
         }
 
