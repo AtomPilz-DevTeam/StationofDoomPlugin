@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class TranslationFactory {
 
@@ -98,6 +99,40 @@ public class TranslationFactory {
      */
     public void addTranslation(Translation  translation) {
         translations.put(translation.getKey(), translation.getTranslations());
+    }
+
+    /**
+     * Add your own language files
+     * @param reader {@link java.io.InputStreamReader InputStreamReader}which has the{@link java.lang.Class#getResourceAsStream(String) Class.getResourceAsStream()}as the argument
+     */
+    public void addTranslationsFromFile(InputStreamReader reader) {
+        Main.getMainLogger().info("Loading translations from file!");
+        Gson gson = new Gson();
+        Map<String, Object> map = gson.fromJson(reader, HashMap.class);
+
+        for (String l : map.keySet()) {
+            Map<String, String> value = ((List<Map<String, String>>) map.get(l)).get(0);
+
+            for (String key : value.keySet()) {
+                if (translations.containsKey(key)) {
+                    Main.getMainLogger().warning("Key " + key + " already exists! It'll be overwritten");
+                }
+            }
+
+            for (String key : value.keySet()) {
+                System.out.println("key " + key);
+                Map<LanguageEnums, String> t;
+                if (!translations.containsKey(key)) {
+                    t = new HashMap<>();
+                } else {
+                    t = translations.get(key);
+                }
+                t.put(LanguageEnums.getLangFromKey(l), value.get(key));
+                translations.put(key, t);
+            }
+        }
+
+        Main.getMainLogger().info("Loaded translations from file!");
     }
 
 }

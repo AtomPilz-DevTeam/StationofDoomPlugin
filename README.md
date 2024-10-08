@@ -103,7 +103,7 @@ dependencies {
 <repository>
     <id>reposilite-repository</id>
     <name>Jonas Franke Repository</name>
-    <url>https://repo.jonasfranke.xyz/</url>
+    <url>https://repo.jonasfranke.xyz/<repository></url>
 </repository>
 
 <dependency>
