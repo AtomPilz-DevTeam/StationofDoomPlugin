@@ -52,7 +52,7 @@ public class FurnaceEvents implements Listener {
             event.setDropItems(false);
             Collection<ItemStack> drops = block.getDrops(player.getInventory().getItemInMainHand());
             drops.forEach(
-                    i -> block.getWorld().dropItem(block.getLocation(), smeltedOres.containsKey(i.getType()) ? new ItemStack(smeltedOres.get(i.getType()), i.getAmount()) : i)
+                i -> block.getWorld().dropItem(block.getLocation(), smeltedOres.containsKey(i.getType()) ? new ItemStack(smeltedOres.get(i.getType()), i.getAmount()) : i)
             );
         }
     }
