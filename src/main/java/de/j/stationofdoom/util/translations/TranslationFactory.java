@@ -101,6 +101,10 @@ public class TranslationFactory {
         translations.put(translation.getKey(), translation.getTranslations());
     }
 
+    /**
+     * Add your own language files
+     * @param reader {@link java.io.InputStreamReader InputStreamReader} which has the{@link java.lang.Class#getResourceAsStream(String) Class.getResourceAsStream()} as the argument
+     */
     public void addTranslationsFromFile(InputStreamReader reader) {
         Main.getMainLogger().info("Loading translations from file!");
         Gson gson = new Gson();
