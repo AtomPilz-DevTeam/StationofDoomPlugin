@@ -2,7 +2,9 @@ name: Repo
 
 on:
   release:
-    types: [published, edited]
+    types:
+      - published
+      - edited
 
 jobs:
   createRepo:
