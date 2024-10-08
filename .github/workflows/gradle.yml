@@ -79,7 +79,7 @@ jobs:
           echo "REPOSILITE_PW=${{ secrets.REPOSILITE_PW }}" >> $GITHUB_ENV
       - name: Publish
         run: |
-          ./gradlew publish
+          ./gradlew publish -PtargetRepo=snapshots
         env:
           MAVEN_USERNAME: ${{ secrets.REPOSILITE_USER }}
           MAVEN_PASSWORD: ${{ secrets.REPOSILITE_PW }}
