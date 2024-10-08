@@ -10,7 +10,7 @@ plugins {
 }
 
 val minecraftVersion = "1.21.1"
-val pluginVersion: String = "1.14.3" + if (System.getenv("runnumber") != null) "." + System.getenv("runnumber") else ""
+val pluginVersion: String = "1.14.4" + if (System.getenv("runnumber") != null) "." + System.getenv("runnumber") else ""
 
 group = "com.github.atompilz-devteam"
 version = pluginVersion
@@ -59,8 +59,8 @@ modrinth {
 publishing {
     repositories {
         maven {
-            name = "jf-repo"
-            url = uri("https://repo.jonasfranke.xyz/releases")
+            name = "release"
+            url = uri("https://repo.jonasfranke.xyz/${findProperty("targetRepo") ?: "releases"}")
             credentials {
                 username = System.getenv("REPOSILITE_USER")
                 password = System.getenv("REPOSILITE_PW")
@@ -71,10 +71,17 @@ publishing {
         }
     }
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("release") {
             groupId = "com.github.atompilz-devteam"
             artifactId = "stationofdoom"
             version = pluginVersion
+            from(components["java"])
+        }
+
+        create<MavenPublication>("snapshot") {
+            groupId = "com.github.atompilz-devteam"
+            artifactId = "stationofdoom"
+            version = "$pluginVersion-SNAPSHOT"
             from(components["java"])
         }
     }
