@@ -22,8 +22,7 @@ public class Bed implements Listener {
     int inBed = 0;
 
     @EventHandler
-    public void playerBedEnter(PlayerBedEnterEvent event){
-        //if (!event.getPlayer().getWorld().getName().equals("World")) return;
+    public void playerBedEnter(PlayerBedEnterEvent event) {
         World world = Bukkit.getWorld("world");
         inBed ++;
         if (event.getPlayer().getWorld().getTime() >= 12541 && event.getPlayer().getWorld().getTime() <= 23458){
