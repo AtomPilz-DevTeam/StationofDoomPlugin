@@ -1,30 +1,35 @@
 package de.j.stationofdoom.enchants;
 
+import de.j.stationofdoom.util.translations.Translation;
+import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.entity.Player;
 
 public enum CustomEnchantsEnum {
 
-    TELEPATHY("Telepathy", "Telepathy I", 10),
-    FLIGHT("Flight", "Flight I", 32),
-    FURNACE("Furnace", "Furnace I", 20);
+    TELEPATHY("Telepathy", new Translation("TelepathyEnchantment"), 10),
+    FLIGHT("Flight", new Translation("FlightEnchantment"), 32),
+    FURNACE("Furnace", new Translation("FurnaceEnchantment"), 20);
 
-    private String name;
-    private String loreName;
-    private int price;
+    private final String name;
+    private final Translation loreName;
+    private final int price;
+    private final TranslationFactory tf;
 
-    CustomEnchantsEnum(String name, String loreName, int price) {
+    CustomEnchantsEnum(String name, Translation loreName, int price) {
         this.name = name;
         this.loreName = loreName;
         this.price = price;
+        tf = new TranslationFactory();
     }
 
     public String getName() {
         return name;
     }
 
-    public Component getLoreName() {
-        return Component.text(loreName).color(NamedTextColor.GRAY);
+    public Component getLoreName(Player player) {
+        return Component.text(tf.getTranslation(player, loreName.getKey())).color(NamedTextColor.GRAY);
     }
 
     public int getPrice() {
