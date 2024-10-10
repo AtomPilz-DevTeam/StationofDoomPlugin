@@ -75,19 +75,28 @@ public class TranslationFactory {
     }
 
     public String getTranslation(LanguageEnums lang, String key) {
-        return translations.get(key).get(lang) != null ? translations.get(key).get(lang) : "Translation could not be found!";
+        return checkIfTranslationExists(key, lang) ? translations.get(key).get(lang) : "Translation could not be found!";
     }
 
     public String getTranslation(Player player, String key) {
-        return translations.get(key).get(new LanguageChanger().getPlayerLanguage(player)) != null ? translations.get(key).get(new LanguageChanger().getPlayerLanguage(player)) : "Translation could not be found!";
+        LanguageEnums lang = new LanguageChanger().getPlayerLanguage(player);
+        return checkIfTranslationExists(key, lang) ? translations.get(key).get(lang) : "Translation could not be found!";
     }
 
     public String getTranslation(LanguageEnums lang, String key, Object... replaceWords) {
-        return translations.get(key).get(lang) != null ? String.format(translations.get(key).get(lang), replaceWords) : "Translation could not be found!";
+        return checkIfTranslationExists(key, lang) ? String.format(translations.get(key).get(lang), replaceWords) : "Translation could not be found!";
     }
 
     public String getTranslation(Player player, String key, Object... replaceWords) {
-        return translations.get(key).get(new LanguageChanger().getPlayerLanguage(player)) != null ? String.format(translations.get(key).get(new LanguageChanger().getPlayerLanguage(player)), replaceWords) : "Translation could not be found!";
+        LanguageEnums lang = new LanguageChanger().getPlayerLanguage(player);
+        return checkIfTranslationExists(key, lang) ? String.format(translations.get(key).get(lang), replaceWords) : "Translation could not be found!";
+    }
+
+    private boolean checkIfTranslationExists(String key, LanguageEnums lang) {
+        if (translations.get(key) != null) {
+            return translations.get(key).get(lang) != null;
+        }
+        return false;
     }
 
     public LanguageEnums getServerLang() {
