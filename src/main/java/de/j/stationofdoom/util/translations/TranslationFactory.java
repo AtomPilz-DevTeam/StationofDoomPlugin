@@ -103,7 +103,6 @@ public class TranslationFactory {
         return translations.getOrDefault(key, Map.of())
                 .containsKey(lang);
     }
-    }
 
     public LanguageEnums getServerLang() {
         return lang;
