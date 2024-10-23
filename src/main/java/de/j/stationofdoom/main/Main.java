@@ -1,6 +1,8 @@
 package de.j.stationofdoom.main;
 
 import de.j.stationofdoom.cmd.*;
+import de.j.stationofdoom.crafting.DebugStick;
+import de.j.stationofdoom.enchants.CustomEnchants;
 import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.FurnaceEvents;
 import de.j.stationofdoom.enchants.TelepathyEvents;
@@ -91,6 +93,8 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new FurnaceEvents(), this);
         pluginManager.registerEvents(new ChangeLanguageGUI(), this);
         pluginManager.registerEvents(new BowComboListener(), this);
+
+        getServer().addRecipe(new DebugStick());
 
         //CustomEnchants.register(); -> see custom enchants class for more info
 
