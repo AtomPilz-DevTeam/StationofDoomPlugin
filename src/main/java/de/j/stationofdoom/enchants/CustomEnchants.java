@@ -3,6 +3,7 @@ package de.j.stationofdoom.enchants;
 import de.j.stationofdoom.main.Main;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -26,11 +27,11 @@ public class CustomEnchants {
         return false;
     }
 
-    public static void enchant(ItemStack item, CustomEnchantsEnum enchantment) {
+    public static void enchant(ItemStack item, CustomEnchantsEnum enchantment, Player player) {
         ItemMeta meta = item.getItemMeta();
         meta.getPersistentDataContainer().set(KEY, PersistentDataType.STRING, enchantment.getName());
         List<Component> lore = new ArrayList<>();
-        lore.add(CustomEnchantsEnum.TELEPATHY.getLoreName());
+        lore.add(enchantment.getLoreName(player));
         meta.lore(lore);
         item.setItemMeta(meta);
     }
