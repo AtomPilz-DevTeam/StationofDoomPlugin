@@ -92,11 +92,17 @@ public class TranslationFactory {
         return checkIfTranslationExists(key, lang) ? String.format(translations.get(key).get(lang), replaceWords) : "Translation could not be found!";
     }
 
+    /**
+     * Checks if a translation exists for the given key and language.
+     *
+     * @param key The translation key to check
+     * @param lang The language to check for
+     * @return true if both the key exists and has a translation for the specified language
+     */
     private boolean checkIfTranslationExists(String key, LanguageEnums lang) {
-        if (translations.get(key) != null) {
-            return translations.get(key).get(lang) != null;
-        }
-        return false;
+        return translations.getOrDefault(key, Map.of())
+                .containsKey(lang);
+    }
     }
 
     public LanguageEnums getServerLang() {
