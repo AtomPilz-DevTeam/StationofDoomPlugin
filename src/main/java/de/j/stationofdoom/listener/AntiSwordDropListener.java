@@ -2,6 +2,7 @@ package de.j.stationofdoom.listener;
 
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
+import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -9,9 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class AntiSwordDropListener implements Listener {
 
@@ -41,12 +42,10 @@ public class AntiSwordDropListener implements Listener {
                     .text(translation.getTranslation(player, "SwordDropMessage"))
                     .color(NamedTextColor.RED));
 
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    players.remove(player);
-                }
-            }.runTaskLaterAsynchronously(Main.getPlugin(), 15);
+            AsyncScheduler asyncScheduler = Main.getAsyncScheduler();
+            asyncScheduler.runDelayed(Main.getPlugin(), scheduledTask -> {
+                players.remove(player);
+            }, 1500, TimeUnit.MILLISECONDS);
         }
     }
 }

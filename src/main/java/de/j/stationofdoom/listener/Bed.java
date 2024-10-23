@@ -2,6 +2,7 @@ package de.j.stationofdoom.listener;
 
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
+import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -11,18 +12,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Bed implements Listener {
 
     int inBed = 0;
 
     @EventHandler
-    public void playerBedEnter(PlayerBedEnterEvent event){
-        //if (!event.getPlayer().getWorld().getName().equals("World")) return;
+    public void playerBedEnter(PlayerBedEnterEvent event) {
         World world = Bukkit.getWorld("world");
         inBed ++;
         if (event.getPlayer().getWorld().getTime() >= 12541 && event.getPlayer().getWorld().getTime() <= 23458){
@@ -32,13 +32,10 @@ public class Bed implements Listener {
         assert world != null;
         List<Player> playersInOverworld = new ArrayList<>(world.getPlayers());
         if (playersInOverworld.size() / inBed >= 2) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    event.getPlayer().getWorld().setTime(0L);
-                }
-            }.runTaskLaterAsynchronously(Main.getPlugin(), 10);
-
+            AsyncScheduler asyncScheduler = Main.getAsyncScheduler();
+            asyncScheduler.runDelayed(Main.getPlugin(), scheduledTask -> {
+                event.getPlayer().getWorld().setTime(0L);
+            }, 500, TimeUnit.MILLISECONDS);
         }
     }
 

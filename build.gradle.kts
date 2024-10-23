@@ -4,15 +4,15 @@ plugins {
     id("java")
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    id("io.papermc.paperweight.userdev") version "1.7.2"
+    id("io.papermc.paperweight.userdev") version "1.7.3"
     id("maven-publish")
     id("com.modrinth.minotaur") version "2.+"
 }
 
 val minecraftVersion = "1.21.1"
-val pluginVersion: String = "1.14.2" + if (System.getenv("runnumber") != null) "." + System.getenv("runnumber") else ""
+val pluginVersion: String = "1.14.4.1" + if (System.getenv("runnumber") != null) "." + System.getenv("runnumber") else ""
 
-group = "org.example"
+group = "com.github.atompilz-devteam"
 version = pluginVersion
 
 repositories {
@@ -52,18 +52,18 @@ modrinth {
     versionType.set(releaseType)
     uploadFile.set(tasks.jar)
     gameVersions.add(minecraftVersion)
-    loaders.addAll("paper", "purpur")
+    loaders.addAll("paper", "purpur", "folia")
     syncBodyFrom = rootProject.file("README.md").readText()
 }
 
 publishing {
     repositories {
         maven {
-            name = "jfrepository"
-            url = uri("https://repo.jonasfranke.xyz/releases")
+            name = "release"
+            url = uri("https://repo.jonasfranke.xyz/${findProperty("targetRepo") ?: "releases"}")
             credentials {
-                username = System.getenv("MAVEN_USERNAME")
-                password = System.getenv("MAVEN_PASSWORD")
+                username = System.getenv("REPOSILITE_USER")
+                password = System.getenv("REPOSILITE_PW")
             }
             authentication {
                 create<BasicAuthentication>("basic")
@@ -71,10 +71,17 @@ publishing {
         }
     }
     publications {
-        create<MavenPublication>("maven") {
-            groupId = "de.j"
+        create<MavenPublication>("release") {
+            groupId = "com.github.atompilz-devteam"
             artifactId = "stationofdoom"
             version = pluginVersion
+            from(components["java"])
+        }
+
+        create<MavenPublication>("snapshot") {
+            groupId = "com.github.atompilz-devteam"
+            artifactId = "stationofdoom"
+            version = "$pluginVersion-SNAPSHOT"
             from(components["java"])
         }
     }
@@ -90,42 +97,11 @@ bukkit {
 
     generateLibrariesJson = true
 
-    foliaSupported = false
+    foliaSupported = true
 
-    apiVersion = "1.21"
+    apiVersion = "1.20"
 
     load = BukkitPluginDescription.PluginLoadOrder.STARTUP
-    authors = listOf("12jking", "LuckyProgrammer")
-
-    commands {
-        register("afk") {
-            description = "Toggle AFK"
-        }
-        register("plversion") {
-            description = "Shows you the plugin version"
-        }
-        register("lag") {
-            description = "Kick players when lag"
-        }
-        register("sit") {
-            description = "Setze dich hin"
-        }
-        register("deathpoint") {
-            description = "Gibt dir deinen Death Point"
-        }
-        register("voterestart") {
-            description = "Vote für restarts"
-        }
-        register("customenchant") {
-            description = ""
-        }
-        register("ping") {
-            description = "Ping"
-        }
-        register("language") {
-            description = "Change language"
-        }
-
-    }
+    authors = listOf("LuckyProgrammer")
 
 }

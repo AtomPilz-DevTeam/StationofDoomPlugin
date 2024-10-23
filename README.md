@@ -1,4 +1,4 @@
-Stationofdoom Plugin [![Discord](https://img.shields.io/discord/827941357824770098?label=Discord&logo=Discord)](https://discord.gg/uYwAKpRyak)  [![wakatime](https://wakatime.com/badge/user/49ee5b93-5588-4f44-a2a6-bceec1836f4a/project/74ea39da-4817-4a56-b2b0-9bd35bb4ef71.svg)](https://wakatime.com/badge/user/49ee5b93-5588-4f44-a2a6-bceec1836f4a/project/74ea39da-4817-4a56-b2b0-9bd35bb4ef71) [![CodeFactor](https://www.codefactor.io/repository/github/atompilz-devteam/stationofdoomplugin/badge)](https://www.codefactor.io/repository/github/atompilz-devteam/stationofdoomplugin)
+Stationofdoom Plugin [![Discord](https://img.shields.io/discord/827941357824770098?label=Discord&logo=Discord)](https://discord.gg/uYwAKpRyak)  [![wakatime](https://wakatime.com/badge/user/49ee5b93-5588-4f44-a2a6-bceec1836f4a/project/74ea39da-4817-4a56-b2b0-9bd35bb4ef71.svg)](https://wakatime.com/badge/user/49ee5b93-5588-4f44-a2a6-bceec1836f4a/project/74ea39da-4817-4a56-b2b0-9bd35bb4ef71) [![CodeFactor](https://www.codefactor.io/repository/github/atompilz-devteam/stationofdoomplugin/badge)](https://www.codefactor.io/repository/github/atompilz-devteam/stationofdoomplugin) [![Reposilte](https://repo.jonasfranke.xyz/api/badge/latest/releases/com/github/atompilz-devteam/stationofdoom?color=40c14a&name=Reposilite&prefix=v)](https://repo.jonasfranke.xyz/#/releases/com/github/atompilz-devteam/stationofdoom)
 ===========
 A minecraft paper survival plugin for private servers
 
@@ -64,6 +64,57 @@ How To (Compiling Jar From Source)
 To compile the plugin, you need JDK 21 and an internet connection.
 
 Clone this repo and run `gradle jar` from your terminal. You can find the compiled jar in the project root's `build/libs` directory.
+
+# API Usage
+Add the plugin as a dependency to your plugin
+<details>
+<summary>Gradle (Groovy dsl)</summary>
+
+```groovy
+maven {
+    name "reposiliteRepositoryReleases"
+    url "https://repo.jonasfranke.xyz/releases"
+}
+
+
+dependencies {
+    implementation "com.github.atompilz-devteam:TAG"
+}
+```
+</details>
+<details>
+<summary>Gradle (Kotlin dsl)</summary>
+
+```kotlin
+maven {
+    name = "reposiliteRepositoryReleases"
+    url = uri("https://repo.jonasfranke.xyz/releases")
+}
+
+dependencies {
+    implementation("com.github.atompilz-devteam:TAG")
+}
+```
+</details>
+<details>
+<summary>Maven</summary>
+
+```xml
+<repository>
+    <id>reposilite-repository</id>
+    <name>Jonas Franke Repository</name>
+    <url>https://repo.jonasfranke.xyz/<repository></url>
+</repository>
+
+<dependency>
+    <groupId>com.github.atompilz-devteam</groupId>
+    <artifactId>stationofdoom</artifactId>
+    <version>TAG</version>
+</dependency>
+
+```
+</details>
+
 
 Support Me
 ------

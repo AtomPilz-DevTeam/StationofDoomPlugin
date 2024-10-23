@@ -1,5 +1,6 @@
 package de.j.stationofdoom.util;
 
+import de.j.stationofdoom.main.Main;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -22,6 +23,7 @@ public class Tablist {
     private final HashMap<Audience, Component[]> playerListMap = new HashMap<>();
 
     public void setScoreboard() {
+        assert !Main.isFolia();
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         rank = new HashMap<>();
 
@@ -59,6 +61,7 @@ public class Tablist {
     }
 
     public void setScoreboard(Player player, boolean afk) {
+        assert !Main.isFolia();
         scoreboard.getTeam("0Host").prefix(Component.text("Host ")
                 .color(NamedTextColor.DARK_RED).decoration(TextDecoration.BOLD, true)
                 .append(Component.text("| ").color(NamedTextColor.DARK_GRAY)));
@@ -82,6 +85,7 @@ public class Tablist {
     }
 
     private void setTeam(Player player) {
+        assert !Main.isFolia();
         String team = null;
         switch (player.getUniqueId().toString()) {
             case "050fee27-a1cc-4e78-953a-7cefaf0849a1" -> {//LP
@@ -108,6 +112,7 @@ public class Tablist {
     }
 
     private void setTeam(Player player, boolean afk) {
+        assert !Main.isFolia();
         String team;
         if (afk) {
             team = "5AFK";
@@ -140,10 +145,17 @@ public class Tablist {
     }
 
     public void setAFK(Player player, boolean afk) {
+        assert !Main.isFolia();
         if (afk) {
             setScoreboard(player, afk);
         } else
             setScoreboard(player, false);
 
+    }
+
+    public Component getTimeComponent(Player player) {
+        double time = (player.getWorld().getFullTime() / 1000.0 + 6) % 24;
+        String formattedTime = String.format("%02d:%02d", (int) time, (int) ((time % 1) * 60));
+        return Component.text(formattedTime).color(NamedTextColor.GOLD);
     }
 }

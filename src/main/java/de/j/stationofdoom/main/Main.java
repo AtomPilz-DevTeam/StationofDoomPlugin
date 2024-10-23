@@ -1,8 +1,6 @@
 package de.j.stationofdoom.main;
 
 import de.j.stationofdoom.cmd.*;
-import de.j.stationofdoom.cmd.tab.ChangeLanguageTAB;
-import de.j.stationofdoom.cmd.tab.GetCustomEnchantsTAB;
 import de.j.stationofdoom.crafting.DebugStick;
 import de.j.stationofdoom.enchants.CustomEnchants;
 import de.j.stationofdoom.enchants.FlightEvents;
@@ -14,10 +12,15 @@ import de.j.stationofdoom.util.translations.ChangeLanguageGUI;
 import de.j.stationofdoom.util.translations.LanguageChanger;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import de.j.stationofdoom.util.WhoIsOnline;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
+import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,8 +38,6 @@ public final class Main extends JavaPlugin {
     @Override
     public void onLoad() {
         plugin = this;
-        StationOfDoomAPI.setMainPlugin(plugin);
-        StationOfDoomAPI.setCanAddTranslation(true);
 
         InputStreamReader in = new InputStreamReader(Objects.requireNonNull(Main.class.getResourceAsStream("/plugin.yml")));
         BufferedReader reader = new BufferedReader(in);
@@ -62,16 +63,18 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        getCommand("afk").setExecutor(new StatusCMD());
-        getCommand("plversion").setExecutor(new VersionCMD());
-        getCommand("sit").setExecutor(new PlayerSitListener());
-        getCommand("deathpoint").setExecutor(new DeathPointCMD());
-        getCommand("voterestart").setExecutor(new VoteRestartCMD());
-        getCommand("ping").setExecutor(new PingCommand());
-        getCommand("customenchant").setExecutor(new GetCustomEnchantsCMD());
-        getCommand("customenchant").setTabCompleter(new GetCustomEnchantsTAB());
-        getCommand("language").setExecutor(new ChangeLanguageCMD());
-        getCommand("language").setTabCompleter(new ChangeLanguageTAB());
+        LifecycleEventManager<Plugin> manager = getLifecycleManager();
+        manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
+            final Commands COMMANDS = event.registrar();
+            COMMANDS.register("afk", "", new StatusCMD());
+            COMMANDS.register("ping", new PingCommand());
+            COMMANDS.register("plversion", new VersionCMD());
+            COMMANDS.register("language", new ChangeLanguageCMD());
+            COMMANDS.register("deathpoint", new DeathPointCMD());
+            COMMANDS.register("customenchant", new GetCustomEnchantsCMD());
+            COMMANDS.register("voterestart", new VoteRestartCMD());
+            COMMANDS.register("sit", new PlayerSitListener());
+        });
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new Bed(), this);
@@ -97,20 +100,8 @@ public final class Main extends JavaPlugin {
 
         WhoIsOnline.init();
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!StationOfDoomAPI.canAddTranslation() || !StationOfDoomAPI.isAPIUsed()) {
-                    TranslationFactory.initTranslations();
-
-                    LanguageChanger.init();
-
-                    cancel();
-                } else
-                    getMainLogger().info("[TranslationFactory] waiting for add translation to be false");
-            }
-        }.runTaskTimer(this, 10, 10);
-
+        TranslationFactory.initTranslations();
+        LanguageChanger.init();
     }
 
     @Override
@@ -125,5 +116,22 @@ public final class Main extends JavaPlugin {
 
     public static Logger getMainLogger() {
         return getPlugin().getLogger();
+    }
+
+    public static boolean isFolia() {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
+    public static AsyncScheduler getAsyncScheduler() {
+        return getPlugin().getServer().getAsyncScheduler();
+    }
+
+    public static GlobalRegionScheduler getGlobalRegionScheduler() {
+        return getPlugin().getServer().getGlobalRegionScheduler();
     }
 }
