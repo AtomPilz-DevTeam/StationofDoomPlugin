@@ -31,7 +31,11 @@
       "TakeDiaOrNetheriteSwordInHand": "Bitte nehme ein Dia oder Netherite Schwert in die Hand!",
       "TakeDiaOrNetheritePickaxeInHand": "Bitte nehme ein Dia oder Netherite Pickaxe in die Hand!",
       "NoDia": "Du hast keine Dias in deinem Inventar!",
-      "DidNotDie": "Du bist noch nicht gestorben"
+      "DidNotDie": "Du bist noch nicht gestorben",
+      "TelepathyEnchantment": "Telepathie I",
+      "FlightEnchantment": "Flug I",
+      "FurnaceEnchantment": "Ofen I",
+      "ClickThisMessage": "Dann klicke diese Nachricht!"
     }
   ],
   "en-US": [
@@ -66,7 +70,11 @@
       "TakeDiaOrNetheriteSwordInHand": "Please take a dia or netherite sword in your hand",
       "TakeDiaOrNetheritePickaxeInHand": "Please take a dia or netherite pickaxe in your hand",
       "NoDia": "You don't have dias in your inventory",
-      "DidNotDie": "You didn't die yet"
+      "DidNotDie": "You didn't die yet",
+      "TelepathyEnchantment": "Telepathy I",
+      "FlightEnchantment": "Flight I",
+      "FurnaceEnchantment": "Furnace I",
+      "ClickThisMessage": "Then click on this message!"
     }
   ]
 }

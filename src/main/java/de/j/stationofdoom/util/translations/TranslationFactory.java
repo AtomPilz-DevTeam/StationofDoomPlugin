@@ -75,19 +75,33 @@ public class TranslationFactory {
     }
 
     public String getTranslation(LanguageEnums lang, String key) {
-        return translations.get(key).get(lang) != null ? translations.get(key).get(lang) : "Translation could not be found!";
+        return checkIfTranslationExists(key, lang) ? translations.get(key).get(lang) : "Translation could not be found!";
     }
 
     public String getTranslation(Player player, String key) {
-        return translations.get(key).get(new LanguageChanger().getPlayerLanguage(player)) != null ? translations.get(key).get(new LanguageChanger().getPlayerLanguage(player)) : "Translation could not be found!";
+        LanguageEnums lang = new LanguageChanger().getPlayerLanguage(player);
+        return checkIfTranslationExists(key, lang) ? translations.get(key).get(lang) : "Translation could not be found!";
     }
 
     public String getTranslation(LanguageEnums lang, String key, Object... replaceWords) {
-        return translations.get(key).get(lang) != null ? String.format(translations.get(key).get(lang), replaceWords) : "Translation could not be found!";
+        return checkIfTranslationExists(key, lang) ? String.format(translations.get(key).get(lang), replaceWords) : "Translation could not be found!";
     }
 
     public String getTranslation(Player player, String key, Object... replaceWords) {
-        return translations.get(key).get(new LanguageChanger().getPlayerLanguage(player)) != null ? String.format(translations.get(key).get(new LanguageChanger().getPlayerLanguage(player)), replaceWords) : "Translation could not be found!";
+        LanguageEnums lang = new LanguageChanger().getPlayerLanguage(player);
+        return checkIfTranslationExists(key, lang) ? String.format(translations.get(key).get(lang), replaceWords) : "Translation could not be found!";
+    }
+
+    /**
+     * Checks if a translation exists for the given key and language.
+     *
+     * @param key The translation key to check
+     * @param lang The language to check for
+     * @return true if both the key exists and has a translation for the specified language
+     */
+    private boolean checkIfTranslationExists(String key, LanguageEnums lang) {
+        return translations.getOrDefault(key, Map.of())
+                .containsKey(lang);
     }
 
     public LanguageEnums getServerLang() {

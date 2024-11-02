@@ -33,7 +33,7 @@ public class GetCustomEnchantsCMD implements BasicCommand {
                 case "telepathy" -> {
                     player.sendMessage(mm.deserialize(translations.getTranslation(player, "BuyCustomEnchant", "<red>", "<aqua>", "Telepathy", "<red>", "<bold>", CustomEnchantsEnum.TELEPATHY.getPrice(), "<reset>", "<red>")));
                     Component f = Component
-                            .text("Dann klicke diese Nachricht!")
+                            .text(translations.getTranslation(player, "ClickThisMessage"))
                             .color(NamedTextColor.RED)
                             .clickEvent(ClickEvent.runCommand("/customenchant telepathy confirm"));
                     player.sendMessage(f);
@@ -41,7 +41,7 @@ public class GetCustomEnchantsCMD implements BasicCommand {
                 case "flight" -> {
                     player.sendMessage(mm.deserialize(translations.getTranslation(player, "BuyCustomEnchant", "<red>", "<aqua>", "Flight", "<red>", "<bold>", CustomEnchantsEnum.FLIGHT.getPrice(), "<reset>", "<red>")));
                     Component f = Component
-                            .text("Dann klicke diese Nachricht!")
+                            .text(translations.getTranslation(player, "ClickThisMessage"))
                             .color(NamedTextColor.RED)
                             .clickEvent(ClickEvent.runCommand("/customenchant flight confirm"));
                     player.sendMessage(f);
@@ -49,7 +49,7 @@ public class GetCustomEnchantsCMD implements BasicCommand {
                 case "furnace" -> {
                     player.sendMessage(mm.deserialize(translations.getTranslation(player, "BuyCustomEnchant", "<red>", "<aqua>", "Furnace", "<red>", "<bold>", CustomEnchantsEnum.FURNACE.getPrice(), "<reset>", "<red>")));
                     Component f = Component
-                            .text("Dann klicke diese Nachricht!")
+                            .text(translations.getTranslation(player, "ClickThisMessage"))
                             .color(NamedTextColor.RED)
                             .clickEvent(ClickEvent.runCommand("/customenchant furnace confirm"));
                     player.sendMessage(f);
@@ -70,7 +70,7 @@ public class GetCustomEnchantsCMD implements BasicCommand {
                                             ItemStack item = player.getInventory().getItemInMainHand();
                                             if (item.getType() == Material.DIAMOND_PICKAXE || item.getType() == Material.NETHERITE_PICKAXE || item.getType() == Material.DIAMOND_AXE || item.getType() == Material.NETHERITE_AXE || item.getType() == Material.DIAMOND_SHOVEL || item.getType() == Material.NETHERITE_SHOVEL) {
 
-                                                CustomEnchants.enchant(item, CustomEnchantsEnum.TELEPATHY);
+                                                CustomEnchants.enchant(item, CustomEnchantsEnum.TELEPATHY, player);
 
                                                 itemStack.setAmount(itemStack.getAmount() - CustomEnchantsEnum.TELEPATHY.getPrice());
                                             } else
@@ -97,7 +97,7 @@ public class GetCustomEnchantsCMD implements BasicCommand {
                                         if (itemStack.getAmount() >= 10) {
                                             ItemStack item = player.getInventory().getItemInMainHand();
                                             if (item.getType() == Material.DIAMOND_SWORD || item.getType() == Material.NETHERITE_SWORD) {
-                                                CustomEnchants.enchant(item, CustomEnchantsEnum.FLIGHT);
+                                                CustomEnchants.enchant(item, CustomEnchantsEnum.FLIGHT, player);
                                                 itemStack.setAmount(itemStack.getAmount() - CustomEnchantsEnum.FLIGHT.getPrice());
                                             } else
                                                 player.sendMessage(Component.text(translations.getTranslation(player, "TakeDiaOrNetheriteSwordInHand"))
@@ -123,7 +123,7 @@ public class GetCustomEnchantsCMD implements BasicCommand {
                                         if (itemStack.getAmount() >= CustomEnchantsEnum.FURNACE.getPrice()) {
                                             ItemStack item = player.getInventory().getItemInMainHand();
                                             if (item.getType() == Material.DIAMOND_PICKAXE || item.getType() == Material.NETHERITE_PICKAXE) {
-                                                CustomEnchants.enchant(item, CustomEnchantsEnum.FURNACE);
+                                                CustomEnchants.enchant(item, CustomEnchantsEnum.FURNACE, player);
                                                 itemStack.setAmount(itemStack.getAmount() - CustomEnchantsEnum.FURNACE.getPrice());
                                             } else
                                                 player.sendMessage(Component.text(translations.getTranslation(player, "TakeDiaOrNetheritePickaxeInHand"))
