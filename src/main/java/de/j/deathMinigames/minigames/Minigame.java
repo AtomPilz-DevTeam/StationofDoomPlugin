@@ -21,7 +21,7 @@ public class Minigame {
     public void startMessage(Player player, String message) {
         player.sendMessage(Component.text(message).color(NamedTextColor.GOLD));
 
-        playerDeathInventory.setContents(inventories.get(player.getUniqueId()).getContents()); ;
+        playerDeathInventory.setContents(inventories.get(player.getUniqueId()).getContents());
         waitingListMinigame.remove(player);
     }
 
