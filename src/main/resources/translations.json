@@ -67,8 +67,7 @@
       "backButton": "Zurück",
       "waitingListPositionNotSetUp": "Die Position der überschüssigen Spieler in der Warteliste ist noch nicht deklariert. Möchtest du die Position auf deine jetzige Position setzen??",
       "decidedNotToSetPosition": "Denk daran die Position festzulegen bevor der playthrough richtig startet",
-      "setWaitingListPosition": "Position wurde gesetzt!"
-      "DidNotDie": "Du bist noch nicht gestorben",
+      "setWaitingListPosition": "Position wurde gesetzt!",
       "TelepathyEnchantment": "Telepathie I",
       "FlightEnchantment": "Flug I",
       "FurnaceEnchantment": "Ofen I",
@@ -143,8 +142,7 @@
       "backButton": "Back",
       "waitingListPositionNotSetUp": "The waitingposition for surplus players in the waitinglist is not set yet. Do you want to set the position to your own position?",
       "decidedNotToSetPosition": "Be aware that you need to set the position before the playthrough is starting",
-      "setWaitingListPosition": "Position was set!"
-      "DidNotDie": "You didn't die yet",
+      "setWaitingListPosition": "Position was set!",
       "TelepathyEnchantment": "Telepathy I",
       "FlightEnchantment": "Flight I",
       "FurnaceEnchantment": "Furnace I",
