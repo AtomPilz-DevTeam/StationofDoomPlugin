@@ -78,6 +78,7 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new Bed(), this);
         pluginManager.registerEvents(new PlayerJoin(), this);
         pluginManager.registerEvents(new PlayerQuit(), this);
+        pluginManager.registerEvents(new GameMode(), this);
         pluginManager.registerEvents(new PlayerKillListener(), this);
         pluginManager.registerEvents(new ChatMessagesListener(), this);
         pluginManager.registerEvents(new EntityDeathListener(), this);
