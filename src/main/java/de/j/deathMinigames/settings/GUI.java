@@ -18,16 +18,19 @@ import java.util.List;
 import java.util.Random;
 
 public class GUI implements InventoryHolder {
-    private Inventory inventory;
-    private int randomValue = new Random().nextInt();
+    private final Inventory inventory;
+    private final int randomValue = new Random().nextInt();
 
     public GUI(String title, boolean addAllPlayers) {
-        Config config = new Config();
+        Config config = Config.getInstance();
         InventoryListener inventoryListener = new InventoryListener();
 
-        inventory = Bukkit.createInventory(this, 54, title);
+        int inventorySize = 54;
+        inventory = Bukkit.createInventory(this, inventorySize, title);
         if(addAllPlayers) {
             for(int i = 0; i < Config.knownPlayers.size(); i++) {
+                Player player = Bukkit.getPlayer(Config.knownPlayers.get(i));
+                if(player == null) continue;
                 Material material;
                 if(config.checkConfigBoolean(inventoryListener.getPlayerFromListFromSpecificInt(i), title)) {
                     material = Material.GREEN_CONCRETE_POWDER;
@@ -45,6 +48,14 @@ public class GUI implements InventoryHolder {
         }
     }
 
+    /**
+     * Adds a clickable item to the inventory.
+     * Note: Click handling must be implemented in InventoryListener.
+     * @param name  The display name of the item
+     * @param material  The material type
+     * @param amount    Item stack size
+     * @param slotWhereToPutTheItem Inventory slot
+     */
     public void addClickableItemStack(String name, Material material, int amount, int slotWhereToPutTheItem) {
         // item has to be added in InventoryListener manually to make it clickable
         ItemStack itemStack = new ItemStack(material, amount);
@@ -55,6 +66,15 @@ public class GUI implements InventoryHolder {
         inventory.setItem(slotWhereToPutTheItem, itemStack);
     }
 
+    /**
+     * Adds a clickable item to the inventory.
+     * Note: Click handling must be implemented in InventoryListener.
+     * @param name  The display name of the item
+     * @param material  The material type
+     * @param amount    Item stack size
+     * @param slotWhereToPutTheItem Inventory slot
+     * @param lore  The description shown when hovering over the item
+     */
     public void addClickableItemStack(String name, Material material, int amount, int slotWhereToPutTheItem, ArrayList<String> lore) {
         // item has to be added in InventoryListener manually to make it clickable
         List<String> loreList = lore;

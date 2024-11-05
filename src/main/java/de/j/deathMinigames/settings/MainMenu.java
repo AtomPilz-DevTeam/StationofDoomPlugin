@@ -1,6 +1,7 @@
 package de.j.deathMinigames.settings;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -31,7 +32,7 @@ public class MainMenu implements InventoryHolder {
     }
 
     private void addSubmenus() {
-        Config config = new Config();
+        Config config = Config.getInstance();
         if(config.checkConfigBoolean("SetUp")) {
             addClickableItemStack("SetUp", Material.GREEN_CONCRETE, 1, 0);
         }
@@ -47,10 +48,6 @@ public class MainMenu implements InventoryHolder {
         player.openInventory(inventory);
     }
 
-    @Override
-    public @NotNull Inventory getInventory() {
-        return null;
-    }
 
     public void addClickableItemStack(String name, Material material, int amount, int slotWhereToPutTheItem) {
         // item has to be added in InventoryListener manually to make it clickable
@@ -70,7 +67,7 @@ public class MainMenu implements InventoryHolder {
     }
 
     public void setUpSettingsSetInventoryContents() {
-        Config config = new Config();
+        Config config = Config.getInstance();
         int startHeight = config.checkConfigInt("ParkourStartHeight");
         int parkourLength = config.checkConfigInt("ParkourLength");
         int costToLowerTheDifficulty = config.checkConfigInt("CostToLowerTheDifficulty");
@@ -89,11 +86,12 @@ public class MainMenu implements InventoryHolder {
             setUp.addClickableItemStack("Parcour length", Material.LADDER, 1, 1);
         }
         if(config.checkConfigLocation("WaitingListPosition")!=null) {
+            Location waitingListPosition = config.checkConfigLocation("WaitingListPosition");
             ArrayList<String> lore = new ArrayList<>();
             lore.add("Current position:");
-            lore.add("X: " + Integer.toString(config.checkConfigLocation("WaitingListPosition").getBlockX()));
-            lore.add("Y: " + Integer.toString(config.checkConfigLocation("WaitingListPosition").getBlockY()));
-            lore.add("Z: " + Integer.toString(config.checkConfigLocation("WaitingListPosition").getBlockZ()));
+            lore.add("X: " + waitingListPosition.getBlockX());
+            lore.add("Y: " + waitingListPosition.getBlockY());
+            lore.add("Z: " + waitingListPosition.getBlockZ());
             setUp.addClickableItemStack("WaitingListPosition", Material.GREEN_CONCRETE_POWDER, 1, 2, lore);
         }
         else {
@@ -114,7 +112,7 @@ public class MainMenu implements InventoryHolder {
     }
 
     public void parkourStartHeightSettingsSetInventoryContents() {
-        Config config = new Config();
+        Config config = Config.getInstance();
         int startHeight = config.checkConfigInt("ParkourStartHeight");
         for(int i = 0; i < 29; i++) {
             if(startHeight == i*10) {
@@ -127,7 +125,7 @@ public class MainMenu implements InventoryHolder {
     }
 
     public void parkourLengthSettingsSetInventoryContents() {
-        Config config = new Config();
+        Config config = Config.getInstance();
         int length = config.checkConfigInt("ParkourLength");
         for(int i = 0; i < 20; i++) {
             if(length == i) {
@@ -140,7 +138,7 @@ public class MainMenu implements InventoryHolder {
     }
 
     public void costToLowerTheDifficultySettingsSetInventoryContents() {
-        Config config = new Config();
+        Config config = Config.getInstance();
         int length = config.checkConfigInt("CostToLowerTheDifficulty");
         for(int i = 1; i < 11; i++) {
             if(length == i) {
@@ -153,7 +151,7 @@ public class MainMenu implements InventoryHolder {
     }
 
     public void timeToDecideWhenRespawningSettingsSetInventoryContents() {
-        Config config = new Config();
+        Config config = Config.getInstance();
         int time = config.checkConfigInt("TimeToDecideWhenRespawning");
         for(int i = 5; i < 31; i++) {
             if(time == i) {
@@ -165,4 +163,8 @@ public class MainMenu implements InventoryHolder {
         }
     }
 
+    @Override
+    public @NotNull Inventory getInventory() {
+        return inventory;
+    }
 }

@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import de.j.deathMinigames.deathMinigames.Config;
 import de.j.deathMinigames.deathMinigames.Introduction;
-import de.j.deathMinigames.deathMinigames.Main;
+import de.j.stationofdoom.main.Main;
 import de.j.deathMinigames.listeners.RespawnListener;
 import de.j.deathMinigames.minigames.Difficulty;
 import de.j.deathMinigames.minigames.Minigame;
@@ -39,9 +39,9 @@ public class GameCMD implements BasicCommand {
         RespawnListener respawnListener = new RespawnListener();
         Introduction introduction = new Introduction();
         MainMenu mainMenu = new MainMenu();
-        Config config = new Config();
+        Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
-
+        
         Player player = (Player) stack.getSender();
         if (args.length == 1) {
             switch (args[0].toLowerCase()) {
@@ -74,7 +74,6 @@ public class GameCMD implements BasicCommand {
                     if (!introduction.checkIfPlayerGotIntroduced(player)) {
                         config.setIntroduction(player, true);
                         config.setUsesPlugin(player, true);
-                        introduction.introEnd(player);
                         Main.minigameStart(player);
                         player.sendMessage(Component.text(tf.getTranslation(player, "playerDecided")).color(NamedTextColor.GOLD));
                     }
@@ -86,7 +85,6 @@ public class GameCMD implements BasicCommand {
                     if (!config.checkConfigBoolean(player, "Introduction")) {
                         config.setIntroduction(player, true);
                         config.setUsesPlugin(player, false);
-                        introduction.introEnd(player);
                         introduction.dropInv(player);
                         player.sendMessage(Component.text(tf.getTranslation(player, "playerDecided")).color(NamedTextColor.GOLD));
                     }
@@ -96,6 +94,7 @@ public class GameCMD implements BasicCommand {
                     break;
                 case "setnotintroduced":
                     config.setIntroduction(player, false);
+                    break;
                 case "difficulty":
                     player.sendMessage(Component.text(tf.getTranslation(player, "diffAt")).color(NamedTextColor.GOLD)
                             .append(Component.text(config.checkConfigInt(player, "Difficulty")).color(NamedTextColor.RED)));
@@ -122,12 +121,12 @@ public class GameCMD implements BasicCommand {
                         player.teleport(loc);
                         waitingListMinigame.addLast(player);
                         Main.getPlugin().getLogger().info("player does not use plugin but is trying to start ");
-                        respawnListener.setPlayerDecided(true);
+                        respawnListener.setPlayerDecided(player,true);
                         Main.minigameStart(player);
                         break;
                     case "ignore":
                         minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
-                        respawnListener.setPlayerDecided(true);
+                        respawnListener.setPlayerDecided(player,true);
                         player.resetTitle();
                         if (!waitingListMinigame.contains(player) && inventories.containsKey(player.getUniqueId())) {
                             player.sendMessage(Component.text(tf.getTranslation(player, "droppingInvAt")).color(NamedTextColor.GOLD)
@@ -153,7 +152,13 @@ public class GameCMD implements BasicCommand {
                 switch (args[0]) {
                     case "difficulty":
                         if(args[1] != null) {
-                            int i = Integer.parseInt(args[1]);
+                            int i;
+                            try {
+                                i = Integer.parseInt(args[1]);
+                            } catch (NumberFormatException e) {
+                                player.sendMessage(Component.text(tf.getTranslation(player, "youHaveToEnterANumber")).color(NamedTextColor.RED));
+                                break;
+                            }
                             config.setDifficulty(player, i);
                             player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "setDiffTo", config.checkConfigInt(player, "Difficulty"))).content()));
                         }
@@ -178,7 +183,13 @@ public class GameCMD implements BasicCommand {
                 switch (args[0]) {
                     case "difficulty":
                         if(args[2] != null) {
-                            int i = Integer.parseInt(args[2]);
+                            int i = 0;
+                            try{
+                                i = Integer.parseInt(args[2]);
+                            }
+                            catch (NumberFormatException e) {
+                                player.sendMessage(Component.text(tf.getTranslation(player, "youHaveToEnterANumber")).color(NamedTextColor.RED));
+                            }
                             Player player1 = Bukkit.getPlayer(args[1]);
                             assert player1 != null;
                             config.setDifficulty(player1, i);
@@ -205,8 +216,8 @@ public class GameCMD implements BasicCommand {
                         }
                         else {
                             player.sendMessage(Component.text(tf.getTranslation(player, "didNotEnterKnownPlayer")));
+                            break;
                         }
-                        break;
                 }
             }
             else {
@@ -228,8 +239,8 @@ public class GameCMD implements BasicCommand {
                 Collection<String> suggestions2 = new ArrayList<>();
                 for (Player on : Bukkit.getOnlinePlayers()) {
                     suggestions2.add(on.getName());
-                    return suggestions2;
                 }
+                return suggestions2;
             }
         }
         return BasicCommand.super.suggest(commandSourceStack, args);

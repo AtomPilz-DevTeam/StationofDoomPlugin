@@ -14,7 +14,8 @@ public class JoinListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        Config config = new Config();
+        Config config = Config.getInstance();
+        RespawnListener respawnListener = new RespawnListener();
         Player player = event.getPlayer();
         TranslationFactory tf = new TranslationFactory();
         if(player.isOp() && Config.configWaitingListPosition == null) {
@@ -28,6 +29,10 @@ public class JoinListener implements Listener {
             config.addNewPlayer(player.getUniqueId());
             player.sendMessage(Component.text(tf.getTranslation(player,"addedToPlayerList")).color(NamedTextColor.GOLD)
                     .append(Component.text(config.checkConfigInt(player, "Difficulty")).color(NamedTextColor.RED)));
+        }
+
+        if(respawnListener.checkIfPlayerDecided(player)) {
+            respawnListener.handleRespawnTimer(player);
         }
     }
 }

@@ -3,16 +3,22 @@ package de.j.deathMinigames.deathMinigames;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import de.j.stationofdoom.main.Main;
+
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Config {
-    public static HashMap<UUID, Integer> configDifficulty = new HashMap<>();
-    public static ArrayList<UUID> configIntroduction = new ArrayList<>();
-    public static ArrayList<UUID> configUsesPlugin = new ArrayList<>();
-    public static ArrayList<UUID> knownPlayers = new ArrayList<>();
-    private static ArrayList<String> knownPlayersString = new ArrayList<>();
+    private static Config instance;
+
+    public static ConcurrentHashMap<UUID, Integer> configDifficulty = new ConcurrentHashMap<>();
+    public static List<UUID> configIntroduction = Collections.synchronizedList(new ArrayList<>());
+    public static List<UUID> configUsesPlugin = Collections.synchronizedList(new ArrayList<>());
+    public static List<UUID> knownPlayers = Collections.synchronizedList(new ArrayList<>());
+    public static List<String> knownPlayersString = Collections.synchronizedList(new ArrayList<>());
     public static boolean configSetUp;
     public static int configParkourStartHeight;
     public static int configParkourLength;
@@ -20,6 +26,14 @@ public class Config {
     public static int configTimeToDecideWhenRespawning;
     public static Location configWaitingListPosition;
 
+    private Config(){}
+
+    public static Config getInstance(){
+        if(instance == null){
+            instance = new Config();
+        }
+        return instance;
+    }
 
     public void addPlayerInConfig(UUID playerUUID) {
         Main.getPlugin().getConfig().set(playerUUID + ".Introduction", false);
@@ -30,9 +44,9 @@ public class Config {
     }
 
     private void fillKnownPlayersArrayList() {
-        for (String playerUUDIInString : Main.getPlugin().getConfig().getStringList("KnownPlayers")) {
-            knownPlayers.add(UUID.fromString(playerUUDIInString));
-            knownPlayersString.add(playerUUDIInString);
+        for (String playerUUIDInString : Main.getPlugin().getConfig().getStringList("KnownPlayers")) {
+            knownPlayers.add(UUID.fromString(playerUUIDInString));
+            knownPlayersString.add(playerUUIDInString);
         }
 
         if(!knownPlayers.isEmpty()) {
@@ -150,7 +164,12 @@ public class Config {
     }
 
     public void setDifficulty(Player player, int difficulty) {
-        configDifficulty.replace(player.getUniqueId(), difficulty);
+        if(configDifficulty.containsKey(player.getUniqueId())) {
+            configDifficulty.replace(player.getUniqueId(), difficulty);
+        }
+        else {
+            configDifficulty.put(player.getUniqueId(), difficulty);
+        }
         Main.getPlugin().getConfig().set(player.getUniqueId() + ".Difficulty", difficulty);
         Main.getPlugin().saveConfig();
     }
@@ -227,8 +246,23 @@ public class Config {
 
     public int checkConfigInt(Player player, String topic) {
         if(topic.equals("Difficulty")) {
-            return configDifficulty.get(player.getUniqueId());
+            if (configDifficulty.containsKey(player.getUniqueId())) {
+                int difficulty = configDifficulty.get(player.getUniqueId());
+                if(difficulty < 0) {
+                    Main.getPlugin().getLogger().warning("Because difficulty is negative, it will be changed to zero.");
+                    setDifficulty(player, 0);
+                    difficulty = 0;
+                }
+                return difficulty;
+            }
+            Main.getPlugin().getLogger().warning("Player difficulty not found");
+            if(!knownPlayers.contains(player.getUniqueId())) {
+                Main.getPlugin().getLogger().warning("Player not found in knownPlayers");
+                addPlayerInHashMap(player.getUniqueId());
+                Main.getPlugin().getLogger().info("Player got added as a new Player");
+            }
         }
+        Main.getPlugin().getLogger().warning("No fitting topic got entered into checkConfigInt. Failed to check config.");
         return 404;
     }
 

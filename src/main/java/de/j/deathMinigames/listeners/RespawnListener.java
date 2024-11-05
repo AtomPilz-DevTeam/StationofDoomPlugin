@@ -11,26 +11,32 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import de.j.deathMinigames.deathMinigames.Config;
-import de.j.deathMinigames.deathMinigames.Main;
+import de.j.stationofdoom.main.Main;
 
 import java.time.Duration;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static de.j.deathMinigames.listeners.DeathListener.deaths;
 import static de.j.deathMinigames.listeners.DeathListener.inventories;
 
 public class RespawnListener implements Listener {
 
-    private static boolean playerDecided = false;
-    private static int timeForPlayerToDecide = 0;
+    private final ConcurrentHashMap<UUID, Boolean> playerDecisions = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, Integer> decisionTimers = new ConcurrentHashMap<>();
 
-    public void setPlayerDecided(boolean playerDecided) {
-        RespawnListener.playerDecided = playerDecided;
+    public void setPlayerDecided(Player player, boolean playerDecided) {
+        if(!playerDecisions.containsKey(player.getUniqueId())) {
+            playerDecisions.put(player.getUniqueId(), playerDecided);
+        }
+        else {
+            playerDecisions.put(player.getUniqueId(), playerDecided);
+        }
     }
 
     private void dropInv(Player player) {
         for(int i = 0; i < inventories.get(player.getUniqueId()).getSize(); i++) {
             if(inventories.get(player.getUniqueId()).getItem(i) == null) continue;
-            assert inventories.get(player.getUniqueId()).getItem(i) != null;
             player.getWorld().dropItem(deaths.get(player.getUniqueId()), inventories.get(player.getUniqueId()).getItem(i));
         }
         deaths.remove(player.getUniqueId());
@@ -39,20 +45,26 @@ public class RespawnListener implements Listener {
 
     private void timerWhilePlayerDecides(Player player) {
         TranslationFactory tf = new TranslationFactory();
-
+        Config config = Config.getInstance();
         new BukkitRunnable() {
             public void run() {
-                if(timeForPlayerToDecide > 0) {
-                    if(!playerDecided) {
+                if(!player.isOnline()) {
+                    // timer and decision stays the same if player is loggin out during timer, so when he is logging in again it can continue
+                    cancel();
+                }
+                if(decisionTimers.get(player.getUniqueId()) > 0) {
+                    if(!playerDecisions.get(player.getUniqueId())) {
                         Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(1), Duration.ofMillis(500));
                         Title title = Title.title(Component.text(tf.getTranslation(player, "decideInChat")).color(NamedTextColor.GOLD),
-                                MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "decideTime", timeForPlayerToDecide)).content()), times);
+                                MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "decideTime", decisionTimers.get(player.getUniqueId()))).content()), times);
                         player.showTitle(title);
-                        timeForPlayerToDecide--;
+                        int timer = decisionTimers.get(player.getUniqueId());
+                        timer--;
+                        decisionTimers.replace(player.getUniqueId(), timer);
                     }
                     else {
-                        timeForPlayerToDecide = 10;
-                        RespawnListener.playerDecided = false;
+                        decisionTimers.replace(player.getUniqueId(), config.checkConfigInt("TimeToDecideWhenRespawning"));
+                        playerDecisions.put(player.getUniqueId(), false);
                         cancel();
                     }
                 }
@@ -63,8 +75,8 @@ public class RespawnListener implements Listener {
                             .append(Component.text("Y: " + deaths.get(player.getUniqueId()).getBlockY() + " ").color(NamedTextColor.RED))
                             .append(Component.text("Z: " + deaths.get(player.getUniqueId()).getBlockZ()).color(NamedTextColor.RED)));
                     dropInv(player);
-                    RespawnListener.playerDecided = false;
-                    timeForPlayerToDecide = 10;
+                    playerDecisions.put(player.getUniqueId(), false);
+                    decisionTimers.put(player.getUniqueId(), config.checkConfigInt("TimeToDecideWhenRespawning"));
                     cancel();
                 }
             }
@@ -73,21 +85,45 @@ public class RespawnListener implements Listener {
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
-        Config config = new Config();
-        TranslationFactory tf = new TranslationFactory();
+        Config config = Config.getInstance();
 
-        timeForPlayerToDecide = config.checkConfigInt("TimeToDecideWhenRespawning");
         Player player = event.getPlayer();
         player.getInventory().clear();
-        if (inventories.containsKey(event.getPlayer().getUniqueId()) && config.checkConfigBoolean(player, "UsesPlugin")) {
-            player.sendMessage(Component.text(tf.getTranslation(player, "decision")).color(NamedTextColor.GOLD));
 
-            timerWhilePlayerDecides(player);
-
-            player.sendMessage(Component.text(tf.getTranslation(player, "playMinigame")).clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND, "/game start")).color(NamedTextColor.GREEN)
-                    .append(Component.text(" / ").color(NamedTextColor.GOLD))
-                    .append(Component.text(tf.getTranslation(player, "ignoreMinigame")).clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND, "/game ignore")).color(NamedTextColor.RED)));
+        if(!decisionTimers.containsKey(player.getUniqueId())) {
+            try {
+                decisionTimers.put(player.getUniqueId(), config.checkConfigInt("TimeToDecideWhenRespawning"));
+            } catch (Exception e) {
+                Main.getMainLogger().warning("Failed to load respawn timer config: " + e.getMessage());
+            }
         }
+        else {
+            try {
+                decisionTimers.replace(player.getUniqueId(), config.checkConfigInt("TimeToDecideWhenRespawning"));
+            } catch (Exception e) {
+                Main.getMainLogger().warning("Failed to load respawn timer config: " + e.getMessage());
+            }        }
+        if (inventories.containsKey(event.getPlayer().getUniqueId()) && config.checkConfigBoolean(player, "UsesPlugin")) {
+            handleRespawnTimer(player);
+        }
+    }
 
+    public void handleRespawnTimer(Player player) {
+        TranslationFactory tf = new TranslationFactory();
+        player.sendMessage(Component.text(tf.getTranslation(player, "decision")).color(NamedTextColor.GOLD));
+
+        timerWhilePlayerDecides(player);
+
+        player.sendMessage(Component.text(tf.getTranslation(player, "playMinigame")).clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND, "/game start")).color(NamedTextColor.GREEN)
+                .append(Component.text(" / ").color(NamedTextColor.GOLD))
+                .append(Component.text(tf.getTranslation(player, "ignoreMinigame")).clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND, "/game ignore")).color(NamedTextColor.RED)));
+    }
+
+    public boolean checkIfPlayerDecided(Player player) {
+        boolean b = false;
+        if(playerDecisions.containsKey(player.getUniqueId())) {
+            b = playerDecisions.get(player.getUniqueId());
+        }
+        return b;
     }
 }

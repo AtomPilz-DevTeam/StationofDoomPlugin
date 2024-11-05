@@ -21,6 +21,7 @@ public class Minigame {
     public void startMessage(Player player, String message) {
         player.sendMessage(Component.text(message).color(NamedTextColor.GOLD));
 
+        assert inventories.containsKey(player.getUniqueId());
         playerDeathInventory.setContents(inventories.get(player.getUniqueId()).getContents());
         waitingListMinigame.remove(player);
     }
@@ -30,9 +31,10 @@ public class Minigame {
      * @param player    the player who lost the game
      */
     public void loseMessage(Player player) {
-        Config config = new Config();
+        Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
 
+        assert deaths.containsKey(player.getUniqueId());
         if(config.checkConfigBoolean(player, "UsesPlugin")) {
             player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "loseMessage", "X: " + deaths.get(player.getUniqueId()).getBlockX() + " " + "Y: " + deaths.get(player.getUniqueId()).getBlockY() + " " + "Z: " + deaths.get(player.getUniqueId()).getBlockZ())).content()));
         }
@@ -84,7 +86,7 @@ public class Minigame {
      */
     public void winMessage(Player player) {
         Difficulty difficulty = new Difficulty();
-        Config config = new Config();
+        Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
 
         player.sendMessage(Component.text(tf.getTranslation(player, "winMessage")).color(NamedTextColor.GOLD));
