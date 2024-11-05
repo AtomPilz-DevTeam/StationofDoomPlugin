@@ -6,7 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import de.j.deathMinigames.deathMinigames.Config;
-import de.j.deathMinigames.deathMinigames.Main;
+import de.j.stationofdoom.main.Main;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -14,19 +14,19 @@ import static de.j.deathMinigames.listeners.DeathListener.playerInArena;
 import static de.j.deathMinigames.listeners.DeathListener.waitingListMinigame;
 
 public class JumpAndRun {
-    private static ArrayList<Block> blocksToDelete = new ArrayList<Block> ();
-    private static boolean woolPlaced = false;
-    private static boolean goldPlaced = false;
-    private static int _x = 0;
-    private static int _y = 0;
-    private static int _z = 0;
+    private ArrayList<Block> blocksToDelete = new ArrayList<Block> ();
+    private boolean woolPlaced = false;
+    private boolean goldPlaced = false;
+    private int _x = 0;
+    private int _y = 0;
+    private int _z = 0;
 
     /**
      * runs the minigame JumpAndRun
      */
     public void start() {
         Minigame mg = new Minigame();
-        Config config = new Config();
+        Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
 
         // get the player int the arena from the waiting list
@@ -177,7 +177,7 @@ public class JumpAndRun {
      */
     private void parkourGenerator(Location firstBLock, int heightToWin) {
         Minigame mg = new Minigame();
-        Config config = new Config();
+        Config config = Config.getInstance();
 
         int heightToLose = config.checkConfigInt("ParkourStartHeight") - 2;
 

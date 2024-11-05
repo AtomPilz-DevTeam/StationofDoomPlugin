@@ -12,26 +12,24 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryHolder;
 import de.j.deathMinigames.deathMinigames.Config;
-import de.j.deathMinigames.deathMinigames.Main;
+import de.j.stationofdoom.main.Main;
 import de.j.deathMinigames.minigames.Minigame;
 import de.j.deathMinigames.settings.GUI;
 import de.j.deathMinigames.settings.MainMenu;
 
-import java.util.ArrayList;
-
 public class InventoryListener implements Listener {
-    private final ArrayList<Player> allPlayers = new ArrayList<>();
     private Player playerClicked;
 
     @EventHandler
     public void onSettingsClick(InventoryClickEvent event) {
-        Config config = new Config();
+        Config config = Config.getInstance();
         MainMenu mainMenu = new MainMenu();
         InventoryHolder invHolder = event.getInventory().getHolder();
         Minigame minigame = new Minigame();
 
         int ID;
         int slot = event.getSlot();
+        assert slot >= 0 : "Slot is negative";
         Player player = (Player) event.getWhoClicked();
         if(invHolder instanceof MainMenu) {
             event.setCancelled(true);
@@ -67,6 +65,7 @@ public class InventoryListener implements Listener {
                 }
                 else if (slot <= Config.knownPlayers.size()) {
                     playerClicked = getPlayerFromListFromSpecificInt(slot);
+                    assert playerClicked != null : "playerClicked is null";
                     if(config.checkConfigBoolean(playerClicked, "Introduction")) {
                         minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
                         config.setIntroduction(playerClicked, false);
@@ -85,6 +84,7 @@ public class InventoryListener implements Listener {
                 }
                 else if (slot <= Config.knownPlayers.size()) {
                     playerClicked = getPlayerFromListFromSpecificInt(slot);
+                    assert playerClicked != null : "playerClicked is null";
                     if(config.checkConfigBoolean(playerClicked, "UsesPlugin")) {
                         minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
                         config.setUsesPlugin(playerClicked, false);
@@ -102,7 +102,7 @@ public class InventoryListener implements Listener {
                     mainMenu.showPlayerSettings(player);
                 } else if (slot <= Config.knownPlayers.size()) {
                     playerClicked = getPlayerFromListFromSpecificInt(slot);
-
+                    assert playerClicked != null : "playerClicked is null";
                     Main.getPlugin().getLogger().info(playerClicked.getName());
                     reloadInventory("Difficulty - Settings", slot, mainMenu);
                     MainMenu.difficultyPlayerSettings.addBackButton(player);
@@ -207,11 +207,17 @@ public class InventoryListener implements Listener {
     }
 
     public Player getPlayerFromListFromSpecificInt(int placeInList) {
-        return Bukkit.getPlayer(Config.knownPlayers.get(placeInList));
+        if (placeInList >= 0 && placeInList < Config.knownPlayers.size()) {
+            Player player = Bukkit.getPlayer(Config.knownPlayers.get(placeInList));
+            if (player != null) {
+                return player;
+            }
+        }
+        return null;
     }
 
     public void reloadInventory(String inventory, int slot, MainMenu mainMenu) {
-        Config config = new Config();
+        Config config = Config.getInstance();
         switch (inventory) {
             case "Introduction":
                 if(config.checkConfigBoolean(playerClicked, "Introduction")) {
@@ -247,7 +253,7 @@ public class InventoryListener implements Listener {
         }
     }
     public void reloadInventory(String inventory, MainMenu mainMenu) {
-        Config config = new Config();
+        Config config = Config.getInstance();
         switch (inventory) {
             case "Introduction":
                 for(int i = 0; i < Config.knownPlayers.size(); i++) {
