@@ -159,32 +159,4 @@ public final class Main extends JavaPlugin {
         return getPlugin().getServer().getGlobalRegionScheduler();
     }
 
-    /**
-     * starts a random minigame
-     * @param player    the player who is starting a random minigame
-     */
-    public static void minigameStart(Player player) {
-        JumpAndRun jumpAndRun = new JumpAndRun();
-        Minigame minigame = new Minigame();
-        Introduction introduction = new Introduction();
-        Config config = Config.getInstance();
-        TranslationFactory tf = new TranslationFactory();
-
-        if(!introduction.checkIfPlayerGotIntroduced(player)) {
-            introduction.introStart(player);
-        }
-        else if(config.checkConfigBoolean(player, "UsesPlugin")) {
-            if(playerInArena == null) {
-                jumpAndRun.start();
-            }
-            else {
-                getPlugin().getLogger().info("arena is uses at the moment");
-                if(player.getUniqueId() != playerInArena.getUniqueId()) {
-                    player.sendMessage(Component.text(tf.getTranslation(player, "arenaIsFull")).color(NamedTextColor.GOLD));
-                    Location locationBox = config.checkConfigLocation("WaitingListPosition");
-                    minigame.teleportPlayerInBox(player, locationBox);
-                }
-            }
-        }
-    }
 }

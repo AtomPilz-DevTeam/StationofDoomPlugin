@@ -74,7 +74,7 @@ public class GameCMD implements BasicCommand {
                     if (!introduction.checkIfPlayerGotIntroduced(player)) {
                         config.setIntroduction(player, true);
                         config.setUsesPlugin(player, true);
-                        Main.minigameStart(player);
+                        Minigame.minigameStart(player);
                         player.sendMessage(Component.text(tf.getTranslation(player, "playerDecided")).color(NamedTextColor.GOLD));
                     }
                     else {
@@ -122,7 +122,7 @@ public class GameCMD implements BasicCommand {
                         waitingListMinigame.addLast(player);
                         Main.getPlugin().getLogger().info("player does not use plugin but is trying to start ");
                         respawnListener.setPlayerDecided(player,true);
-                        Main.minigameStart(player);
+                        Minigame.minigameStart(player);
                         break;
                     case "ignore":
                         minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
