@@ -186,7 +186,7 @@ public class JumpAndRun {
             public void run() {
                 if(checkIfPlayerWon(playerInArena) || checkIfPlayerLost(playerInArena, heightToLose)) {
                     if(!mg.checkIfWaitinglistIsEmpty()) {
-                        Main.minigameStart(waitingListMinigame.getFirst());
+                        Minigame.minigameStart(waitingListMinigame.getFirst());
                     }
                     cancel();
                 }

@@ -1,5 +1,7 @@
 package de.j.deathMinigames.minigames;
 
+import de.j.deathMinigames.deathMinigames.Introduction;
+import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -12,6 +14,35 @@ import de.j.deathMinigames.deathMinigames.Config;
 import static de.j.deathMinigames.listeners.DeathListener.*;
 
 public class Minigame {
+
+    /**
+     * starts a random minigame
+     * @param player    the player who is starting a random minigame
+     */
+    public static void minigameStart(Player player) {
+        JumpAndRun jumpAndRun = new JumpAndRun();
+        Minigame minigame = new Minigame();
+        Introduction introduction = new Introduction();
+        Config config = Config.getInstance();
+        TranslationFactory tf = new TranslationFactory();
+
+        if(!introduction.checkIfPlayerGotIntroduced(player)) {
+            introduction.introStart(player);
+        }
+        else if(config.checkConfigBoolean(player, "UsesPlugin")) {
+            if(playerInArena == null) {
+                jumpAndRun.start();
+            }
+            else {
+                Main.getPlugin().getLogger().info("arena is uses at the moment");
+                if(player.getUniqueId() != playerInArena.getUniqueId()) {
+                    player.sendMessage(Component.text(tf.getTranslation(player, "arenaIsFull")).color(NamedTextColor.GOLD));
+                    Location locationBox = config.checkConfigLocation("WaitingListPosition");
+                    minigame.teleportPlayerInBox(player, locationBox);
+                }
+            }
+        }
+    }
 
     /**
      * sends the player the starting message of the minigame
