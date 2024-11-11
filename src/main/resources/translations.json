@@ -71,7 +71,9 @@
       "backButton": "Zurück",
       "waitingListPositionNotSetUp": "Die Position der überschüssigen Spieler in der Warteliste ist noch nicht deklariert. Möchtest du die Position auf deine jetzige Position setzen??",
       "decidedNotToSetPosition": "Denk daran die Position festzulegen bevor der playthrough richtig startet",
-      "setWaitingListPosition": "Position wurde gesetzt!"
+      "setWaitingListPosition": "Position wurde gesetzt!",
+      "errorSavingInventory": "Ein Fehler ist beim speichern deines Inventars aufgetreten.",
+      "waitingListPositionNotSet": "Die Position der Warteschlange ist nicht gesetzt, sage einem Operator dieses Server so bald wie möglich, dass dies gemacht werden muss."
     }
   ],
   "en-US": [
@@ -146,7 +148,9 @@
       "backButton": "Back",
       "waitingListPositionNotSetUp": "The waitingposition for surplus players in the waitinglist is not set yet. Do you want to set the position to your own position?",
       "decidedNotToSetPosition": "Be aware that you need to set the position before the playthrough is starting",
-      "setWaitingListPosition": "Position was set!"
+      "setWaitingListPosition": "Position was set!",
+      "errorSavingInventory": "An Error occured when trying to save your inventory.",
+      "waitingListPositionNotSet": "The position for the waitingList is not set, tell an operator of this server to do that as soon as possible."
     }
   ]
 }
