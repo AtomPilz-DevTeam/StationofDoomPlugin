@@ -18,7 +18,7 @@ public class JoinListener implements Listener {
         RespawnListener respawnListener = new RespawnListener();
         Player player = event.getPlayer();
         TranslationFactory tf = new TranslationFactory();
-        if(player.isOp() && Config.configWaitingListPosition == null) {
+        if(player.isOp() && Config.getConfigWaitingListPosition() == null) {
             player.sendMessage(Component.text(tf.getTranslation(player, "waitingListPositionNotSetUp")).color(NamedTextColor.RED)
                     .append(Component.text(tf.getTranslation(player, "yes")).color(NamedTextColor.GREEN).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/game setWaitingListPosition")))
                     .append(Component.text(" / ").color(NamedTextColor.GOLD))

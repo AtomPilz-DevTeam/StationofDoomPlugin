@@ -1,5 +1,6 @@
 package de.j.deathMinigames.commands;
 
+import de.j.deathMinigames.listeners.DeathListener;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -27,6 +28,14 @@ import static de.j.deathMinigames.listeners.DeathListener.*;
 
 public class GameCMD implements BasicCommand {
 
+    private final Difficulty difficulty = new Difficulty();
+    private final Minigame minigame = new Minigame();
+    private final RespawnListener respawnListener = new RespawnListener();
+    private final Introduction introduction = new Introduction();
+    private final MainMenu mainMenu = new MainMenu();
+    private final Config config = Config.getInstance();
+    private final TranslationFactory tf = new TranslationFactory();
+
     @Override
     public boolean canUse(@NotNull CommandSender sender) {
         return sender instanceof Player;
@@ -34,14 +43,6 @@ public class GameCMD implements BasicCommand {
 
     @Override
     public void execute(CommandSourceStack stack, String[] args) {
-        Difficulty difficulty = new Difficulty();
-        Minigame minigame = new Minigame();
-        RespawnListener respawnListener = new RespawnListener();
-        Introduction introduction = new Introduction();
-        MainMenu mainMenu = new MainMenu();
-        Config config = Config.getInstance();
-        TranslationFactory tf = new TranslationFactory();
-        
         Player player = (Player) stack.getSender();
         if (args.length == 1) {
             switch (args[0].toLowerCase()) {
@@ -108,7 +109,7 @@ public class GameCMD implements BasicCommand {
                     player.sendMessage(Component.text(tf.getTranslation(player, "decidedNotToSetPosition")).color(NamedTextColor.RED));
                     break;
             }
-            if (inventories.containsKey(player.getUniqueId()) && !waitingListMinigame.contains(player) && playerInArena != player) {
+            if (inventories.containsKey(player.getUniqueId()) && !waitingListMinigame.contains(player) && DeathListener.getPlayerInArena() != player) {
                 switch (args[0].toLowerCase()) {
                     case "start":
                         minigame.playSoundAtLocation(player.getEyeLocation(), 0.5F, Sound.ENTITY_ENDER_EYE_DEATH);
@@ -116,9 +117,7 @@ public class GameCMD implements BasicCommand {
                         player.sendActionBar(Component.text(tf.getTranslation(player, "startingMinigame"))
                                 .color(NamedTextColor.GOLD)
                                 .decoration(TextDecoration.ITALIC, true));
-                        Location loc = new Location(player.getWorld(), 93, 73, 73);
                         player.playSound(player.getEyeLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5F, 1.0F);
-                        player.teleport(loc);
                         waitingListMinigame.addLast(player);
                         Main.getPlugin().getLogger().info("player does not use plugin but is trying to start ");
                         respawnListener.setPlayerDecided(player,true);

@@ -45,6 +45,9 @@ public class MainMenu implements InventoryHolder {
     }
 
     private void showPlayerInv(Player player) {
+        if(inventory == null) {
+            throw new IllegalStateException("Inventory is null");
+        }
         player.openInventory(inventory);
     }
 
@@ -68,6 +71,7 @@ public class MainMenu implements InventoryHolder {
 
     public void setUpSettingsSetInventoryContents() {
         Config config = Config.getInstance();
+        Location waitingListPosition = config.checkConfigLocation("WaitingListPosition");
         int startHeight = config.checkConfigInt("ParkourStartHeight");
         int parkourLength = config.checkConfigInt("ParkourLength");
         int costToLowerTheDifficulty = config.checkConfigInt("CostToLowerTheDifficulty");
@@ -86,7 +90,6 @@ public class MainMenu implements InventoryHolder {
             setUp.addClickableItemStack("Parcour length", Material.LADDER, 1, 1);
         }
         if(config.checkConfigLocation("WaitingListPosition")!=null) {
-            Location waitingListPosition = config.checkConfigLocation("WaitingListPosition");
             ArrayList<String> lore = new ArrayList<>();
             lore.add("Current position:");
             lore.add("X: " + waitingListPosition.getBlockX());

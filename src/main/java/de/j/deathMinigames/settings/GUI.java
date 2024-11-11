@@ -15,11 +15,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.UUID;
 
 public class GUI implements InventoryHolder {
     private final Inventory inventory;
-    private final int randomValue = new Random().nextInt();
+    private final UUID uuid = UUID.randomUUID();
 
     public GUI(String title, boolean addAllPlayers) {
         Config config = Config.getInstance();
@@ -28,8 +28,8 @@ public class GUI implements InventoryHolder {
         int inventorySize = 54;
         inventory = Bukkit.createInventory(this, inventorySize, title);
         if(addAllPlayers) {
-            for(int i = 0; i < Config.knownPlayers.size(); i++) {
-                Player player = Bukkit.getPlayer(Config.knownPlayers.get(i));
+            for(int i = 0; i < Config.getKnownPlayers().size(); i++) {
+                Player player = Bukkit.getPlayer(Config.getKnownPlayers().get(i));
                 if(player == null) continue;
                 Material material;
                 if(config.checkConfigBoolean(inventoryListener.getPlayerFromListFromSpecificInt(i), title)) {
@@ -40,7 +40,7 @@ public class GUI implements InventoryHolder {
                 }
                 ItemStack itemStack = new ItemStack(material);
                 ItemMeta itemMeta = itemStack.getItemMeta();
-                itemMeta.displayName(Component.text(Bukkit.getPlayer(Config.knownPlayers.get(i)).getName()));
+                itemMeta.displayName(Component.text(Bukkit.getPlayer(Config.getKnownPlayers().get(i)).getName()));
                 itemStack.setItemMeta(itemMeta);
 
                 inventory.setItem(i, itemStack);
@@ -103,7 +103,7 @@ public class GUI implements InventoryHolder {
         return inventory;
     }
 
-    public int getID() {
-        return randomValue;
+    public UUID getUUID() {
+        return uuid;
     }
 }

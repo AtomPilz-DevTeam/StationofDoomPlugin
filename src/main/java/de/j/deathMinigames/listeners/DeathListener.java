@@ -1,5 +1,6 @@
 package de.j.deathMinigames.listeners;
 
+import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -26,8 +27,17 @@ public class DeathListener implements Listener {
     public static Inventory playerDeathInventory = Bukkit.createInventory(null, 45);
     /** List of players waiting to join a minigame */
     public static ArrayList<Player> waitingListMinigame = new ArrayList<Player>();
+
+    public synchronized static Player getPlayerInArena() {
+        return playerInArena;
+    }
+
+    public synchronized static void setPlayerInArena(Player playerInArena) {
+        DeathListener.playerInArena = playerInArena;
+    }
+
     /** Current player in the arena, null if arena is empty */
-    public static Player playerInArena;
+    public volatile static Player playerInArena;
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
@@ -40,6 +50,7 @@ public class DeathListener implements Listener {
         Location deathpoint = event.getPlayer().getLocation();
 
         if(!config.checkConfigBoolean(player, "UsesPlugin")) {
+            dropInv(player);
             return;
         }
 
@@ -50,13 +61,13 @@ public class DeathListener implements Listener {
         } else if (!inventories.containsKey(player.getUniqueId())){
             message = Component.text(tf.getTranslation(player, "savedInv"));
             inventories.put(player.getUniqueId(), inventory);
+        } else {
+            Main.getPlugin().getLogger().warning("Something went wrong, player is already in inventories but it was tried to add him to it!");
+            message = Component.text(tf.getTranslation(player, "errorSavingInventory"));
         }
         player.sendActionBar(message
                 .color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, true));
-        if(!config.checkConfigBoolean(player, "UsesPlugin")) {
-            dropInv(player);
-        }
     }
     /**
      * Drops a player's saved inventory items at their death location and cleans up associated data.
@@ -64,11 +75,16 @@ public class DeathListener implements Listener {
      * @throws IllegalArgumentException if player is null or player's data is not found
      */
     private void dropInv(Player player) {
-        for(int i = 0; i < inventories.get(player.getUniqueId()).getSize(); i++) {
-            assert inventories.containsKey(player.getUniqueId());
-            player.getWorld().dropItem(deaths.get(player.getUniqueId()), inventories.get(player.getUniqueId()).getItem(i));
+        UUID uuid = player.getUniqueId();
+        assert inventories.containsKey(uuid) : "inventories does not contain this UUID";
+        assert deaths.containsKey(uuid) : "deaths does not contain this UUID";
+        Inventory inv = inventories.get(uuid);
+        for(int i = 0; i < inv.getSize(); i++) {
+            player.getWorld().dropItem(deaths.get(uuid), inv.getItem(i));
         }
-        deaths.remove(player.getUniqueId());
-        inventories.remove(player.getUniqueId());
+        deaths.remove(uuid);
+        inventories.remove(uuid);
     }
+
+
 }

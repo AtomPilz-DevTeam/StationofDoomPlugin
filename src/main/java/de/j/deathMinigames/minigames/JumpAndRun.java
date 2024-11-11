@@ -1,5 +1,6 @@
 package de.j.deathMinigames.minigames;
 
+import de.j.deathMinigames.listeners.DeathListener;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -14,12 +15,18 @@ import static de.j.deathMinigames.listeners.DeathListener.playerInArena;
 import static de.j.deathMinigames.listeners.DeathListener.waitingListMinigame;
 
 public class JumpAndRun {
+    private static JumpAndRun jumpAndRun = new JumpAndRun();
+
     private ArrayList<Block> blocksToDelete = new ArrayList<Block> ();
     private boolean woolPlaced = false;
     private boolean goldPlaced = false;
     private int _x = 0;
     private int _y = 0;
     private int _z = 0;
+
+    public static JumpAndRun getInstance() {
+        return jumpAndRun;
+    }
 
     /**
      * runs the minigame JumpAndRun
@@ -28,9 +35,10 @@ public class JumpAndRun {
         Minigame mg = new Minigame();
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
+        Player playerInArena = DeathListener.getPlayerInArena();
 
         // get the player int the arena from the waiting list
-        playerInArena = waitingListMinigame.getFirst();
+        DeathListener.setPlayerInArena(waitingListMinigame.getFirst());
 
         playerInArena.sendTitle("JumpNRun", "");
 
@@ -178,6 +186,7 @@ public class JumpAndRun {
     private void parkourGenerator(Location firstBLock, int heightToWin) {
         Minigame mg = new Minigame();
         Config config = Config.getInstance();
+        Player playerInArena = DeathListener.getPlayerInArena();
 
         int heightToLose = config.checkConfigInt("ParkourStartHeight") - 2;
 
