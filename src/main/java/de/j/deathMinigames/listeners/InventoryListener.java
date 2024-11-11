@@ -17,6 +17,8 @@ import de.j.deathMinigames.minigames.Minigame;
 import de.j.deathMinigames.settings.GUI;
 import de.j.deathMinigames.settings.MainMenu;
 
+import java.util.UUID;
+
 public class InventoryListener implements Listener {
     private Player playerClicked;
 
@@ -27,7 +29,7 @@ public class InventoryListener implements Listener {
         InventoryHolder invHolder = event.getInventory().getHolder();
         Minigame minigame = new Minigame();
 
-        int ID;
+        UUID ID;
         int slot = event.getSlot();
         assert slot >= 0 : "Slot is negative";
         Player player = (Player) event.getWhoClicked();
@@ -57,13 +59,13 @@ public class InventoryListener implements Listener {
         }
         else if(invHolder instanceof GUI) {
             GUI gui = (GUI) invHolder;
-            ID = gui.getID();
-            if(ID == MainMenu.introduction.getID()) {
+            ID = gui.getUUID();
+            if(ID == MainMenu.introduction.getUUID()) {
                 event.setCancelled(true);
                 if(slot == 53) {
                     mainMenu.showPlayerSettings(player);
                 }
-                else if (slot <= Config.knownPlayers.size()) {
+                else if (slot <= Config.getKnownPlayers().size()) {
                     playerClicked = getPlayerFromListFromSpecificInt(slot);
                     assert playerClicked != null : "playerClicked is null";
                     if(config.checkConfigBoolean(playerClicked, "Introduction")) {
@@ -77,12 +79,12 @@ public class InventoryListener implements Listener {
                     player.sendMessage(Component.text("Changed Introduction of " + playerClicked.getName() + " to " + config.checkConfigBoolean(playerClicked, "Introduction")).color(NamedTextColor.RED));
                 }
             }
-            else if (ID == MainMenu.usesPlugin.getID()) {
+            else if (ID == MainMenu.usesPlugin.getUUID()) {
                 event.setCancelled(true);
                 if(slot == 53) {
                     mainMenu.showPlayerSettings(player);
                 }
-                else if (slot <= Config.knownPlayers.size()) {
+                else if (slot <= Config.getKnownPlayers().size()) {
                     playerClicked = getPlayerFromListFromSpecificInt(slot);
                     assert playerClicked != null : "playerClicked is null";
                     if(config.checkConfigBoolean(playerClicked, "UsesPlugin")) {
@@ -96,11 +98,11 @@ public class InventoryListener implements Listener {
                     player.sendMessage(Component.text("Changed UsesPlugin of " + playerClicked.getName() + " to " + config.checkConfigBoolean(playerClicked, "UsesPlugin")).color(NamedTextColor.RED));
                 }
             }
-            else if (ID == MainMenu.difficulty.getID()) {
+            else if (ID == MainMenu.difficulty.getUUID()) {
                 event.setCancelled(true);
                 if (slot == 53) {
                     mainMenu.showPlayerSettings(player);
-                } else if (slot <= Config.knownPlayers.size()) {
+                } else if (slot <= Config.getKnownPlayers().size()) {
                     playerClicked = getPlayerFromListFromSpecificInt(slot);
                     assert playerClicked != null : "playerClicked is null";
                     Main.getPlugin().getLogger().info(playerClicked.getName());
@@ -109,7 +111,7 @@ public class InventoryListener implements Listener {
                     MainMenu.difficultyPlayerSettings.showInventory(player);
                 }
             }
-            else if(ID == MainMenu.difficultyPlayerSettings.getID()) {
+            else if(ID == MainMenu.difficultyPlayerSettings.getUUID()) {
                 event.setCancelled(true);
                 if(slot == 53) {
                     mainMenu.showPlayerSettings(player);
@@ -121,7 +123,7 @@ public class InventoryListener implements Listener {
                     player.sendMessage(Component.text("Changed Difficulty of " + playerClicked.getName() + " to " + config.checkConfigInt(playerClicked, "Difficulty")).color(NamedTextColor.RED));
                 }
             }
-            else if(ID == MainMenu.setUp.getID()) {
+            else if(ID == MainMenu.setUp.getUUID()) {
                 event.setCancelled(true);
                 if(slot == 53) {
                     mainMenu.showPlayerSettings(player);
@@ -156,7 +158,7 @@ public class InventoryListener implements Listener {
                     }
                 }
             }
-            else if (ID == MainMenu.parkourStartHeight.getID()) {
+            else if (ID == MainMenu.parkourStartHeight.getUUID()) {
                 event.setCancelled(true);
                 if(slot == 53) {
                     mainMenu.showPlayerSettings(player);
@@ -168,7 +170,7 @@ public class InventoryListener implements Listener {
                     reloadInventory("ParkourStartHeight", mainMenu);
                 }
             }
-            else if (ID == MainMenu.parkourLength.getID()) {
+            else if (ID == MainMenu.parkourLength.getUUID()) {
                 event.setCancelled(true);
                 if(slot == 53) {
                     mainMenu.showPlayerSettings(player);
@@ -179,7 +181,7 @@ public class InventoryListener implements Listener {
                     reloadInventory("ParkourLength", mainMenu);
                 }
             }
-            else if (ID == MainMenu.costToLowerTheDifficulty.getID()) {
+            else if (ID == MainMenu.costToLowerTheDifficulty.getUUID()) {
                 event.setCancelled(true);
                 if(slot == 53) {
                     mainMenu.showPlayerSettings(player);
@@ -191,7 +193,7 @@ public class InventoryListener implements Listener {
                     reloadInventory("CostToLowerTheDifficulty", mainMenu);
                 }
             }
-            else if (ID == MainMenu.timeToDecideWhenRespawning.getID()) {
+            else if (ID == MainMenu.timeToDecideWhenRespawning.getUUID()) {
                 event.setCancelled(true);
                 if(slot == 53) {
                     mainMenu.showPlayerSettings(player);
@@ -207,11 +209,10 @@ public class InventoryListener implements Listener {
     }
 
     public Player getPlayerFromListFromSpecificInt(int placeInList) {
-        if (placeInList >= 0 && placeInList < Config.knownPlayers.size()) {
-            Player player = Bukkit.getPlayer(Config.knownPlayers.get(placeInList));
-            if (player != null) {
-                return player;
-            }
+        if (placeInList >= 0 && placeInList < Config.getKnownPlayers().size()) {
+            Player player = Bukkit.getPlayer(Config.getKnownPlayers().get(placeInList));
+            assert player != null;
+            return player;
         }
         return null;
     }
@@ -256,7 +257,7 @@ public class InventoryListener implements Listener {
         Config config = Config.getInstance();
         switch (inventory) {
             case "Introduction":
-                for(int i = 0; i < Config.knownPlayers.size(); i++) {
+                for(int i = 0; i < Config.getKnownPlayers().size(); i++) {
                     Material material;
                     if(config.checkConfigBoolean(getPlayerFromListFromSpecificInt(i), "Introduction")) {
                         material = Material.GREEN_CONCRETE_POWDER;
@@ -268,7 +269,7 @@ public class InventoryListener implements Listener {
                 }
                 break;
             case "UsesPlugin":
-                for(int i = 0; i < Config.knownPlayers.size(); i++) {
+                for(int i = 0; i < Config.getKnownPlayers().size(); i++) {
                     Material material;
                     if(config.checkConfigBoolean(getPlayerFromListFromSpecificInt(i), "UsesPlugin")) {
                         material = Material.GREEN_CONCRETE_POWDER;

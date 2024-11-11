@@ -1,6 +1,7 @@
 package de.j.deathMinigames.minigames;
 
 import de.j.deathMinigames.deathMinigames.Introduction;
+import de.j.deathMinigames.listeners.DeathListener;
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
@@ -14,17 +15,24 @@ import de.j.deathMinigames.deathMinigames.Config;
 import static de.j.deathMinigames.listeners.DeathListener.*;
 
 public class Minigame {
+    private static Minigame minigame = new Minigame();
+
+    public static Minigame getInstance() {
+        return minigame;
+    }
 
     /**
      * starts a random minigame
      * @param player    the player who is starting a random minigame
      */
     public static void minigameStart(Player player) {
-        JumpAndRun jumpAndRun = new JumpAndRun();
-        Minigame minigame = new Minigame();
-        Introduction introduction = new Introduction();
+        JumpAndRun jumpAndRun = JumpAndRun.getInstance();
+        Minigame minigame = Minigame.getInstance();
+        Introduction introduction = Introduction.getInstance();
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
+        Player playerInArena = DeathListener.getPlayerInArena();
+
 
         if(!introduction.checkIfPlayerGotIntroduced(player)) {
             introduction.introStart(player);
@@ -34,11 +42,17 @@ public class Minigame {
                 jumpAndRun.start();
             }
             else {
-                Main.getPlugin().getLogger().info("arena is uses at the moment");
-                if(player.getUniqueId() != playerInArena.getUniqueId()) {
+                if(player.getUniqueId().equals(playerInArena.getUniqueId())) {
                     player.sendMessage(Component.text(tf.getTranslation(player, "arenaIsFull")).color(NamedTextColor.GOLD));
                     Location locationBox = config.checkConfigLocation("WaitingListPosition");
-                    minigame.teleportPlayerInBox(player, locationBox);
+                    if(locationBox != null) {
+                        minigame.teleportPlayerInBox(player, locationBox);
+                    }
+                    else {
+                        Main.getPlugin().getLogger().warning("WaitingListPosition is not set in the config!");
+                        minigame.teleportPlayerInBox(player, player.getRespawnLocation());
+                        player.sendMessage(tf.getTranslation(player, "waitingListPositionNotSet"));
+                    }
                 }
             }
         }
@@ -76,23 +90,23 @@ public class Minigame {
      * @param player    the player whose inventory is to be droopped
      */
     public void dropInvWithTeleport(Player player, boolean doTeleport) {
-        for(int i = 0; i < playerDeathInventory.getSize(); i++) {
-            if(playerDeathInventory.getItem(i) == null) continue;
-            assert playerDeathInventory.getItem(i) != null;
-            player.getWorld().dropItem(deaths.get(player.getUniqueId()), playerDeathInventory.getItem(i));
-        }
+        dropInv(player);
         playerDeathInventory.clear();
         deaths.remove(player.getUniqueId());
         inventories.remove(player.getUniqueId());
 
         if(doTeleport) {
-            if(player.getRespawnLocation() == null) {
-                player.playSound(player.getEyeLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5F, 1.0F);
-                player.teleport(player.getWorld().getSpawnLocation());
-            } else {
-                player.playSound(player.getEyeLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5F, 1.0F);
-                player.teleport(player.getRespawnLocation());
-            }
+            tpPlayerToRespawnLocation(player);
+        }
+    }
+
+    private void tpPlayerToRespawnLocation(Player player) {
+        if(player.getRespawnLocation() == null) {
+            player.playSound(player.getEyeLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5F, 1.0F);
+            player.teleport(player.getWorld().getSpawnLocation());
+        } else {
+            player.playSound(player.getEyeLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5F, 1.0F);
+            player.teleport(player.getRespawnLocation());
         }
     }
 
@@ -100,7 +114,7 @@ public class Minigame {
      * drops the inventory of the player at his deathpoint, clears the playerDeathInventory and removes him from the deaths HashMap
      * @param player    the player whose inventory is to be droopped
      */
-    public void dropInv(Player player) {
+    private void dropInv(Player player) {
         for(int i = 0; i < playerDeathInventory.getSize(); i++) {
             if(playerDeathInventory.getItem(i) == null) continue;
             assert playerDeathInventory.getItem(i) != null;
@@ -133,16 +147,10 @@ public class Minigame {
      */
     public void showInv(Player player) {
         TranslationFactory tf = new TranslationFactory();
-        Inventory inventory = Bukkit.createInventory(null, 45, Component.text(tf.getTranslation(player, "winInv")).color(NamedTextColor.GOLD));
+        Inventory inventory = Bukkit.createInventory(null, 54, Component.text(tf.getTranslation(player, "winInv")).color(NamedTextColor.GOLD));
         inventory.setContents(playerDeathInventory.getContents());
 
-        if(player.getRespawnLocation() == null) {
-            player.playSound(player.getEyeLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5F, 1.0F);
-            player.teleport(player.getWorld().getSpawnLocation());
-        } else {
-            player.playSound(player.getEyeLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5F, 1.0F);
-            player.teleport(player.getRespawnLocation());
-        }
+        tpPlayerToRespawnLocation(player);
 
         player.openInventory(inventory);
         playSoundAtLocation(player.getLocation(), 1F, Sound.ITEM_TOTEM_USE);
@@ -176,13 +184,5 @@ public class Minigame {
 
     public boolean checkIfWaitinglistIsEmpty() {
         return waitingListMinigame.isEmpty();
-    }
-
-    /**
-     * send the player the statistics of the minigames
-     * @param player the player which statistics should be sent
-     */
-    public void sendPlayerStatistics(Player player) {
-
     }
 }

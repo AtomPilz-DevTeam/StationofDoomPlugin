@@ -37,6 +37,27 @@ A minecraft paper survival plugin for private servers
   Deal more damage with your bow when you hit a combo
   </details>
 
+- <details>
+  <summary>DeathMinigame</summary>
+  This system lets you play a minigame of Jump ’n’ Run when dying in game. If you can get to the end of it, you will get your items back. This system is dynamik, there is difficulty that gets higher when winning. If you can't get to the end, your items will be dropped normally, and you will respawn normally also. If you want to lower your difficulty or reached the max difficulty, you can pay with diamonds, to lower it.
+  </details>
+- <details>
+  <summary>In game settings menu</summary>
+  This plugin features an in game settings menu to every operator of the server. It can be reached through the command /game settings. In the settings many important values can be changed to fix problems or set up the plugin.
+  <br> Menus inside the settings:
+  <br>
+
+  - setUp: hosts all settings to set up the plugin before a playthrough <br>
+    - parkourStartHeight: sets at which height the parkour is starting to generate <br>
+    - parkourLength: sets how long the parkour should be <br>
+    - costToLowerTheDifficulty: sets how many diamonds lowering the difficulty should cost <br>
+    - timeToDecideWhenRespawning: sets how long a player has to decide, if he wants to try playing the minigame or if he wants to just let his items drop <br>
+  - introduction: in here you can change which player was already introduced to the plugin, normaly everyone starts with false and gets a short introduction at the first death
+  - difficulty: in here every player is listet to change their difficulty in the parkour
+    - difficultyPlayerSettings: this is just for you to enter the difficulty for the player clicked
+  - usesPlugin: in here you can change if the player is using the plugin or not, this changes if the player gets a change to play the parkour or not
+  </details>
+
 **Support and Project Discussion:**
 - [Discord](https://discord.gg/uYwAKpRyak)
 

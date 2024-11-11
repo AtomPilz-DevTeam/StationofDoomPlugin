@@ -2,13 +2,10 @@ package de.j.stationofdoom.main;
 
 import de.j.deathMinigames.commands.GameCMD;
 import de.j.deathMinigames.deathMinigames.Config;
-import de.j.deathMinigames.deathMinigames.Introduction;
 import de.j.deathMinigames.listeners.DeathListener;
 import de.j.deathMinigames.listeners.InventoryListener;
 import de.j.deathMinigames.listeners.JoinListener;
 import de.j.deathMinigames.listeners.RespawnListener;
-import de.j.deathMinigames.minigames.JumpAndRun;
-import de.j.deathMinigames.minigames.Minigame;
 import de.j.stationofdoom.cmd.*;
 import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.FurnaceEvents;
@@ -24,11 +21,7 @@ import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
 import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,8 +32,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.Logger;
-
-import static de.j.deathMinigames.listeners.DeathListener.playerInArena;
 
 public final class Main extends JavaPlugin {
 

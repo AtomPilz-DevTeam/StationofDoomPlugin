@@ -12,30 +12,38 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Config {
-    private static Config instance;
+    private volatile static Config instance;
 
-    public static ConcurrentHashMap<UUID, Integer> configDifficulty = new ConcurrentHashMap<>();
-    public static List<UUID> configIntroduction = Collections.synchronizedList(new ArrayList<>());
-    public static List<UUID> configUsesPlugin = Collections.synchronizedList(new ArrayList<>());
-    public static List<UUID> knownPlayers = Collections.synchronizedList(new ArrayList<>());
-    public static List<String> knownPlayersString = Collections.synchronizedList(new ArrayList<>());
-    public static boolean configSetUp;
-    public static int configParkourStartHeight;
-    public static int configParkourLength;
-    public static int configCostToLowerTheDifficulty;
-    public static int configTimeToDecideWhenRespawning;
-    public static Location configWaitingListPosition;
+    private volatile static ConcurrentHashMap<UUID, Integer> configDifficulty = new ConcurrentHashMap<>();
+    private volatile static List<UUID> configIntroduction = Collections.synchronizedList(new ArrayList<>());
+    private volatile static List<UUID> configUsesPlugin = Collections.synchronizedList(new ArrayList<>());
+    private volatile static List<UUID> knownPlayers = Collections.synchronizedList(new ArrayList<>());
+    private volatile static List<String> knownPlayersString = Collections.synchronizedList(new ArrayList<>());
+    private volatile static boolean configSetUp;
+    private volatile static int configParkourStartHeight;
+    private volatile static int configParkourLength;
+    private volatile static int configCostToLowerTheDifficulty;
+    private volatile static int configTimeToDecideWhenRespawning;
+    private volatile static Location configWaitingListPosition;
+
+    public static Location getConfigWaitingListPosition() {
+        return configWaitingListPosition;
+    }
+
+    public static List<UUID> getKnownPlayers() {
+        return knownPlayers;
+    }
 
     private Config(){}
 
-    public static Config getInstance(){
+    public synchronized static Config getInstance(){
         if(instance == null){
             instance = new Config();
         }
         return instance;
     }
 
-    public void addPlayerInConfig(UUID playerUUID) {
+    public synchronized void addPlayerInConfig(UUID playerUUID) {
         Main.getPlugin().getConfig().set(playerUUID + ".Introduction", false);
         Main.getPlugin().getConfig().set(playerUUID + ".UsesPlugin", true);
         Main.getPlugin().getConfig().set(playerUUID + ".Difficulty", 0);
@@ -43,7 +51,7 @@ public class Config {
         Main.getPlugin().saveConfig();
     }
 
-    private void fillKnownPlayersArrayList() {
+    private synchronized void fillKnownPlayersArrayList() {
         for (String playerUUIDInString : Main.getPlugin().getConfig().getStringList("KnownPlayers")) {
             knownPlayers.add(UUID.fromString(playerUUIDInString));
             knownPlayersString.add(playerUUIDInString);
@@ -70,7 +78,7 @@ public class Config {
         }
     }
 
-    public void addPlayerInHashMap(UUID playerUUID) {
+    public synchronized void addPlayerInHashMap(UUID playerUUID) {
         if(Main.getPlugin().getConfig().getBoolean(playerUUID + ".Introduction")) {
             configIntroduction.add(playerUUID);
         }
@@ -80,7 +88,7 @@ public class Config {
         configDifficulty.put(playerUUID, Main.getPlugin().getConfig().getInt(playerUUID + ".Difficulty"));
     }
 
-    public void addNewPlayer(UUID playerUUID) {
+    public synchronized void addNewPlayer(UUID playerUUID) {
         configIntroduction.add(playerUUID);
         configUsesPlugin.add(playerUUID);
         configDifficulty.put(playerUUID, 0);
@@ -137,7 +145,7 @@ public class Config {
         }
     }
 
-    public void setIntroduction(Player player, boolean introduction) {
+    public synchronized void setIntroduction(Player player, boolean introduction) {
         if(introduction) {
             if(!configIntroduction.contains(player.getUniqueId())) {
                 configIntroduction.add(player.getUniqueId());
@@ -150,7 +158,7 @@ public class Config {
         Main.getPlugin().saveConfig();
     }
 
-    public void setUsesPlugin(Player player, boolean usesPlugin) {
+    public synchronized void setUsesPlugin(Player player, boolean usesPlugin) {
         if(usesPlugin) {
             if(!configUsesPlugin.contains(player.getUniqueId())) {
                 configUsesPlugin.add(player.getUniqueId());
@@ -163,7 +171,7 @@ public class Config {
         Main.getPlugin().saveConfig();
     }
 
-    public void setDifficulty(Player player, int difficulty) {
+    public synchronized void setDifficulty(Player player, int difficulty) {
         if(configDifficulty.containsKey(player.getUniqueId())) {
             configDifficulty.replace(player.getUniqueId(), difficulty);
         }
@@ -174,40 +182,40 @@ public class Config {
         Main.getPlugin().saveConfig();
     }
 
-    public void setSetUp(boolean bool) {
+    public synchronized void setSetUp(boolean bool) {
         configSetUp = bool;
         Main.getPlugin().getConfig().set("SetUp", bool);
         Main.getPlugin().saveConfig();
     }
 
-    public void setParkourStartHeight(int height) {
+    public synchronized void setParkourStartHeight(int height) {
         configParkourStartHeight = height;
         Main.getPlugin().getConfig().set("ParkourStartHeight", height);
         Main.getPlugin().saveConfig();
     }
 
-    public void setParkourLength(int length) {
+    public synchronized void setParkourLength(int length) {
         
         configParkourLength = length;
         Main.getPlugin().getConfig().set("ParkourLength", length);
         Main.getPlugin().saveConfig();
     }
 
-    public void setCostToLowerTheDifficulty(int cost) {
+    public synchronized void setCostToLowerTheDifficulty(int cost) {
         
         configCostToLowerTheDifficulty = cost;
         Main.getPlugin().getConfig().set("CostToLowerTheDifficulty", cost);
         Main.getPlugin().saveConfig();
     }
 
-    public void setTimeToDecideWhenRespawning(int time) {
+    public synchronized void setTimeToDecideWhenRespawning(int time) {
         
         configTimeToDecideWhenRespawning = time;
         Main.getPlugin().getConfig().set("TimeToDecideWhenRespawning", time);
         Main.getPlugin().saveConfig();
     }
 
-    public void setWaitingListPosition(Location location) {
+    public synchronized void setWaitingListPosition(Location location) {
         configWaitingListPosition = location;
         Main.getPlugin().getConfig().set("WaitingListPosition", location);
         Main.getPlugin().saveConfig();
@@ -223,24 +231,17 @@ public class Config {
             }
         }
         catch(NullPointerException e){
-            
             Main.getPlugin().getLogger().info(e.getMessage());
-            Main.getPlugin().getLogger().info("cant check config boolean because player_12 is null");
+            Main.getPlugin().getLogger().info("cant check config boolean because player is null");
         }
         return false;
     }
 
     public boolean checkConfigBoolean(String topic) {
-        try {
-            if (topic.equals("SetUp")) {
-                return configSetUp;
-            }
+        if (topic.equals("SetUp")) {
+            return configSetUp;
         }
-        catch(NullPointerException e){
-            
-            Main.getPlugin().getLogger().info(e.getMessage());
-            Main.getPlugin().getLogger().info("cant check config boolean because player_12 is null");
-        }
+        Main.getPlugin().getLogger().warning("No possible topic was entered!");
         return false;
     }
 
