@@ -20,9 +20,15 @@ import static de.j.deathMinigames.listeners.DeathListener.*;
 public class Minigame {
     private static Minigame minigame = new Minigame();
 
+    private Minigame() {}
+
     public static Minigame getInstance() {
         if(minigame == null) {
-            minigame = new Minigame();
+            synchronized (Minigame.class) {
+                if(minigame == null) {
+                    minigame = new Minigame();
+                }
+            }
         }
         return minigame;
     }
@@ -138,7 +144,7 @@ public class Minigame {
      * @param player    the player who won the minigame
      */
     public void winMessage(Player player) {
-        Difficulty difficulty = new Difficulty();
+        Difficulty difficulty = Difficulty.getInstance();
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
 

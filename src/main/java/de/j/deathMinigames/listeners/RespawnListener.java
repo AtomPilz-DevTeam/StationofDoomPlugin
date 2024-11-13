@@ -55,11 +55,13 @@ public class RespawnListener implements Listener {
         TranslationFactory tf = new TranslationFactory();
         Config config = Config.getInstance();
         UUID uuidPlayer = player.getUniqueId();
+        int timeToDecide = config.checkConfigInt("TimeToDecideWhenRespawning");
         playerDecisions.put(uuidPlayer, false);
+        decisionTimers.put(uuidPlayer, timeToDecide);
         new BukkitRunnable() {
             public void run() {
                 if(!player.isOnline()) {
-                    // timer and decision stays the same if player is loggin out during timer, so when he is logging in again it can continue
+                    // timer and decision stays the same if player is login out during timer, so when he is logging in again it can continue
                     cancel();
                 }
                 assert decisionTimers.containsKey(uuidPlayer) : "decisionTimers does not contain player";
@@ -70,12 +72,10 @@ public class RespawnListener implements Listener {
                         Title title = Title.title(Component.text(tf.getTranslation(player, "decideInChat")).color(NamedTextColor.GOLD),
                                 MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "decideTime", decisionTimers.get(uuidPlayer))).content()), times);
                         player.showTitle(title);
-                        int timer = decisionTimers.get(uuidPlayer);
-                        timer--;
-                        decisionTimers.replace(uuidPlayer, timer);
+                        decisionTimers.compute(uuidPlayer, (key, value) -> value - 1);
                     }
                     else {
-                        decisionTimers.replace(uuidPlayer, config.checkConfigInt("TimeToDecideWhenRespawning"));
+                        decisionTimers.remove(uuidPlayer);
                         cancel();
                     }
                 }
@@ -88,7 +88,9 @@ public class RespawnListener implements Listener {
                             .append(Component.text("Z: " + deaths.get(uuidPlayer).getBlockZ()).color(NamedTextColor.RED)));
                     dropInv(player);
                     playerDecisions.put(uuidPlayer, true);
-                    decisionTimers.put(uuidPlayer, config.checkConfigInt("TimeToDecideWhenRespawning"));
+                    if(!deaths.containsKey(uuidPlayer)) {
+                        decisionTimers.remove(uuidPlayer);
+                    }
                     cancel();
                 }
             }

@@ -12,7 +12,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Config {
-    private volatile static Config instance;
+    private static volatile Config instance;
 
     private volatile static ConcurrentHashMap<UUID, Integer> configDifficulty = new ConcurrentHashMap<>();
     private volatile static List<UUID> configIntroduction = Collections.synchronizedList(new ArrayList<>());
@@ -38,7 +38,11 @@ public class Config {
 
     public synchronized static Config getInstance(){
         if(instance == null){
-            instance = new Config();
+            synchronized (Config.class){
+                if (instance == null){
+                    instance = new Config();
+                }
+            }
         }
         return instance;
     }

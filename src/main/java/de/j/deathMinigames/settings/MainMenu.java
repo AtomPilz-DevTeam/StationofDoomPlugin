@@ -15,15 +15,52 @@ import java.util.ArrayList;
 
 public class MainMenu implements InventoryHolder {
     private Inventory inventory;
-    public static GUI introduction = new GUI("Introduction", true);
-    public static GUI difficulty = new GUI("Difficulty", true);
-    public static GUI usesPlugin = new GUI("UsesPlugin", true);
-    public static GUI difficultyPlayerSettings = new GUI("Difficulty - Settings", false);
-    public static GUI setUp = new GUI("SetUp", false);
-    public static GUI parkourStartHeight = new GUI("ParkourStartHeight", false);
-    public static GUI parkourLength = new GUI("ParkourLength", false);
-    public static GUI costToLowerTheDifficulty = new GUI("CostToLowerTheDifficulty", false);
-    public static GUI timeToDecideWhenRespawning = new GUI("TimeToDecideWhenRespawning", false);
+
+    public synchronized static GUI getIntroduction() {
+        return introduction;
+    }
+
+    public synchronized static GUI getDifficulty() {
+        return difficulty;
+    }
+
+    public synchronized static GUI getUsesPlugin() {
+        return usesPlugin;
+    }
+
+    public synchronized static GUI getDifficultyPlayerSettings() {
+        return difficultyPlayerSettings;
+    }
+
+    public synchronized static GUI getSetUp() {
+        return setUp;
+    }
+
+    public synchronized static GUI getParkourStartHeight() {
+        return parkourStartHeight;
+    }
+
+    public synchronized static GUI getParkourLength() {
+        return parkourLength;
+    }
+
+    public synchronized static GUI getCostToLowerTheDifficulty() {
+        return costToLowerTheDifficulty;
+    }
+
+    public synchronized static GUI getTimeToDecideWhenRespawning() {
+        return timeToDecideWhenRespawning;
+    }
+
+    public volatile static GUI introduction = new GUI("Introduction", true);
+    public volatile static GUI difficulty = new GUI("Difficulty", true);
+    public volatile static GUI usesPlugin = new GUI("UsesPlugin", true);
+    public volatile static GUI difficultyPlayerSettings = new GUI("Difficulty - Settings", false);
+    public volatile static GUI setUp = new GUI("SetUp", false);
+    public volatile static GUI parkourStartHeight = new GUI("ParkourStartHeight", false);
+    public volatile static GUI parkourLength = new GUI("ParkourLength", false);
+    public volatile static GUI costToLowerTheDifficulty = new GUI("CostToLowerTheDifficulty", false);
+    public volatile static GUI timeToDecideWhenRespawning = new GUI("TimeToDecideWhenRespawning", false);
 
     public void showPlayerSettings(Player player) {
         inventory = Bukkit.createInventory(this, 9, "Settings");
@@ -51,7 +88,6 @@ public class MainMenu implements InventoryHolder {
         player.openInventory(inventory);
     }
 
-
     public void addClickableItemStack(String name, Material material, int amount, int slotWhereToPutTheItem) {
         // item has to be added in InventoryListener manually to make it clickable
         ItemStack itemStack = new ItemStack(material, amount);
@@ -64,9 +100,9 @@ public class MainMenu implements InventoryHolder {
 
     public void difficultySettingsSetInventoryContents(int difficulty) {
         for(int i = 0; i < 11; i++) {
-            MainMenu.difficultyPlayerSettings.addClickableItemStack(Integer.toString(i), Material.RED_CONCRETE_POWDER, 1, i);
+            MainMenu.getDifficultyPlayerSettings().addClickableItemStack(Integer.toString(i), Material.RED_CONCRETE_POWDER, 1, i);
         }
-        MainMenu.difficultyPlayerSettings.addClickableItemStack(Integer.toString(difficulty), Material.GREEN_CONCRETE_POWDER, 1 ,difficulty);
+        MainMenu.getDifficultyPlayerSettings().addClickableItemStack(Integer.toString(difficulty), Material.GREEN_CONCRETE_POWDER, 1 ,difficulty);
     }
 
     public void setUpSettingsSetInventoryContents() {
@@ -78,16 +114,16 @@ public class MainMenu implements InventoryHolder {
         int timeToDecideWhenRespawning = config.checkConfigInt("TimeToDecideWhenRespawning");
 
         if(startHeight != 0) {
-            setUp.addClickableItemStack("Parcour Start Height", Material.LADDER, startHeight, 0);
+            getSetUp().addClickableItemStack("Parcour Start Height", Material.LADDER, startHeight, 0);
         }
         else {
-            setUp.addClickableItemStack("Parcour Start Height", Material.LADDER, 1, 0);
+            getSetUp().addClickableItemStack("Parcour Start Height", Material.LADDER, 1, 0);
         }
         if(parkourLength != 0) {
-            setUp.addClickableItemStack("Parcour length", Material.LADDER, parkourLength, 1);
+            getSetUp().addClickableItemStack("Parcour length", Material.LADDER, parkourLength, 1);
         }
         else {
-            setUp.addClickableItemStack("Parcour length", Material.LADDER, 1, 1);
+            getSetUp().addClickableItemStack("Parcour length", Material.LADDER, 1, 1);
         }
         if(waitingListPosition!=null) {
             ArrayList<String> lore = new ArrayList<>();
@@ -95,22 +131,22 @@ public class MainMenu implements InventoryHolder {
             lore.add(String.format("X: %d", waitingListPosition.getBlockX()));
             lore.add(String.format("Y: %d", waitingListPosition.getBlockY()));
             lore.add(String.format("Z: %d", waitingListPosition.getBlockZ()));
-            setUp.addClickableItemStack("WaitingListPosition", Material.GREEN_CONCRETE_POWDER, 1, 2, lore);
+            getSetUp().addClickableItemStack("WaitingListPosition", Material.GREEN_CONCRETE_POWDER, 1, 2, lore);
         }
         else {
-            setUp.addClickableItemStack("WaitingListPosition", Material.RED_CONCRETE_POWDER, 1, 2);
+            getSetUp().addClickableItemStack("WaitingListPosition", Material.RED_CONCRETE_POWDER, 1, 2);
         }
         if(costToLowerTheDifficulty != 0) {
-            setUp.addClickableItemStack("cost to lower the difficulty", Material.DIAMOND, costToLowerTheDifficulty, 3);
+            getSetUp().addClickableItemStack("cost to lower the difficulty", Material.DIAMOND, costToLowerTheDifficulty, 3);
         }
         else {
-            setUp.addClickableItemStack("cost to lower the difficulty", Material.DIAMOND, 1, 3);
+            getSetUp().addClickableItemStack("cost to lower the difficulty", Material.DIAMOND, 1, 3);
         }
         if(timeToDecideWhenRespawning != 0) {
-            setUp.addClickableItemStack("time to decide when respawning", Material.CLOCK, timeToDecideWhenRespawning, 4);
+            getSetUp().addClickableItemStack("time to decide when respawning", Material.CLOCK, timeToDecideWhenRespawning, 4);
         }
         else {
-            setUp.addClickableItemStack("time to decide when respawning", Material.CLOCK, 1, 4);
+            getSetUp().addClickableItemStack("time to decide when respawning", Material.CLOCK, 1, 4);
         }
     }
 
@@ -119,10 +155,10 @@ public class MainMenu implements InventoryHolder {
         int startHeight = config.checkConfigInt("ParkourStartHeight");
         for(int i = 0; i < 29; i++) {
             if(startHeight == i*10) {
-                MainMenu.parkourStartHeight.addClickableItemStack(Integer.toString(i*10), Material.GREEN_CONCRETE_POWDER, 1, i);
+                MainMenu.getParkourStartHeight().addClickableItemStack(Integer.toString(i*10), Material.GREEN_CONCRETE_POWDER, 1, i);
             }
             else {
-                MainMenu.parkourStartHeight.addClickableItemStack(Integer.toString(i*10), Material.RED_CONCRETE_POWDER, 1, i);
+                MainMenu.getParkourStartHeight().addClickableItemStack(Integer.toString(i*10), Material.RED_CONCRETE_POWDER, 1, i);
             }
         }
     }
@@ -132,10 +168,10 @@ public class MainMenu implements InventoryHolder {
         int length = config.checkConfigInt("ParkourLength");
         for(int i = 0; i < 20; i++) {
             if(length == i) {
-                MainMenu.parkourLength.addClickableItemStack(Integer.toString(i), Material.GREEN_CONCRETE_POWDER, 1, i);
+                MainMenu.getParkourLength().addClickableItemStack(Integer.toString(i), Material.GREEN_CONCRETE_POWDER, 1, i);
             }
             else {
-                MainMenu.parkourLength.addClickableItemStack(Integer.toString(i), Material.RED_CONCRETE_POWDER, 1, i);
+                MainMenu.getParkourLength().addClickableItemStack(Integer.toString(i), Material.RED_CONCRETE_POWDER, 1, i);
             }
         }
     }
@@ -145,10 +181,10 @@ public class MainMenu implements InventoryHolder {
         int length = config.checkConfigInt("CostToLowerTheDifficulty");
         for(int i = 1; i < 11; i++) {
             if(length == i) {
-                MainMenu.costToLowerTheDifficulty.addClickableItemStack(Integer.toString(i), Material.GREEN_CONCRETE_POWDER, 1, i-1);
+                MainMenu.getCostToLowerTheDifficulty().addClickableItemStack(Integer.toString(i), Material.GREEN_CONCRETE_POWDER, 1, i-1);
             }
             else {
-                MainMenu.costToLowerTheDifficulty.addClickableItemStack(Integer.toString(i), Material.RED_CONCRETE_POWDER, 1, i-1);
+                MainMenu.getCostToLowerTheDifficulty().addClickableItemStack(Integer.toString(i), Material.RED_CONCRETE_POWDER, 1, i-1);
             }
         }
     }
@@ -158,16 +194,16 @@ public class MainMenu implements InventoryHolder {
         int time = config.checkConfigInt("TimeToDecideWhenRespawning");
         for(int i = 5; i < 31; i++) {
             if(time == i) {
-                MainMenu.timeToDecideWhenRespawning.addClickableItemStack(Integer.toString(time), Material.GREEN_CONCRETE_POWDER, 1, i-5);
+                MainMenu.getTimeToDecideWhenRespawning().addClickableItemStack(Integer.toString(time), Material.GREEN_CONCRETE_POWDER, 1, i-5);
             }
             else {
-                MainMenu.timeToDecideWhenRespawning.addClickableItemStack(Integer.toString(i), Material.RED_CONCRETE_POWDER, 1, i-5);
+                MainMenu.getTimeToDecideWhenRespawning().addClickableItemStack(Integer.toString(i), Material.RED_CONCRETE_POWDER, 1, i-5);
             }
         }
     }
 
     @Override
-    public @NotNull Inventory getInventory() {
+    public Inventory getInventory() {
         return inventory;
     }
 }
