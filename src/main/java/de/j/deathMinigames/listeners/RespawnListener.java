@@ -35,7 +35,7 @@ public class RespawnListener implements Listener {
     }
 
     private synchronized void dropInv(Player player) {
-        Minigame minigame = new Minigame();
+        Minigame minigame = Minigame.getInstance();
         UUID uuid = player.getUniqueId();
 
         assert inventories.containsKey(uuid) : "inventories does not contain player";

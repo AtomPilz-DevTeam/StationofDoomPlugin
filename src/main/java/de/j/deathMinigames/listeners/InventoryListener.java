@@ -27,7 +27,7 @@ public class InventoryListener implements Listener {
         Config config = Config.getInstance();
         MainMenu mainMenu = new MainMenu();
         InventoryHolder invHolder = event.getInventory().getHolder();
-        Minigame minigame = new Minigame();
+        Minigame minigame = Minigame.getInstance();
 
         UUID ID;
         int slot = event.getSlot();

@@ -1,5 +1,6 @@
 package de.j.deathMinigames.deathMinigames;
 
+import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import io.papermc.paper.configuration.type.fallback.FallbackValue;
 import net.kyori.adventure.text.Component;
@@ -19,7 +20,13 @@ import static de.j.deathMinigames.listeners.DeathListener.inventories;
 public class Introduction {
     private static Introduction introduction = new Introduction();
 
+    private Introduction() {
+    }
+
     public static Introduction getInstance() {
+        if(introduction == null) {
+            introduction = new Introduction();
+        }
         return introduction;
     }
 
@@ -29,9 +36,11 @@ public class Introduction {
     }
 
     public void introStart(Player player) {
-        Location locationIntro = new Location(player.getWorld(), 115.5F, 100, 53.5F);
+        Config config = Config.getInstance();
+        Location location = config.checkConfigLocation("WaitingListPosition");
+        location.setY(location.getY() + 5);
         sendPlayerIntroMessage(player);
-        teleportPlayerToGod(player, locationIntro);
+        teleportPlayerToGod(player, location);
     }
 
     private void sendPlayerIntroMessage(Player player) {
@@ -44,7 +53,7 @@ public class Introduction {
     }
 
     private void teleportPlayerToGod(Player player, Location location) {
-        Minigame minigame = new Minigame();
+        Minigame minigame = Minigame.getInstance();
 
         if(location.getBlock().getType() != Material.BARRIER) {
             placeBarrierCageAroundLoc(location);
@@ -67,7 +76,7 @@ public class Introduction {
     }
 
     public void dropInv(Player player) {
-        Minigame minigame = new Minigame();
+        Minigame minigame = Minigame.getInstance();
         UUID uuid = player.getUniqueId();
         Inventory inv = inventories.get(uuid);
 
@@ -75,9 +84,14 @@ public class Introduction {
         assert deaths.containsKey(uuid) : "deaths does not contain player";
 
         minigame.loseMessage(player);
-        for (int i = 0; i < inv.getSize(); i++) {
-            if (inv.getItem(i) == null) continue;
-            player.getWorld().dropItem(deaths.get(uuid), inv.getItem(i));
+        try {
+            for (int i = 0; i < inv.getSize(); i++) {
+                if (inv.getItem(i) == null) continue;
+                player.getWorld().dropItem(deaths.get(uuid), inv.getItem(i));
+            }
+        }
+        catch (IllegalArgumentException e) {
+            Main.getPlugin().getLogger().warning("Failed to drop items for player " + player.getName());
         }
         teleportPlayer(player);
         minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);

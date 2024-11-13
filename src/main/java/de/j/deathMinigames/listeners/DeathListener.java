@@ -43,10 +43,18 @@ public class DeathListener implements Listener {
     public void onDeath(PlayerDeathEvent event) {
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
+        if(event == null || event.getPlayer() == null ) {
+            Main.getPlugin().getLogger().warning("Event or player in onDeaht is null!");
+            return;
+        }
 
         Player player = event.getPlayer();
+        if(player.getInventory() == null) {
+            Main.getPlugin().getLogger().warning("Player inventory is null!");
+            return;
+        }
         Inventory inventory = Bukkit.createInventory(null, 45);
-        inventory.setContents(event.getPlayer().getInventory().getContents());
+        inventory.setContents(player.getInventory().getContents());
         Location deathpoint = event.getPlayer().getLocation();
 
         if(!config.checkConfigBoolean(player, "UsesPlugin")) {
@@ -54,7 +62,7 @@ public class DeathListener implements Listener {
             return;
         }
 
-        Component message = Component.text("Template");
+        Component message;
         deaths.put(player.getUniqueId(), deathpoint);
         if (inventory.isEmpty()) {
             message = Component.text(tf.getTranslation(player, "didNotSaveInv"));

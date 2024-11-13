@@ -40,7 +40,7 @@ public class GUI implements InventoryHolder {
                 }
                 ItemStack itemStack = new ItemStack(material);
                 ItemMeta itemMeta = itemStack.getItemMeta();
-                itemMeta.displayName(Component.text(Bukkit.getPlayer(Config.getKnownPlayers().get(i)).getName()));
+                itemMeta.displayName(Component.text(player.getName()));
                 itemStack.setItemMeta(itemMeta);
 
                 inventory.setItem(i, itemStack);
@@ -58,12 +58,7 @@ public class GUI implements InventoryHolder {
      */
     public void addClickableItemStack(String name, Material material, int amount, int slotWhereToPutTheItem) {
         // item has to be added in InventoryListener manually to make it clickable
-        ItemStack itemStack = new ItemStack(material, amount);
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(name);
-        itemStack.setItemMeta(itemMeta);
-
-        inventory.setItem(slotWhereToPutTheItem, itemStack);
+        addClickableItemStack(name, material, amount, slotWhereToPutTheItem, null);
     }
 
     /**
@@ -81,7 +76,9 @@ public class GUI implements InventoryHolder {
         ItemStack itemStack = new ItemStack(material, amount);
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(name);
-        itemMeta.setLore(loreList);
+        if(lore != null) {
+            itemMeta.setLore(loreList);
+        }
         itemStack.setItemMeta(itemMeta);
 
         inventory.setItem(slotWhereToPutTheItem, itemStack);
