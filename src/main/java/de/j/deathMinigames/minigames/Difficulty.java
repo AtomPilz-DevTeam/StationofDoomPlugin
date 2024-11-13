@@ -9,6 +9,18 @@ import org.bukkit.inventory.ItemStack;
 import de.j.deathMinigames.deathMinigames.Config;
 
 public class Difficulty {
+    private static volatile Difficulty instance;
+
+    public synchronized static Difficulty getInstance() {
+        if(instance == null) {
+            synchronized (Difficulty.class) {
+                if(instance == null) {
+                    instance = new Difficulty();
+                }
+            }
+        }
+        return instance;
+    }
 
     private static final int maxDifficulty = 10;
 

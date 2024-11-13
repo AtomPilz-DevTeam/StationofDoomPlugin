@@ -22,6 +22,9 @@ public class GUI implements InventoryHolder {
     private final UUID uuid = UUID.randomUUID();
 
     public GUI(String title, boolean addAllPlayers) {
+        if(title == null) {
+            throw new NullPointerException("Title is null!");
+        }
         Config config = Config.getInstance();
         InventoryListener inventoryListener = new InventoryListener();
 
@@ -85,6 +88,9 @@ public class GUI implements InventoryHolder {
     }
 
     public void addClickableContentsViaItemStackList(ItemStack[] itemStackList) {
+        if(itemStackList.length > inventory.getSize()) {
+            throw new IllegalArgumentException("The StackList is bigger then the size of the inventory!");
+        }
         inventory.setContents(itemStackList);
     }
 

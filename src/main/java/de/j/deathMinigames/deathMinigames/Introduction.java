@@ -2,7 +2,6 @@ package de.j.deathMinigames.deathMinigames;
 
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
-import io.papermc.paper.configuration.type.fallback.FallbackValue;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
@@ -11,6 +10,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import de.j.deathMinigames.minigames.Minigame;
 import org.bukkit.inventory.Inventory;
+import de.j.deathMinigames.deathMinigames.Config;
 
 import java.util.UUID;
 
@@ -18,14 +18,18 @@ import static de.j.deathMinigames.listeners.DeathListener.deaths;
 import static de.j.deathMinigames.listeners.DeathListener.inventories;
 
 public class Introduction {
-    private static Introduction introduction = new Introduction();
+    private static volatile Introduction introduction = new Introduction();
 
     private Introduction() {
     }
 
     public static Introduction getInstance() {
         if(introduction == null) {
-            introduction = new Introduction();
+            synchronized (Introduction.class) {
+                if(introduction == null) {
+                    introduction = new Introduction();
+                }
+            }
         }
         return introduction;
     }
@@ -63,16 +67,20 @@ public class Introduction {
     }
 
     private void placeBarrierCageAroundLoc(Location location) {
-        location.getWorld().getBlockAt(new Location(location.getWorld(), location.getX(), location.getY() - 1, location.getZ())).setType(Material.BARRIER);
-        location.getWorld().getBlockAt(new Location(location.getWorld(), location.getX() + 1, location.getY(), location.getZ())).setType(Material.BARRIER);
-        location.getWorld().getBlockAt(new Location(location.getWorld(), location.getX() - 1, location.getY(), location.getZ())).setType(Material.BARRIER);
-        location.getWorld().getBlockAt(new Location(location.getWorld(), location.getX(), location.getY(), location.getZ() + 1)).setType(Material.BARRIER);
-        location.getWorld().getBlockAt(new Location(location.getWorld(), location.getX(), location.getY(), location.getZ() - 1)).setType(Material.BARRIER);
-        location.getWorld().getBlockAt(new Location(location.getWorld(), location.getX() + 1, location.getY() + 1, location.getZ())).setType(Material.BARRIER);
-        location.getWorld().getBlockAt(new Location(location.getWorld(), location.getX() - 1, location.getY() + 1, location.getZ())).setType(Material.BARRIER);
-        location.getWorld().getBlockAt(new Location(location.getWorld(), location.getX(), location.getY() + 1, location.getZ() + 1)).setType(Material.BARRIER);
-        location.getWorld().getBlockAt(new Location(location.getWorld(), location.getX(), location.getY() + 1, location.getZ() - 1)).setType(Material.BARRIER);
-        location.getWorld().getBlockAt(new Location(location.getWorld(), location.getX(), location.getY() + 2, location.getZ())).setType(Material.BARRIER);
+        int[][] offsets = {
+                {0, -1, 0},
+                {1, 0, 0}, {-1, 0, 0}, {0, 0, 1}, {0, 0, -1},
+                {1, 1, 0}, {-1, 1, 0}, {0, 1, 1}, {0, 1, -1},
+                {0, 2, 0}
+        };
+        try {
+            for (int[] offset : offsets) {
+                location.clone().add(offset[0], offset[1], offset[2]).getBlock().setType(Material.BARRIER);
+            }
+        }
+        catch (IllegalStateException e) {
+            Main.getPlugin().getLogger().warning(String.format("Failes to place barrier cage at %s",location));
+        }
     }
 
     public void dropInv(Player player) {

@@ -20,7 +20,7 @@ import de.j.deathMinigames.settings.MainMenu;
 import java.util.UUID;
 
 public class InventoryListener implements Listener {
-    private Player playerClicked;
+    private volatile Player playerClicked;
 
     @EventHandler
     public void onSettingsClick(InventoryClickEvent event) {
@@ -38,29 +38,29 @@ public class InventoryListener implements Listener {
             switch (slot) {
                 case 0:
                     reloadInventory("SetUp", mainMenu);
-                    MainMenu.setUp.addBackButton(player);
-                    MainMenu.setUp.showInventory(player);
+                    MainMenu.getSetUp().addBackButton(player);
+                    MainMenu.getSetUp().showInventory(player);
                     break;
                 case 1:
                     reloadInventory("Introduction", mainMenu);
-                    MainMenu.introduction.addBackButton(player);
-                    MainMenu.introduction.showInventory(player);
+                    MainMenu.getIntroduction().addBackButton(player);
+                    MainMenu.getIntroduction().showInventory(player);
                     break;
                 case 2:
                     reloadInventory("UsesPlugin", mainMenu);
-                    MainMenu.usesPlugin.addBackButton(player);
-                    MainMenu.usesPlugin.showInventory(player);
+                    MainMenu.getUsesPlugin().addBackButton(player);
+                    MainMenu.getUsesPlugin().showInventory(player);
                     break;
                 case 3:
-                    MainMenu.difficulty.addBackButton(player);
-                    MainMenu.difficulty.showInventory(player);
+                    MainMenu.getDifficulty().addBackButton(player);
+                    MainMenu.getDifficulty().showInventory(player);
                     break;
             }
         }
         else if(invHolder instanceof GUI) {
             GUI gui = (GUI) invHolder;
             ID = gui.getUUID();
-            if(ID == MainMenu.introduction.getUUID()) {
+            if(ID == MainMenu.getIntroduction().getUUID()) {
                 event.setCancelled(true);
                 if(slot == 53) {
                     mainMenu.showPlayerSettings(player);
@@ -79,7 +79,7 @@ public class InventoryListener implements Listener {
                     player.sendMessage(Component.text("Changed Introduction of " + playerClicked.getName() + " to " + config.checkConfigBoolean(playerClicked, "Introduction")).color(NamedTextColor.RED));
                 }
             }
-            else if (ID == MainMenu.usesPlugin.getUUID()) {
+            else if (ID == MainMenu.getUsesPlugin().getUUID()) {
                 event.setCancelled(true);
                 if(slot == 53) {
                     mainMenu.showPlayerSettings(player);
@@ -98,7 +98,7 @@ public class InventoryListener implements Listener {
                     player.sendMessage(Component.text("Changed UsesPlugin of " + playerClicked.getName() + " to " + config.checkConfigBoolean(playerClicked, "UsesPlugin")).color(NamedTextColor.RED));
                 }
             }
-            else if (ID == MainMenu.difficulty.getUUID()) {
+            else if (ID == MainMenu.getDifficulty().getUUID()) {
                 event.setCancelled(true);
                 if (slot == 53) {
                     mainMenu.showPlayerSettings(player);
@@ -107,11 +107,11 @@ public class InventoryListener implements Listener {
                     assert playerClicked != null : "playerClicked is null";
                     Main.getPlugin().getLogger().info(playerClicked.getName());
                     reloadInventory("Difficulty - Settings", slot, mainMenu);
-                    MainMenu.difficultyPlayerSettings.addBackButton(player);
-                    MainMenu.difficultyPlayerSettings.showInventory(player);
+                    MainMenu.getDifficultyPlayerSettings().addBackButton(player);
+                    MainMenu.getDifficultyPlayerSettings().showInventory(player);
                 }
             }
-            else if(ID == MainMenu.difficultyPlayerSettings.getUUID()) {
+            else if(ID == MainMenu.getDifficultyPlayerSettings().getUUID()) {
                 event.setCancelled(true);
                 if(slot == 53) {
                     mainMenu.showPlayerSettings(player);
@@ -123,7 +123,7 @@ public class InventoryListener implements Listener {
                     player.sendMessage(Component.text("Changed Difficulty of " + playerClicked.getName() + " to " + config.checkConfigInt(playerClicked, "Difficulty")).color(NamedTextColor.RED));
                 }
             }
-            else if(ID == MainMenu.setUp.getUUID()) {
+            else if(ID == MainMenu.getSetUp().getUUID()) {
                 event.setCancelled(true);
                 if(slot == 53) {
                     mainMenu.showPlayerSettings(player);
@@ -132,13 +132,13 @@ public class InventoryListener implements Listener {
                     switch (slot) {
                         case 0:
                             reloadInventory("ParkourStartHeight", mainMenu);
-                            MainMenu.parkourStartHeight.addBackButton(player);
-                            MainMenu.parkourStartHeight.showInventory(player);
+                            MainMenu.getParkourStartHeight().addBackButton(player);
+                            MainMenu.getParkourStartHeight().showInventory(player);
                             break;
                         case 1:
                             reloadInventory("ParkourLength", mainMenu);
-                            MainMenu.parkourLength.addBackButton(player);
-                            MainMenu.parkourLength.showInventory(player);
+                            MainMenu.getParkourLength().addBackButton(player);
+                            MainMenu.getParkourLength().showInventory(player);
                             break;
                         case 2:
                             config.setWaitingListPosition(player.getLocation());
@@ -147,18 +147,18 @@ public class InventoryListener implements Listener {
                             break;
                         case 3:
                             reloadInventory("CostToLowerTheDifficulty", mainMenu);
-                            MainMenu.costToLowerTheDifficulty.addBackButton(player);
-                            MainMenu.costToLowerTheDifficulty.showInventory(player);
+                            MainMenu.getCostToLowerTheDifficulty().addBackButton(player);
+                            MainMenu.getCostToLowerTheDifficulty().showInventory(player);
                             break;
                         case 4:
                             reloadInventory("TimeToDecideWhenRespawning", mainMenu);
-                            MainMenu.timeToDecideWhenRespawning.addBackButton(player);
-                            MainMenu.timeToDecideWhenRespawning.showInventory(player);
+                            MainMenu.getTimeToDecideWhenRespawning().addBackButton(player);
+                            MainMenu.getTimeToDecideWhenRespawning().showInventory(player);
                             break;
                     }
                 }
             }
-            else if (ID == MainMenu.parkourStartHeight.getUUID()) {
+            else if (ID == MainMenu.getParkourStartHeight().getUUID()) {
                 event.setCancelled(true);
                 if(slot == 53) {
                     mainMenu.showPlayerSettings(player);
@@ -170,7 +170,7 @@ public class InventoryListener implements Listener {
                     reloadInventory("ParkourStartHeight", mainMenu);
                 }
             }
-            else if (ID == MainMenu.parkourLength.getUUID()) {
+            else if (ID == MainMenu.getParkourLength().getUUID()) {
                 event.setCancelled(true);
                 if(slot == 53) {
                     mainMenu.showPlayerSettings(player);
@@ -181,7 +181,7 @@ public class InventoryListener implements Listener {
                     reloadInventory("ParkourLength", mainMenu);
                 }
             }
-            else if (ID == MainMenu.costToLowerTheDifficulty.getUUID()) {
+            else if (ID == MainMenu.getCostToLowerTheDifficulty().getUUID()) {
                 event.setCancelled(true);
                 if(slot == 53) {
                     mainMenu.showPlayerSettings(player);
@@ -193,7 +193,7 @@ public class InventoryListener implements Listener {
                     reloadInventory("CostToLowerTheDifficulty", mainMenu);
                 }
             }
-            else if (ID == MainMenu.timeToDecideWhenRespawning.getUUID()) {
+            else if (ID == MainMenu.getTimeToDecideWhenRespawning().getUUID()) {
                 event.setCancelled(true);
                 if(slot == 53) {
                     mainMenu.showPlayerSettings(player);
@@ -222,18 +222,18 @@ public class InventoryListener implements Listener {
         switch (inventory) {
             case "Introduction":
                 if(config.checkConfigBoolean(playerClicked, "Introduction")) {
-                    MainMenu.introduction.addClickableItemStack(playerClicked.getName(), Material.GREEN_CONCRETE_POWDER, 1, slot);
+                    MainMenu.getIntroduction().addClickableItemStack(playerClicked.getName(), Material.GREEN_CONCRETE_POWDER, 1, slot);
                 }
                 else {
-                    MainMenu.introduction.addClickableItemStack(playerClicked.getName(), Material.RED_CONCRETE_POWDER, 1, slot);
+                    MainMenu.getIntroduction().addClickableItemStack(playerClicked.getName(), Material.RED_CONCRETE_POWDER, 1, slot);
                 }
                 break;
             case "UsesPlugin":
                 if(config.checkConfigBoolean(playerClicked, "UsesPlugin")) {
-                    MainMenu.usesPlugin.addClickableItemStack(playerClicked.getName(), Material.GREEN_CONCRETE_POWDER, 1, slot);
+                    MainMenu.getUsesPlugin().addClickableItemStack(playerClicked.getName(), Material.GREEN_CONCRETE_POWDER, 1, slot);
                 }
                 else {
-                    MainMenu.usesPlugin.addClickableItemStack(playerClicked.getName(), Material.RED_CONCRETE_POWDER, 1, slot);
+                    MainMenu.getUsesPlugin().addClickableItemStack(playerClicked.getName(), Material.RED_CONCRETE_POWDER, 1, slot);
                 }
                 break;
             case "Difficulty - Settings":
@@ -265,7 +265,7 @@ public class InventoryListener implements Listener {
                     else {
                         material = Material.RED_CONCRETE_POWDER;
                     }
-                    MainMenu.introduction.addClickableItemStack(getPlayerFromListFromSpecificInt(i).getName(), material, 1, i);
+                    MainMenu.getIntroduction().addClickableItemStack(getPlayerFromListFromSpecificInt(i).getName(), material, 1, i);
                 }
                 break;
             case "UsesPlugin":
@@ -277,7 +277,7 @@ public class InventoryListener implements Listener {
                     else {
                         material = Material.RED_CONCRETE_POWDER;
                     }
-                    MainMenu.usesPlugin.addClickableItemStack(getPlayerFromListFromSpecificInt(i).getName(), material, 1, i);
+                    MainMenu.getUsesPlugin().addClickableItemStack(getPlayerFromListFromSpecificInt(i).getName(), material, 1, i);
                 }
                 break;
             case "Difficulty - Settings":

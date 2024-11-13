@@ -15,7 +15,9 @@ import static de.j.deathMinigames.listeners.DeathListener.playerInArena;
 import static de.j.deathMinigames.listeners.DeathListener.waitingListMinigame;
 
 public class JumpAndRun {
-    private static JumpAndRun jumpAndRun = new JumpAndRun();
+    private static volatile JumpAndRun jumpAndRun = new JumpAndRun();
+
+    private JumpAndRun() {}
 
     private ArrayList<Block> blocksToDelete = new ArrayList<Block> ();
     private boolean woolPlaced = false;
@@ -26,7 +28,11 @@ public class JumpAndRun {
 
     public static JumpAndRun getInstance() {
         if(jumpAndRun == null) {
-            jumpAndRun = new JumpAndRun();
+            synchronized (JumpAndRun.class) {
+                if(jumpAndRun == null) {
+                    jumpAndRun = new JumpAndRun();
+                }
+            }
         }
         return jumpAndRun;
     }
