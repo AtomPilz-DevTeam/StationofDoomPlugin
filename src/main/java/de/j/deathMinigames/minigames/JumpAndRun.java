@@ -25,6 +25,9 @@ public class JumpAndRun {
     private int _z = 0;
 
     public static JumpAndRun getInstance() {
+        if(jumpAndRun == null) {
+            jumpAndRun = new JumpAndRun();
+        }
         return jumpAndRun;
     }
 
@@ -32,7 +35,7 @@ public class JumpAndRun {
      * runs the minigame JumpAndRun
      */
     public void start() {
-        Minigame mg = new Minigame();
+        Minigame mg = Minigame.getInstance();
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
         Player playerInArena = DeathListener.getPlayerInArena();
@@ -89,7 +92,7 @@ public class JumpAndRun {
      * @return              true if he reaches that height or higher, false if he does not reach that height
      */
     private boolean checkIfPlayerWon(Player player) {
-        Minigame mg = new Minigame();
+        Minigame mg = Minigame.getInstance();
         if (checkIfOnGold(player)) {
             mg.winMessage(player);
             mg.showInv(player);
@@ -116,7 +119,7 @@ public class JumpAndRun {
      * @return              true if he lost, false if he did not lose
      */
     private boolean checkIfPlayerLost(Player player, int heightToLose) {
-        Minigame mg = new Minigame();
+        Minigame mg = Minigame.getInstance();
         if (player.getLocation().getBlockY() <= heightToLose) {
             mg.loseMessage(player);
             mg.dropInvWithTeleport(player, true);
@@ -184,7 +187,7 @@ public class JumpAndRun {
      * @param heightToWin   at which height to check if the player won
      */
     private void parkourGenerator(Location firstBLock, int heightToWin) {
-        Minigame mg = new Minigame();
+        Minigame mg = Minigame.getInstance();
         Config config = Config.getInstance();
         Player playerInArena = DeathListener.getPlayerInArena();
 

@@ -11,6 +11,9 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import de.j.deathMinigames.deathMinigames.Config;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.UUID;
 
 import static de.j.deathMinigames.listeners.DeathListener.*;
 
@@ -18,6 +21,9 @@ public class Minigame {
     private static Minigame minigame = new Minigame();
 
     public static Minigame getInstance() {
+        if(minigame == null) {
+            minigame = new Minigame();
+        }
         return minigame;
     }
 
@@ -33,7 +39,6 @@ public class Minigame {
         TranslationFactory tf = new TranslationFactory();
         Player playerInArena = DeathListener.getPlayerInArena();
 
-
         if(!introduction.checkIfPlayerGotIntroduced(player)) {
             introduction.introStart(player);
         }
@@ -42,7 +47,7 @@ public class Minigame {
                 jumpAndRun.start();
             }
             else {
-                if(player.getUniqueId().equals(playerInArena.getUniqueId())) {
+                if(!player.getUniqueId().equals(playerInArena.getUniqueId())) {
                     player.sendMessage(Component.text(tf.getTranslation(player, "arenaIsFull")).color(NamedTextColor.GOLD));
                     Location locationBox = config.checkConfigLocation("WaitingListPosition");
                     if(locationBox != null) {
@@ -115,8 +120,11 @@ public class Minigame {
      * @param player    the player whose inventory is to be droopped
      */
     private void dropInv(Player player) {
+        UUID uuidPlayer = player.getUniqueId();
+        assert deaths.get(uuidPlayer) != null;
         for(int i = 0; i < playerDeathInventory.getSize(); i++) {
-            if(playerDeathInventory.getItem(i) == null) continue;
+            ItemStack item = playerDeathInventory.getItem(i);
+            if(item == null) continue;
             assert playerDeathInventory.getItem(i) != null;
             player.getWorld().dropItem(deaths.get(player.getUniqueId()), playerDeathInventory.getItem(i));
         }

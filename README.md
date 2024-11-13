@@ -39,23 +39,47 @@ A minecraft paper survival plugin for private servers
 
 - <details>
   <summary>DeathMinigame</summary>
-  This system lets you play a minigame of Jump ’n’ Run when dying in game. If you can get to the end of it, you will get your items back. This system is dynamik, there is difficulty that gets higher when winning. If you can't get to the end, your items will be dropped normally, and you will respawn normally also. If you want to lower your difficulty or reached the max difficulty, you can pay with diamonds, to lower it.
+  A Jump 'n' Run minigame that triggers upon player death: <br>
+  
+  **How it works:**
+  - Upon death, players get a chance to recover their items by completing a parkour challenge
+  - Successfully completing the challenge returns all items to the player
+  - Failing the challenge drops items at the death location
+
+  **Difficulty System:**
+  - Difficulty increases with each successful completion
+  - Players can spend diamonds to lower their difficulty
+  - Maximum difficulty: default is `10`
+  - Diamond cost: default is `6`
+
+  **Commands:**
+  - Settings menu: `/game settings`
+
+  **Configuration:**
+  - Use `/game settings` to configure parkour parameters
+  - See "In game settings menu" section for details
   </details>
+
 - <details>
   <summary>In game settings menu</summary>
-  This plugin features an in game settings menu to every operator of the server. It can be reached through the command /game settings. In the settings many important values can be changed to fix problems or set up the plugin.
-  <br> Menus inside the settings:
+  
+  This plugin features an in game settings menu to every operator of the server. It can be reached through the command `/game settings`. In the settings many important values can be changed to fix problems or set up the plugin.<br>
   <br>
-
-  - setUp: hosts all settings to set up the plugin before a playthrough <br>
-    - parkourStartHeight: sets at which height the parkour is starting to generate <br>
-    - parkourLength: sets how long the parkour should be <br>
-    - costToLowerTheDifficulty: sets how many diamonds lowering the difficulty should cost <br>
-    - timeToDecideWhenRespawning: sets how long a player has to decide, if he wants to try playing the minigame or if he wants to just let his items drop <br>
-  - introduction: in here you can change which player was already introduced to the plugin, normaly everyone starts with false and gets a short introduction at the first death
-  - difficulty: in here every player is listet to change their difficulty in the parkour
-    - difficultyPlayerSettings: this is just for you to enter the difficulty for the player clicked
-  - usesPlugin: in here you can change if the player is using the plugin or not, this changes if the player gets a change to play the parkour or not
+- **Menus inside the settings:** <br>
+<br>
+  - **setUp**: hosts all settings to set up the plugin before a playthrough <br>
+    - **parkourStartHeight**: Starting height for parkour generation (Default: `100`) <br>
+    - **parkourLength**: Length of the parkour course (Default: `10`) <br>
+    - **costToLowerTheDifficulty**: Diamond cost to reduce difficulty (Default: `6`) <br>
+    - **timeToDecideWhenRespawning**: Time limit for minigame decision in seconds (Default: `10`) <br>
+<br>
+  - **introduction**: Manage player introduction status
+    - Players start with 'false' and receive a brief introduction on first death<br>
+<br>
+  - **difficulty**: Manage individual player parkour difficulty
+    - **difficultyPlayerSettings**: Configure difficulty level per player<br>
+<br>
+  - **usesPlugin**: Toggle whether players can access the parkour minigame
   </details>
 
 **Support and Project Discussion:**

@@ -89,12 +89,12 @@ public class MainMenu implements InventoryHolder {
         else {
             setUp.addClickableItemStack("Parcour length", Material.LADDER, 1, 1);
         }
-        if(config.checkConfigLocation("WaitingListPosition")!=null) {
+        if(waitingListPosition!=null) {
             ArrayList<String> lore = new ArrayList<>();
             lore.add("Current position:");
-            lore.add("X: " + waitingListPosition.getBlockX());
-            lore.add("Y: " + waitingListPosition.getBlockY());
-            lore.add("Z: " + waitingListPosition.getBlockZ());
+            lore.add(String.format("X: %d", waitingListPosition.getBlockX()));
+            lore.add(String.format("Y: %d", waitingListPosition.getBlockY()));
+            lore.add(String.format("Z: %d", waitingListPosition.getBlockZ()));
             setUp.addClickableItemStack("WaitingListPosition", Material.GREEN_CONCRETE_POWDER, 1, 2, lore);
         }
         else {

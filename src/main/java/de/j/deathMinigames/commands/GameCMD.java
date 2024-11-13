@@ -29,9 +29,9 @@ import static de.j.deathMinigames.listeners.DeathListener.*;
 public class GameCMD implements BasicCommand {
 
     private final Difficulty difficulty = new Difficulty();
-    private final Minigame minigame = new Minigame();
+    private final Minigame minigame = Minigame.getInstance();
     private final RespawnListener respawnListener = new RespawnListener();
-    private final Introduction introduction = new Introduction();
+    private final Introduction introduction = Introduction.getInstance();
     private final MainMenu mainMenu = new MainMenu();
     private final Config config = Config.getInstance();
     private final TranslationFactory tf = new TranslationFactory();
