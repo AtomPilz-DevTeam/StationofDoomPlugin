@@ -34,176 +34,37 @@ public class InventoryListener implements Listener {
         assert slot >= 0 : "Slot is negative";
         Player player = (Player) event.getWhoClicked();
         if(invHolder instanceof MainMenu) {
-            event.setCancelled(true);
-            switch (slot) {
-                case 0:
-                    reloadInventory("SetUp", mainMenu);
-                    MainMenu.getSetUp().addBackButton(player);
-                    MainMenu.getSetUp().showInventory(player);
-                    break;
-                case 1:
-                    reloadInventory("Introduction", mainMenu);
-                    MainMenu.getIntroduction().addBackButton(player);
-                    MainMenu.getIntroduction().showInventory(player);
-                    break;
-                case 2:
-                    reloadInventory("UsesPlugin", mainMenu);
-                    MainMenu.getUsesPlugin().addBackButton(player);
-                    MainMenu.getUsesPlugin().showInventory(player);
-                    break;
-                case 3:
-                    MainMenu.getDifficulty().addBackButton(player);
-                    MainMenu.getDifficulty().showInventory(player);
-                    break;
-            }
+            handleMainMenuGUI(event, player, mainMenu, slot);
         }
         else if(invHolder instanceof GUI) {
             GUI gui = (GUI) invHolder;
             ID = gui.getUUID();
             if(ID == MainMenu.getIntroduction().getUUID()) {
-                event.setCancelled(true);
-                if(slot == 53) {
-                    mainMenu.showPlayerSettings(player);
-                }
-                else if (slot <= Config.getKnownPlayers().size()) {
-                    playerClicked = getPlayerFromListFromSpecificInt(slot);
-                    assert playerClicked != null : "playerClicked is null";
-                    if(config.checkConfigBoolean(playerClicked, "Introduction")) {
-                        minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
-                        config.setIntroduction(playerClicked, false);
-                    } else if (!config.checkConfigBoolean(playerClicked, "Introduction")) {
-                        minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
-                        config.setIntroduction(playerClicked, true);
-                    }
-                    reloadInventory("Introduction", slot, mainMenu);
-                    player.sendMessage(Component.text("Changed Introduction of " + playerClicked.getName() + " to " + config.checkConfigBoolean(playerClicked, "Introduction")).color(NamedTextColor.RED));
-                }
+                handleIntroductionGUI(event, player, mainMenu, slot, config, minigame);
             }
             else if (ID == MainMenu.getUsesPlugin().getUUID()) {
-                event.setCancelled(true);
-                if(slot == 53) {
-                    mainMenu.showPlayerSettings(player);
-                }
-                else if (slot <= Config.getKnownPlayers().size()) {
-                    playerClicked = getPlayerFromListFromSpecificInt(slot);
-                    assert playerClicked != null : "playerClicked is null";
-                    if(config.checkConfigBoolean(playerClicked, "UsesPlugin")) {
-                        minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
-                        config.setUsesPlugin(playerClicked, false);
-                    } else if (!config.checkConfigBoolean(playerClicked, "UsesPlugin")) {
-                        minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
-                        config.setUsesPlugin(playerClicked, true);
-                    }
-                    reloadInventory("UsesPlugin", slot, mainMenu);
-                    player.sendMessage(Component.text("Changed UsesPlugin of " + playerClicked.getName() + " to " + config.checkConfigBoolean(playerClicked, "UsesPlugin")).color(NamedTextColor.RED));
-                }
+                handleUsesPluginGUI(event, player, mainMenu, slot, config, minigame);
             }
             else if (ID == MainMenu.getDifficulty().getUUID()) {
-                event.setCancelled(true);
-                if (slot == 53) {
-                    mainMenu.showPlayerSettings(player);
-                } else if (slot <= Config.getKnownPlayers().size()) {
-                    playerClicked = getPlayerFromListFromSpecificInt(slot);
-                    assert playerClicked != null : "playerClicked is null";
-                    Main.getPlugin().getLogger().info(playerClicked.getName());
-                    reloadInventory("Difficulty - Settings", slot, mainMenu);
-                    MainMenu.getDifficultyPlayerSettings().addBackButton(player);
-                    MainMenu.getDifficultyPlayerSettings().showInventory(player);
-                }
+                handleDifficultyGUI(event, player, mainMenu, slot);
             }
             else if(ID == MainMenu.getDifficultyPlayerSettings().getUUID()) {
-                event.setCancelled(true);
-                if(slot == 53) {
-                    mainMenu.showPlayerSettings(player);
-                }
-                else if (slot < 11){
-                    minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
-                    config.setDifficulty(playerClicked, slot);
-                    reloadInventory("Difficulty - Settings", slot, mainMenu);
-                    player.sendMessage(Component.text("Changed Difficulty of " + playerClicked.getName() + " to " + config.checkConfigInt(playerClicked, "Difficulty")).color(NamedTextColor.RED));
-                }
+                handleDifficultyPlayerSettingsGUI(event, player, mainMenu, slot, minigame, config);
             }
             else if(ID == MainMenu.getSetUp().getUUID()) {
-                event.setCancelled(true);
-                if(slot == 53) {
-                    mainMenu.showPlayerSettings(player);
-                }
-                else if (slot <= 4){
-                    switch (slot) {
-                        case 0:
-                            reloadInventory("ParkourStartHeight", mainMenu);
-                            MainMenu.getParkourStartHeight().addBackButton(player);
-                            MainMenu.getParkourStartHeight().showInventory(player);
-                            break;
-                        case 1:
-                            reloadInventory("ParkourLength", mainMenu);
-                            MainMenu.getParkourLength().addBackButton(player);
-                            MainMenu.getParkourLength().showInventory(player);
-                            break;
-                        case 2:
-                            config.setWaitingListPosition(player.getLocation());
-                            reloadInventory("SetUp", mainMenu);
-                            player.sendMessage(Component.text(new TranslationFactory().getTranslation(player, "setWaitingListPosition")).color(NamedTextColor.GREEN));
-                            break;
-                        case 3:
-                            reloadInventory("CostToLowerTheDifficulty", mainMenu);
-                            MainMenu.getCostToLowerTheDifficulty().addBackButton(player);
-                            MainMenu.getCostToLowerTheDifficulty().showInventory(player);
-                            break;
-                        case 4:
-                            reloadInventory("TimeToDecideWhenRespawning", mainMenu);
-                            MainMenu.getTimeToDecideWhenRespawning().addBackButton(player);
-                            MainMenu.getTimeToDecideWhenRespawning().showInventory(player);
-                            break;
-                    }
-                }
+                handleSetUpGUI(event, player, mainMenu, slot, config);
             }
             else if (ID == MainMenu.getParkourStartHeight().getUUID()) {
-                event.setCancelled(true);
-                if(slot == 53) {
-                    mainMenu.showPlayerSettings(player);
-                }
-                else if (slot <= 36){
-                    minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
-                    int parkourStartHeight = slot * 10;
-                    config.setParkourStartHeight(parkourStartHeight);
-                    reloadInventory("ParkourStartHeight", mainMenu);
-                }
+                handleParkourStartHeightGUI(event, player, mainMenu, slot, config, minigame);
             }
             else if (ID == MainMenu.getParkourLength().getUUID()) {
-                event.setCancelled(true);
-                if(slot == 53) {
-                    mainMenu.showPlayerSettings(player);
-                }
-                else if (slot < 20) {
-                    minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
-                    config.setParkourLength(slot);
-                    reloadInventory("ParkourLength", mainMenu);
-                }
+                handleParkourLengthGUI(event, player, mainMenu, slot, config, minigame);
             }
             else if (ID == MainMenu.getCostToLowerTheDifficulty().getUUID()) {
-                event.setCancelled(true);
-                if(slot == 53) {
-                    mainMenu.showPlayerSettings(player);
-                }
-                else if (slot < 9) {
-                    minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
-                    slot = slot + 1;
-                    config.setCostToLowerTheDifficulty(slot);
-                    reloadInventory("CostToLowerTheDifficulty", mainMenu);
-                }
+                handleCostToLowerTheDifficultyGUI(event, player, mainMenu, slot, config, minigame);
             }
             else if (ID == MainMenu.getTimeToDecideWhenRespawning().getUUID()) {
-                event.setCancelled(true);
-                if(slot == 53) {
-                    mainMenu.showPlayerSettings(player);
-                }
-                else if (slot < 29) {
-                    minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
-                    slot = slot + 5;
-                    config.setTimeToDecideWhenRespawning(slot);
-                    reloadInventory("TimeToDecideWhenRespawning", mainMenu);
-                }
+                handleTimeToDecideWhenRespawningGUI(event, player, mainMenu, slot, config, minigame);
             }
         }
     }
@@ -302,4 +163,182 @@ public class InventoryListener implements Listener {
         }
     }
 
+    private void handleMainMenuGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot) {
+        event.setCancelled(true);
+        switch (slot) {
+            case 0:
+                reloadInventory("SetUp", mainMenu);
+                MainMenu.getSetUp().addBackButton(player);
+                MainMenu.getSetUp().showInventory(player);
+                break;
+            case 1:
+                reloadInventory("Introduction", mainMenu);
+                MainMenu.getIntroduction().addBackButton(player);
+                MainMenu.getIntroduction().showInventory(player);
+                break;
+            case 2:
+                reloadInventory("UsesPlugin", mainMenu);
+                MainMenu.getUsesPlugin().addBackButton(player);
+                MainMenu.getUsesPlugin().showInventory(player);
+                break;
+            case 3:
+                MainMenu.getDifficulty().addBackButton(player);
+                MainMenu.getDifficulty().showInventory(player);
+                break;
+        }
+    }
+
+    private void handleIntroductionGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Config config, Minigame minigame) {
+        event.setCancelled(true);
+        if(slot == 53) {
+            mainMenu.showPlayerSettings(player);
+        }
+        else if (slot <= Config.getKnownPlayers().size()) {
+            playerClicked = getPlayerFromListFromSpecificInt(slot);
+            assert playerClicked != null : "playerClicked is null";
+            if(config.checkConfigBoolean(playerClicked, "Introduction")) {
+                minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
+                config.setIntroduction(playerClicked, false);
+            } else if (!config.checkConfigBoolean(playerClicked, "Introduction")) {
+                minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
+                config.setIntroduction(playerClicked, true);
+            }
+            reloadInventory("Introduction", slot, mainMenu);
+            player.sendMessage(Component.text("Changed Introduction of " + playerClicked.getName() + " to " + config.checkConfigBoolean(playerClicked, "Introduction")).color(NamedTextColor.RED));
+        }
+    }
+
+    private void handleUsesPluginGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Config config, Minigame minigame) {
+        event.setCancelled(true);
+        if(slot == 53) {
+            mainMenu.showPlayerSettings(player);
+        }
+        else if (slot <= Config.getKnownPlayers().size()) {
+            playerClicked = getPlayerFromListFromSpecificInt(slot);
+            assert playerClicked != null : "playerClicked is null";
+            if(config.checkConfigBoolean(playerClicked, "UsesPlugin")) {
+                minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
+                config.setUsesPlugin(playerClicked, false);
+            } else if (!config.checkConfigBoolean(playerClicked, "UsesPlugin")) {
+                minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
+                config.setUsesPlugin(playerClicked, true);
+            }
+            reloadInventory("UsesPlugin", slot, mainMenu);
+            player.sendMessage(Component.text("Changed UsesPlugin of " + playerClicked.getName() + " to " + config.checkConfigBoolean(playerClicked, "UsesPlugin")).color(NamedTextColor.RED));
+        }
+    }
+
+    private void handleDifficultyGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot) {
+        event.setCancelled(true);
+        if (slot == 53) {
+            mainMenu.showPlayerSettings(player);
+        } else if (slot <= Config.getKnownPlayers().size()) {
+            playerClicked = getPlayerFromListFromSpecificInt(slot);
+            assert playerClicked != null : "playerClicked is null";
+            Main.getPlugin().getLogger().info(playerClicked.getName());
+            reloadInventory("Difficulty - Settings", slot, mainMenu);
+            MainMenu.getDifficultyPlayerSettings().addBackButton(player);
+            MainMenu.getDifficultyPlayerSettings().showInventory(player);
+        }
+    }
+
+    private void handleDifficultyPlayerSettingsGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Minigame minigame, Config config) {
+        event.setCancelled(true);
+        if(slot == 53) {
+            mainMenu.showPlayerSettings(player);
+        }
+        else if (slot < 11){
+            minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
+            config.setDifficulty(playerClicked, slot);
+            reloadInventory("Difficulty - Settings", slot, mainMenu);
+            player.sendMessage(Component.text("Changed Difficulty of " + playerClicked.getName() + " to " + config.checkConfigInt(playerClicked, "Difficulty")).color(NamedTextColor.RED));
+        }
+    }
+
+    private void handleSetUpGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Config config) {
+        event.setCancelled(true);
+        if(slot == 53) {
+            mainMenu.showPlayerSettings(player);
+        }
+        else if (slot <= 4){
+            switch (slot) {
+                case 0:
+                    reloadInventory("ParkourStartHeight", mainMenu);
+                    MainMenu.getParkourStartHeight().addBackButton(player);
+                    MainMenu.getParkourStartHeight().showInventory(player);
+                    break;
+                case 1:
+                    reloadInventory("ParkourLength", mainMenu);
+                    MainMenu.getParkourLength().addBackButton(player);
+                    MainMenu.getParkourLength().showInventory(player);
+                    break;
+                case 2:
+                    config.setWaitingListPosition(player.getLocation());
+                    reloadInventory("SetUp", mainMenu);
+                    player.sendMessage(Component.text(new TranslationFactory().getTranslation(player, "setWaitingListPosition")).color(NamedTextColor.GREEN));
+                    break;
+                case 3:
+                    reloadInventory("CostToLowerTheDifficulty", mainMenu);
+                    MainMenu.getCostToLowerTheDifficulty().addBackButton(player);
+                    MainMenu.getCostToLowerTheDifficulty().showInventory(player);
+                    break;
+                case 4:
+                    reloadInventory("TimeToDecideWhenRespawning", mainMenu);
+                    MainMenu.getTimeToDecideWhenRespawning().addBackButton(player);
+                    MainMenu.getTimeToDecideWhenRespawning().showInventory(player);
+                    break;
+            }
+        }
+    }
+
+    private void handleParkourStartHeightGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Config config, Minigame minigame) {
+        event.setCancelled(true);
+        if(slot == 53) {
+            mainMenu.showPlayerSettings(player);
+        }
+        else if (slot <= 36){
+            minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
+            int parkourStartHeight = slot * 10;
+            config.setParkourStartHeight(parkourStartHeight);
+            reloadInventory("ParkourStartHeight", mainMenu);
+        }
+    }
+
+    private void handleParkourLengthGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Config config, Minigame minigame) {
+        event.setCancelled(true);
+        if(slot == 53) {
+            mainMenu.showPlayerSettings(player);
+        }
+        else if (slot < 20) {
+            minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
+            config.setParkourLength(slot);
+            reloadInventory("ParkourLength", mainMenu);
+        }
+    }
+
+    private void handleCostToLowerTheDifficultyGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Config config, Minigame minigame) {
+        event.setCancelled(true);
+        if(slot == 53) {
+            mainMenu.showPlayerSettings(player);
+        }
+        else if (slot < 9) {
+            minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
+            slot = slot + 1;
+            config.setCostToLowerTheDifficulty(slot);
+            reloadInventory("CostToLowerTheDifficulty", mainMenu);
+        }
+    }
+
+    private void handleTimeToDecideWhenRespawningGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Config config, Minigame minigame) {
+        event.setCancelled(true);
+        if(slot == 53) {
+            mainMenu.showPlayerSettings(player);
+        }
+        else if (slot < 29) {
+            minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
+            slot = slot + 5;
+            config.setTimeToDecideWhenRespawning(slot);
+            reloadInventory("TimeToDecideWhenRespawning", mainMenu);
+        }
+    }
 }
