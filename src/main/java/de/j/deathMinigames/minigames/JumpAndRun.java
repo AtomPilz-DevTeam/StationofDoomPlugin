@@ -2,6 +2,7 @@ package de.j.deathMinigames.minigames;
 
 import de.j.deathMinigames.listeners.DeathListener;
 import de.j.stationofdoom.util.translations.TranslationFactory;
+import io.papermc.paper.configuration.type.fallback.FallbackValue;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -9,6 +10,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import de.j.deathMinigames.deathMinigames.Config;
 import de.j.stationofdoom.main.Main;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static de.j.deathMinigames.listeners.DeathListener.playerInArena;
@@ -209,94 +212,21 @@ public class JumpAndRun {
                     cancel();
                 }
                 else {
-                    int minX = 0;
-                    int minZ = 0;
-                    int maxX = 0;
-                    int maxZ = 0;
-                    int _max = 4;
-                    switch(config.checkConfigInt(playerInArena, "Difficulty")) {
-                        case 0:
-                        case 1:
-                            minX = 1;
-                            minZ = 1;
-                            maxX = 2;
-                            maxZ = 2;
-                            break;
-                        case 2:
-                        case 3:
-                            minX = 1;
-                            minZ = 1;
-                            maxX = 3;
-                            maxZ = 3;
-                            break;
-                        case 4:
-                        case 5:
-                            minX = 2;
-                            minZ = 2;
-                            maxX = 3;
-                            maxZ = 3;
-                            break;
-                        case 6:
-                        case 7:
-                        case 8:
-                            minX = 3;
-                            minZ = 3;
-                            maxX = 3;
-                            maxZ = 3;
-                            break;
-                        case 9:
-                        case 10:
-                            minX = 3;
-                            minZ = 3;
-                            maxX = 3;
-                            maxZ = 3;
-                            _max = 8;
-                            break;
-                    }
+                    List<Integer> values = setValuesBasedOnDifficulty(config);
+                    int minX = values.getFirst();
+                    int minZ = values.get(1);
+                    int maxX = values.get(2);
+                    int maxZ = values.get(3);
+                    int maxDifficulty = values.getLast();
                     // check if the player is standing on green concrete, if true place the next block
                     if (checkIfOnConcrete(playerInArena) && !woolPlaced) {
                         // randomizer for coordinates and prefix
                         _x = randomizer(minX, maxX);
                         _z = randomizer(minZ, maxZ);
-                        int randomNum = randomizer(1, _max);
-                        switch(randomNum) {
-                            case 1:
-                                // _x & _z negative
-                                _x = _x * -1;
-                                _z = _z * -1;
-                                break;
-                            case 2:
-                                // _x & _z positive
-                                break;
-                            case 3:
-                                // _x negative & _z positive
-                                _x = _x * -1;
-                                break;
-                            case 4:
-                                // _x positive & _z negative
-                                _z = _z * -1;
-                                break;
-                            case 5:
-                                // 4 Block jump north
-                                _z = 4 * -1;
-                                _x = 0;
-                                break;
-                            case 6:
-                                // 4 Block jump east
-                                _z = 0;
-                                _x = 4 * -1;
-                                break;
-                            case 7:
-                                // 4 Block jump south
-                                _z = 0;
-                                _x = 4;
-                                break;
-                            case 8:
-                                // 4 Block jump west
-                                _z = 4;
-                                _x = 0;
-                                break;
-                        }
+                        int randomNum = randomizer(1, maxDifficulty);
+                        _x = coordinatesRandomizerCasesX(_x, randomNum);
+                        _z = coordinatesRandomizerCasesZ(_z, randomNum);
+
                         _x = playerInArena.getLocation().getBlockX() + _x;
                         _y = playerInArena.getLocation().getBlockY();
                         _z = playerInArena.getLocation().getBlockZ() + _z;
@@ -326,5 +256,125 @@ public class JumpAndRun {
                 }
             }
         }.runTaskTimer(Main.getPlugin(), 0, 5);
+    }
+
+    private List<Integer> setValuesBasedOnDifficulty(Config config) {
+        int minX = 0;
+        int minZ = 0;
+        int maxX = 0;
+        int maxZ = 0;
+        int maxDifficulty = 0;
+        switch(config.checkConfigInt(playerInArena, "Difficulty")) {
+            case 0:
+            case 1:
+                minX = 1;
+                minZ = 1;
+                maxX = 2;
+                maxZ = 2;
+                break;
+            case 2:
+            case 3:
+                minX = 1;
+                minZ = 1;
+                maxX = 3;
+                maxZ = 3;
+                break;
+            case 4:
+            case 5:
+                minX = 2;
+                minZ = 2;
+                maxX = 3;
+                maxZ = 3;
+                break;
+            case 6:
+            case 7:
+            case 8:
+                minX = 3;
+                minZ = 3;
+                maxX = 3;
+                maxZ = 3;
+                break;
+            case 9:
+            case 10:
+                minX = 3;
+                minZ = 3;
+                maxX = 3;
+                maxZ = 3;
+                maxDifficulty = 8;
+                break;
+        }
+        return Arrays.asList(minX, minZ, maxX, maxZ, maxDifficulty);
+    }
+
+    private int coordinatesRandomizerCasesX(int _x, int cas) {
+        switch(cas) {
+            case 1:
+                // _x & _z negative
+                _x = _x * -1;
+                break;
+            case 2:
+                // _x & _z positive
+                break;
+            case 3:
+                // _x negative & _z positive
+                _x = _x * -1;
+                break;
+            case 4:
+                // _x positive & _z negative
+                break;
+            case 5:
+                // 4 Block jump north
+                _x = 0;
+                break;
+            case 6:
+                // 4 Block jump east
+                _x = 4 * -1;
+                break;
+            case 7:
+                // 4 Block jump south
+                _x = 4;
+                break;
+            case 8:
+                // 4 Block jump west
+                _x = 0;
+                break;
+        }
+        return _x;
+    }
+
+    private int coordinatesRandomizerCasesZ(int _z, int cas) {
+        switch(cas) {
+            case 1:
+                // _x & _z negative
+                _z = _z * -1;
+                break;
+            case 2:
+                // _x & _z positive
+                break;
+            case 3:
+                // _x negative & _z positive
+                break;
+            case 4:
+                // _x positive & _z negative
+                _z = _z * -1;
+                break;
+            case 5:
+                // 4 Block jump north
+                _z = 4 * -1;
+                break;
+            case 6:
+                // 4 Block jump east
+                _z = 0;
+                break;
+            case 7:
+                // 4 Block jump south
+                _z = 0;
+                break;
+            case 8:
+                // 4 Block jump west
+                _z = 4;
+                break;
+        }
+        return _z;
     }
 }
