@@ -14,8 +14,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class MainMenu implements InventoryHolder {
-    private Inventory inventory;
-    private final int maxDifficulty = 10;
+    private final Inventory inventory;
+
+    public MainMenu() {
+        this.inventory = Bukkit.createInventory(this, 9, "Settings");
+    }
 
     public synchronized static GUI getIntroduction() {
         return introduction;
@@ -64,7 +67,7 @@ public class MainMenu implements InventoryHolder {
     public volatile static GUI timeToDecideWhenRespawning = new GUI("TimeToDecideWhenRespawning", false);
 
     public void showPlayerSettings(Player player) {
-        inventory = Bukkit.createInventory(this, 9, "Settings");
+
         addSubmenus();
         showPlayerInv(player);
     }
@@ -103,6 +106,7 @@ public class MainMenu implements InventoryHolder {
     }
 
     public void difficultySettingsSetInventoryContents(int difficulty) {
+        int maxDifficulty = 10;
         if(difficulty < 0 || difficulty > maxDifficulty) {
             throw new IllegalArgumentException("Difficulty must be between 0 and " + maxDifficulty);
         }

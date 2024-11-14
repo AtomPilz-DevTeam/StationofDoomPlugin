@@ -80,6 +80,9 @@ public class InventoryListener implements Listener {
 
     public void reloadInventory(String inventory, int slot, MainMenu mainMenu) {
         Config config = Config.getInstance();
+        if(playerClicked == null) {
+            throw new IllegalStateException("No player selected");
+        }
         switch (inventory) {
             case "Introduction":
                 if(config.checkConfigBoolean(playerClicked, "Introduction")) {

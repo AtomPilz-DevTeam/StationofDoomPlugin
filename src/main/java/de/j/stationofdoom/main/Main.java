@@ -68,10 +68,15 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         Config config = Config.getInstance();
-        if(!getPlugin().getConfig().contains("KnownPlayers")) {
-            getPlugin().getConfig().set("KnownPlayers", new ArrayList<>().stream().toList());
-            getPlugin().saveConfig();
-            getPlugin().getLogger().info("Created KnownPlayers");
+        try {
+            if (!getPlugin().getConfig().contains("KnownPlayers")) {
+                getPlugin().getConfig().set("KnownPlayers", new ArrayList<>());
+                getPlugin().saveConfig();
+                getPlugin().getLogger().info("Created KnownPlayers");
+            }
+        }
+        catch (Exception e) {
+            getPlugin().getLogger().warning("Could not load / create knownplayers!");
         }
 
         config.cloneConfigToHashMap();

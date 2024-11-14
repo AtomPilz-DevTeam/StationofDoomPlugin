@@ -99,7 +99,7 @@ public class Config {
         if(!configUsesPlugin.contains(playerUUID)) {
             configUsesPlugin.add(playerUUID);
         }
-        if(!configDifficulty.contains(playerUUID)) {
+        if(!configDifficulty.containsKey(playerUUID)) {
             configDifficulty.put(playerUUID, 0);
         }
         if(!knownPlayers.contains(playerUUID)) {
@@ -247,15 +247,14 @@ public class Config {
             Main.getPlugin().getLogger().info(e.getMessage());
             Main.getPlugin().getLogger().info("cant check config boolean because player is null");
         }
-        return false;
+        throw new IllegalArgumentException("No fitting topic got entered into checkConfigBoolean.");
     }
 
     public boolean checkConfigBoolean(String topic) {
         if (topic.equals("SetUp")) {
             return configSetUp;
         }
-        Main.getPlugin().getLogger().warning("No possible topic was entered!");
-        return false;
+        throw new IllegalArgumentException("No fitting topic got entered into checkConfigBoolean.");
     }
 
     public int checkConfigInt(Player player, String topic) {
@@ -277,7 +276,7 @@ public class Config {
             }
         }
         Main.getPlugin().getLogger().warning("No fitting topic got entered into checkConfigInt. Failed to check config.");
-        return 404;
+        throw new IllegalArgumentException("No fitting topic got entered into checkConfigInt.");
     }
 
     public int checkConfigInt(String topic) {
@@ -291,7 +290,7 @@ public class Config {
             case "TimeToDecideWhenRespawning":
                 return configTimeToDecideWhenRespawning;
         }
-        return 404;
+        throw new IllegalArgumentException("No fitting topic got entered into checkConfigInt.");
     }
 
     public Location checkConfigLocation(String topic) {
@@ -303,6 +302,6 @@ public class Config {
                 Main.getPlugin().getLogger().warning("configWaitingListPosition is not setup");
             }
         }
-        return null;
+        throw new IllegalArgumentException("No fitting topic got entered into checkConfigLocation.");
     }
 }
