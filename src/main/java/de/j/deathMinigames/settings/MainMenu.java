@@ -56,15 +56,15 @@ public class MainMenu implements InventoryHolder {
         return timeToDecideWhenRespawning;
     }
 
-    public volatile static GUI introduction = new GUI("Introduction", true);
-    public volatile static GUI difficulty = new GUI("Difficulty", true);
-    public volatile static GUI usesPlugin = new GUI("UsesPlugin", true);
-    public volatile static GUI difficultyPlayerSettings = new GUI("Difficulty - Settings", false);
-    public volatile static GUI setUp = new GUI("SetUp", false);
-    public volatile static GUI parkourStartHeight = new GUI("ParkourStartHeight", false);
-    public volatile static GUI parkourLength = new GUI("ParkourLength", false);
-    public volatile static GUI costToLowerTheDifficulty = new GUI("CostToLowerTheDifficulty", false);
-    public volatile static GUI timeToDecideWhenRespawning = new GUI("TimeToDecideWhenRespawning", false);
+    private volatile static GUI introduction = new GUI("Introduction", true);
+    private volatile static GUI difficulty = new GUI("Difficulty", true);
+    private volatile static GUI usesPlugin = new GUI("UsesPlugin", true);
+    private volatile static GUI difficultyPlayerSettings = new GUI("Difficulty - Settings", false);
+    private volatile static GUI setUp = new GUI("SetUp", false);
+    private volatile static GUI parkourStartHeight = new GUI("ParkourStartHeight", false);
+    private volatile static GUI parkourLength = new GUI("ParkourLength", false);
+    private volatile static GUI costToLowerTheDifficulty = new GUI("CostToLowerTheDifficulty", false);
+    private volatile static GUI timeToDecideWhenRespawning = new GUI("TimeToDecideWhenRespawning", false);
 
     public void showPlayerSettings(Player player) {
 

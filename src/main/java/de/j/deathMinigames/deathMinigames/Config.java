@@ -47,6 +47,19 @@ public class Config {
         return instance;
     }
 
+    public void initializeConfig() {
+        try {
+            if (!Main.getPlugin().getConfig().contains("KnownPlayers")) {
+                Main.getPlugin().getConfig().set("KnownPlayers", new ArrayList<>());
+                Main.getPlugin().saveConfig();
+                Main.getPlugin().getLogger().info("Created KnownPlayers");
+            }
+        }
+        catch (Exception e) {
+            Main.getPlugin().getLogger().warning("Could not load / create knownplayers!");
+        }
+    }
+
     public synchronized void addPlayerInConfig(UUID playerUUID) {
         Main.getPlugin().getConfig().set(playerUUID + ".Introduction", false);
         Main.getPlugin().getConfig().set(playerUUID + ".UsesPlugin", true);
