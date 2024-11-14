@@ -68,17 +68,8 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         Config config = Config.getInstance();
-        try {
-            if (!getPlugin().getConfig().contains("KnownPlayers")) {
-                getPlugin().getConfig().set("KnownPlayers", new ArrayList<>());
-                getPlugin().saveConfig();
-                getPlugin().getLogger().info("Created KnownPlayers");
-            }
-        }
-        catch (Exception e) {
-            getPlugin().getLogger().warning("Could not load / create knownplayers!");
-        }
-
+        saveDefaultConfig();
+        config.initializeConfig();
         config.cloneConfigToHashMap();
 
         LifecycleEventManager<Plugin> manager = getLifecycleManager();

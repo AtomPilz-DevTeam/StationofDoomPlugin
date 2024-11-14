@@ -148,11 +148,11 @@ public class Minigame {
             throw new NullPointerException("player is null");
         }
         UUID uuidPlayer = player.getUniqueId();
+        assert deaths.get(uuidPlayer) != null;
         Location deathLocation = deaths.get(uuidPlayer);
         if(deathLocation == null) {
             throw new NullPointerException("deathLocation is null");
         }
-        assert deaths.get(uuidPlayer) != null;
         for(int i = 0; i < playerDeathInventory.getSize(); i++) {
             ItemStack item = playerDeathInventory.getItem(i);
             if(item == null) continue;
