@@ -40,10 +40,11 @@ public class Introduction {
     }
 
     public void introStart(Player player) {
+        int heightDifferenceToParkourEnd = 5;
         try {
             Config config = Config.getInstance();
             Location location = player.getWorld().getSpawnLocation();
-            location.setY(config.checkConfigInt("ParkourStartHeight") + config.checkConfigInt("ParkourLength") + 5);
+            location.setY(config.checkConfigInt("ParkourStartHeight") + config.checkConfigInt("ParkourLength") + heightDifferenceToParkourEnd);
             sendPlayerIntroMessage(player);
             teleportPlayerToGod(player, location);
         }

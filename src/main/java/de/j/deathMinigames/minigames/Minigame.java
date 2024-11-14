@@ -45,6 +45,10 @@ public class Minigame {
         TranslationFactory tf = new TranslationFactory();
         Player playerInArena = DeathListener.getPlayerInArena();
 
+        if(player == null) {
+            throw new NullPointerException("player is null");
+        }
+
         if(!introduction.checkIfPlayerGotIntroduced(player)) {
             introduction.introStart(player);
         }
@@ -75,8 +79,10 @@ public class Minigame {
      * @param message   the message as declared in the Minigame
      */
     public void startMessage(Player player, String message) {
+        if(player == null) {
+            throw new NullPointerException("player is null");
+        }
         player.sendMessage(Component.text(message).color(NamedTextColor.GOLD));
-
         assert inventories.containsKey(player.getUniqueId());
         playerDeathInventory.setContents(inventories.get(player.getUniqueId()).getContents());
         waitingListMinigame.remove(player);
@@ -89,6 +95,9 @@ public class Minigame {
     public void loseMessage(Player player) {
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
+        if(player == null) {
+            throw new NullPointerException("player is null");
+        }
 
         assert deaths.containsKey(player.getUniqueId());
         if(config.checkConfigBoolean(player, "UsesPlugin")) {
@@ -101,17 +110,26 @@ public class Minigame {
      * @param player    the player whose inventory is to be droopped
      */
     public void dropInvWithTeleport(Player player, boolean doTeleport) {
+        if(player == null) {
+            throw new NullPointerException("player is null");
+        }
         dropInv(player);
         playerDeathInventory.clear();
-        deaths.remove(player.getUniqueId());
-        inventories.remove(player.getUniqueId());
-
+        if(deaths.containsKey(player.getUniqueId())) {
+            deaths.remove(player.getUniqueId());
+        }
+        if(inventories.containsKey(player.getUniqueId())) {
+            inventories.remove(player.getUniqueId());
+        }
         if(doTeleport) {
             tpPlayerToRespawnLocation(player);
         }
     }
 
     private void tpPlayerToRespawnLocation(Player player) {
+        if(player == null) {
+            throw new NullPointerException("player is null");
+        }
         if(player.getRespawnLocation() == null) {
             player.playSound(player.getEyeLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5F, 1.0F);
             player.teleport(player.getWorld().getSpawnLocation());
@@ -126,16 +144,23 @@ public class Minigame {
      * @param player    the player whose inventory is to be droopped
      */
     private void dropInv(Player player) {
+        if(player == null) {
+            throw new NullPointerException("player is null");
+        }
         UUID uuidPlayer = player.getUniqueId();
+        Location deathLocation = deaths.get(uuidPlayer);
+        if(deathLocation == null) {
+            throw new NullPointerException("deathLocation is null");
+        }
         assert deaths.get(uuidPlayer) != null;
         for(int i = 0; i < playerDeathInventory.getSize(); i++) {
             ItemStack item = playerDeathInventory.getItem(i);
             if(item == null) continue;
-            player.getWorld().dropItem(deaths.get(player.getUniqueId()), playerDeathInventory.getItem(i));
+            player.getWorld().dropItem(deathLocation, item);
         }
         playerDeathInventory.clear();
-        deaths.remove(player.getUniqueId());
-        inventories.remove(player.getUniqueId());
+        deaths.remove(uuidPlayer);
+        inventories.remove(uuidPlayer);
     }
 
     /**
@@ -146,7 +171,9 @@ public class Minigame {
         Difficulty difficulty = Difficulty.getInstance();
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
-
+        if(player == null) {
+            throw new NullPointerException("player is null");
+        }
         player.sendMessage(Component.text(tf.getTranslation(player, "winMessage")).color(NamedTextColor.GOLD));
         if(config.checkConfigInt(player, "Difficulty") < 10) {
             difficulty.higherDifficulty(player);
@@ -161,8 +188,13 @@ public class Minigame {
     public void showInv(Player player) {
         TranslationFactory tf = new TranslationFactory();
         Inventory inventory = Bukkit.createInventory(null, 54, Component.text(tf.getTranslation(player, "winInv")).color(NamedTextColor.GOLD));
+        if(playerDeathInventory.isEmpty()) {
+            throw new NullPointerException("playerDeathInventory is empty");
+        }
         inventory.setContents(playerDeathInventory.getContents());
-
+        if(player == null) {
+            throw new NullPointerException("player is null");
+        }
         tpPlayerToRespawnLocation(player);
 
         player.openInventory(inventory);
