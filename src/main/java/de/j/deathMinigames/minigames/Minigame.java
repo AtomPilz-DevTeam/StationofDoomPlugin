@@ -18,7 +18,7 @@ import java.util.UUID;
 import static de.j.deathMinigames.listeners.DeathListener.*;
 
 public class Minigame {
-    private static Minigame minigame = new Minigame();
+    private volatile static Minigame minigame;
 
     private Minigame() {}
 
@@ -131,7 +131,6 @@ public class Minigame {
         for(int i = 0; i < playerDeathInventory.getSize(); i++) {
             ItemStack item = playerDeathInventory.getItem(i);
             if(item == null) continue;
-            assert playerDeathInventory.getItem(i) != null;
             player.getWorld().dropItem(deaths.get(player.getUniqueId()), playerDeathInventory.getItem(i));
         }
         playerDeathInventory.clear();

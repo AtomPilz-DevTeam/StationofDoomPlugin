@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 public class MainMenu implements InventoryHolder {
     private Inventory inventory;
+    private final int maxDifficulty = 10;
 
     public synchronized static GUI getIntroduction() {
         return introduction;
@@ -90,6 +91,9 @@ public class MainMenu implements InventoryHolder {
 
     public void addClickableItemStack(String name, Material material, int amount, int slotWhereToPutTheItem) {
         // item has to be added in InventoryListener manually to make it clickable
+        if(slotWhereToPutTheItem < 0 || slotWhereToPutTheItem > inventory.getSize()) {
+            throw new IllegalArgumentException("Invalid slot index: " + slotWhereToPutTheItem);
+        }
         ItemStack itemStack = new ItemStack(material, amount);
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(name);
@@ -99,7 +103,10 @@ public class MainMenu implements InventoryHolder {
     }
 
     public void difficultySettingsSetInventoryContents(int difficulty) {
-        for(int i = 0; i < 11; i++) {
+        if(difficulty < 0 || difficulty > maxDifficulty) {
+            throw new IllegalArgumentException("Difficulty must be between 0 and " + maxDifficulty);
+        }
+        for(int i = 0; i <= maxDifficulty; i++) {
             MainMenu.getDifficultyPlayerSettings().addClickableItemStack(Integer.toString(i), Material.RED_CONCRETE_POWDER, 1, i);
         }
         MainMenu.getDifficultyPlayerSettings().addClickableItemStack(Integer.toString(difficulty), Material.GREEN_CONCRETE_POWDER, 1 ,difficulty);

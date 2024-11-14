@@ -18,7 +18,7 @@ import static de.j.deathMinigames.listeners.DeathListener.deaths;
 import static de.j.deathMinigames.listeners.DeathListener.inventories;
 
 public class Introduction {
-    private static volatile Introduction introduction = new Introduction();
+    private static volatile Introduction introduction;
 
     private Introduction() {
     }
@@ -40,11 +40,17 @@ public class Introduction {
     }
 
     public void introStart(Player player) {
-        Config config = Config.getInstance();
-        Location location = config.checkConfigLocation("WaitingListPosition");
-        location.setY(location.getY() + 5);
-        sendPlayerIntroMessage(player);
-        teleportPlayerToGod(player, location);
+        try {
+            Config config = Config.getInstance();
+            Location location = player.getWorld().getSpawnLocation();
+            location.setY(config.checkConfigInt("ParkourStartHeight") + config.checkConfigInt("ParkourLength") + 5);
+            sendPlayerIntroMessage(player);
+            teleportPlayerToGod(player, location);
+        }
+        catch(Exception e) {
+            Main.getPlugin().getLogger().warning("Could not start intro!");
+            player.sendMessage(Component.text("Could not start intro!", NamedTextColor.RED));
+        }
     }
 
     private void sendPlayerIntroMessage(Player player) {

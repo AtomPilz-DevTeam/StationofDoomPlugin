@@ -93,12 +93,21 @@ public class Config {
     }
 
     public synchronized void addNewPlayer(UUID playerUUID) {
-        configIntroduction.add(playerUUID);
-        configUsesPlugin.add(playerUUID);
-        configDifficulty.put(playerUUID, 0);
-        knownPlayers.add(playerUUID);
-        knownPlayersString.add(playerUUID.toString());
-
+        if(!configIntroduction.contains(playerUUID)) {
+            configIntroduction.add(playerUUID);
+        }
+        if(!configUsesPlugin.contains(playerUUID)) {
+            configUsesPlugin.add(playerUUID);
+        }
+        if(!configDifficulty.contains(playerUUID)) {
+            configDifficulty.put(playerUUID, 0);
+        }
+        if(!knownPlayers.contains(playerUUID)) {
+            knownPlayers.add(playerUUID);
+        }
+        if(!knownPlayersString.contains(playerUUID.toString())) {
+            knownPlayersString.add(playerUUID.toString());
+        }
         addPlayerInConfig(playerUUID);
     }
 
@@ -106,7 +115,7 @@ public class Config {
         return Main.getPlugin().getConfig().contains(player.getUniqueId().toString());
     }
 
-    public void cloneConfigToHasMap() {
+    public void cloneConfigToHashMap() {
         fillKnownPlayersArrayList();
         if(Main.getPlugin().getConfig().contains("SetUp")) {
             setSetUp(Main.getPlugin().getConfig().getBoolean("SetUp"));

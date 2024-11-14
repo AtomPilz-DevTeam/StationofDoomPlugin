@@ -29,7 +29,7 @@ public class Difficulty {
         TranslationFactory tf = new TranslationFactory();
 
         int currentDifficulty = config.checkConfigInt(player, "Difficulty");
-        if(config.checkConfigInt(player, "Difficulty") == maxDifficulty) {
+        if(currentDifficulty == maxDifficulty) {
             player.sendMessage(Component.text(tf.getTranslation(player, "maxDiffAlreadyReached")).color(NamedTextColor.RED));
         }
         else {

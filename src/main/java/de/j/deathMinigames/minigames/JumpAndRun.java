@@ -18,7 +18,7 @@ import static de.j.deathMinigames.listeners.DeathListener.playerInArena;
 import static de.j.deathMinigames.listeners.DeathListener.waitingListMinigame;
 
 public class JumpAndRun {
-    private static volatile JumpAndRun jumpAndRun = new JumpAndRun();
+    private static volatile JumpAndRun jumpAndRun;
 
     private JumpAndRun() {}
 
@@ -55,7 +55,8 @@ public class JumpAndRun {
         playerInArena.sendTitle("JumpNRun", "");
 
         World w = playerInArena.getWorld();
-        Location firstBlockPlayerTPLocation = new Location(playerInArena.getWorld(), 93.5d, config.checkConfigInt("ParkourStartHeight")+1, 81.5d);
+        Location spawnLocation = w.getSpawnLocation();
+        Location firstBlockPlayerTPLocation = new Location(playerInArena.getWorld(), spawnLocation.getBlockX(), config.checkConfigInt("ParkourStartHeight")+1, spawnLocation.getBlockZ());
         playerInArena.teleport(firstBlockPlayerTPLocation);
         mg.startMessage(playerInArena, tf.getTranslation(playerInArena, "introParkour"));
 

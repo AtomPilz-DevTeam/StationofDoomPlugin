@@ -74,7 +74,7 @@ public final class Main extends JavaPlugin {
             getPlugin().getLogger().info("Created KnownPlayers");
         }
 
-        config.cloneConfigToHasMap();
+        config.cloneConfigToHashMap();
 
         LifecycleEventManager<Plugin> manager = getLifecycleManager();
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
