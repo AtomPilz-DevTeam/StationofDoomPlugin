@@ -20,7 +20,7 @@ import de.j.deathMinigames.settings.MainMenu;
 import java.util.UUID;
 
 public class InventoryListener implements Listener {
-    private volatile Player playerClicked;
+    private Player playerClicked;
 
     @EventHandler
     public void onSettingsClick(InventoryClickEvent event) {
@@ -120,13 +120,17 @@ public class InventoryListener implements Listener {
             case "Introduction":
                 for(int i = 0; i < Config.getKnownPlayers().size(); i++) {
                     Material material;
-                    if(config.checkConfigBoolean(getPlayerFromListFromSpecificInt(i), "Introduction")) {
+                    Player currentPlayer = getPlayerFromListFromSpecificInt(i);
+                    if(currentPlayer == null) {
+                        continue;
+                    }
+                    if(config.checkConfigBoolean(currentPlayer, "Introduction")) {
                         material = Material.GREEN_CONCRETE_POWDER;
                     }
                     else {
                         material = Material.RED_CONCRETE_POWDER;
                     }
-                    MainMenu.getIntroduction().addClickableItemStack(getPlayerFromListFromSpecificInt(i).getName(), material, 1, i);
+                    MainMenu.getIntroduction().addClickableItemStack(currentPlayer.getName(), material, 1, i);
                 }
                 break;
             case "UsesPlugin":
