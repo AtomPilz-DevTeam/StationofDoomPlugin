@@ -8,8 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import de.j.deathMinigames.deathMinigames.Config;
-import org.jetbrains.annotations.NotNull;
+import de.j.deathMinigames.main.Config;
 
 import java.util.ArrayList;
 
@@ -74,7 +73,7 @@ public class MainMenu implements InventoryHolder {
 
     private void addSubmenus() {
         Config config = Config.getInstance();
-        if(config.checkConfigBoolean("SetUp")) {
+        if(config.checkSetUp()) {
             addClickableItemStack("SetUp", Material.GREEN_CONCRETE, 1, 0);
         }
         else {
@@ -118,11 +117,11 @@ public class MainMenu implements InventoryHolder {
 
     public void setUpSettingsSetInventoryContents() {
         Config config = Config.getInstance();
-        Location waitingListPosition = config.checkConfigLocation("WaitingListPosition");
-        int startHeight = config.checkConfigInt("ParkourStartHeight");
-        int parkourLength = config.checkConfigInt("ParkourLength");
-        int costToLowerTheDifficulty = config.checkConfigInt("CostToLowerTheDifficulty");
-        int timeToDecideWhenRespawning = config.checkConfigInt("TimeToDecideWhenRespawning");
+        Location waitingListPosition = config.checkWaitingListLocation();
+        int startHeight = config.checkParkourStartHeight();
+        int parkourLength = config.checkParkourLength();
+        int costToLowerTheDifficulty = config.checkCostToLowerTheDifficulty();
+        int timeToDecideWhenRespawning = config.checkTimeToDecideWhenRespawning();
 
         if(startHeight != 0) {
             getSetUp().addClickableItemStack("Parcour Start Height", Material.LADDER, startHeight, 0);
@@ -163,7 +162,7 @@ public class MainMenu implements InventoryHolder {
 
     public void parkourStartHeightSettingsSetInventoryContents() {
         Config config = Config.getInstance();
-        int startHeight = config.checkConfigInt("ParkourStartHeight");
+        int startHeight = config.checkParkourStartHeight();
         for(int i = 0; i < 29; i++) {
             if(startHeight == i*10) {
                 MainMenu.getParkourStartHeight().addClickableItemStack(Integer.toString(i*10), Material.GREEN_CONCRETE_POWDER, 1, i);
@@ -176,7 +175,7 @@ public class MainMenu implements InventoryHolder {
 
     public void parkourLengthSettingsSetInventoryContents() {
         Config config = Config.getInstance();
-        int length = config.checkConfigInt("ParkourLength");
+        int length = config.checkParkourLength();
         for(int i = 0; i < 20; i++) {
             if(length == i) {
                 MainMenu.getParkourLength().addClickableItemStack(Integer.toString(i), Material.GREEN_CONCRETE_POWDER, 1, i);
@@ -189,7 +188,7 @@ public class MainMenu implements InventoryHolder {
 
     public void costToLowerTheDifficultySettingsSetInventoryContents() {
         Config config = Config.getInstance();
-        int length = config.checkConfigInt("CostToLowerTheDifficulty");
+        int length = config.checkCostToLowerTheDifficulty();
         for(int i = 1; i < 11; i++) {
             if(length == i) {
                 MainMenu.getCostToLowerTheDifficulty().addClickableItemStack(Integer.toString(i), Material.GREEN_CONCRETE_POWDER, 1, i-1);
@@ -202,7 +201,7 @@ public class MainMenu implements InventoryHolder {
 
     public void timeToDecideWhenRespawningSettingsSetInventoryContents() {
         Config config = Config.getInstance();
-        int time = config.checkConfigInt("TimeToDecideWhenRespawning");
+        int time = config.checkTimeToDecideWhenRespawning();
         for(int i = 5; i < 31; i++) {
             if(time == i) {
                 MainMenu.getTimeToDecideWhenRespawning().addClickableItemStack(Integer.toString(time), Material.GREEN_CONCRETE_POWDER, 1, i-5);

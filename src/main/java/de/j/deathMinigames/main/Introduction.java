@@ -1,4 +1,4 @@
-package de.j.deathMinigames.deathMinigames;
+package de.j.deathMinigames.main;
 
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
@@ -10,7 +10,6 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import de.j.deathMinigames.minigames.Minigame;
 import org.bukkit.inventory.Inventory;
-import de.j.deathMinigames.deathMinigames.Config;
 
 import java.util.UUID;
 
@@ -35,8 +34,8 @@ public class Introduction {
     }
 
     public boolean checkIfPlayerGotIntroduced(Player player) {
-        Config config = Config.getInstance();
-        return config.checkConfigBoolean(player, "Introduction");
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        return playerData.getIntroduction();
     }
 
     public void introStart(Player player) {
@@ -44,7 +43,7 @@ public class Introduction {
         try {
             Config config = Config.getInstance();
             Location location = player.getWorld().getSpawnLocation();
-            location.setY(config.checkConfigInt("ParkourStartHeight") + config.checkConfigInt("ParkourLength") + heightDifferenceToParkourEnd);
+            location.setY(config.checkParkourStartHeight() + config.checkParkourLength() + heightDifferenceToParkourEnd);
             sendPlayerIntroMessage(player);
             teleportPlayerToGod(player, location);
         }

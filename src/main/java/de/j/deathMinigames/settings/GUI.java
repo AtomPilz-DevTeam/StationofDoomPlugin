@@ -1,5 +1,7 @@
 package de.j.deathMinigames.settings;
 
+import de.j.deathMinigames.main.HandlePlayers;
+import de.j.deathMinigames.main.PlayerData;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -9,11 +11,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import de.j.deathMinigames.deathMinigames.Config;
+import de.j.deathMinigames.main.Config;
 import de.j.deathMinigames.listeners.InventoryListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,15 +34,27 @@ public class GUI implements InventoryHolder {
         int inventorySize = 54;
         inventory = Bukkit.createInventory(this, inventorySize, title);
         if(addAllPlayers) {
-            for(int i = 0; i < Config.getKnownPlayers().size(); i++) {
-                Player player = Bukkit.getPlayer(Config.getKnownPlayers().get(i));
+            HashMap<UUID, PlayerData> knownPlayers = HandlePlayers.getKnownPlayers();
+            for(int i = 0; i < knownPlayers.size(); i++) {
+                Player player = Bukkit.getPlayer(knownPlayers.keySet().stream().toList().get(i));
+                PlayerData playerData = knownPlayers.get(player.getUniqueId());
                 if(player == null) continue;
-                Material material;
-                if(config.checkConfigBoolean(inventoryListener.getPlayerFromListFromSpecificInt(i), title)) {
-                    material = Material.GREEN_CONCRETE_POWDER;
+                Material material = Material.BARRIER;
+                if(title.equals("UsesPlugin")) {
+                    if(playerData.getUsesPlugin()) {
+                        material = Material.GREEN_CONCRETE_POWDER;
+                    }
+                    else {
+                        material = Material.RED_CONCRETE_POWDER;
+                    }
                 }
-                else {
-                    material = Material.RED_CONCRETE_POWDER;
+                else if(title.equals("Introduction")) {
+                    if(playerData.getIntroduction()) {
+                        material = Material.GREEN_CONCRETE_POWDER;
+                    }
+                    else {
+                        material = Material.RED_CONCRETE_POWDER;
+                    }
                 }
                 ItemStack itemStack = new ItemStack(material);
                 ItemMeta itemMeta = itemStack.getItemMeta();

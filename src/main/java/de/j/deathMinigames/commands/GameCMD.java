@@ -1,6 +1,7 @@
 package de.j.deathMinigames.commands;
 
 import de.j.deathMinigames.listeners.DeathListener;
+import de.j.deathMinigames.main.*;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -13,8 +14,6 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import de.j.deathMinigames.deathMinigames.Config;
-import de.j.deathMinigames.deathMinigames.Introduction;
 import de.j.stationofdoom.main.Main;
 import de.j.deathMinigames.listeners.RespawnListener;
 import de.j.deathMinigames.minigames.Difficulty;
@@ -23,6 +22,7 @@ import de.j.deathMinigames.settings.MainMenu;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 
 import static de.j.deathMinigames.listeners.DeathListener.*;
 
@@ -44,14 +44,16 @@ public class GameCMD implements BasicCommand {
     @Override
     public void execute(CommandSourceStack stack, String[] args) {
         Player player = (Player) stack.getSender();
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         if (args.length == 1) {
             String arg0 = args[0];
-            handleArgsLength1Execution(player, arg0);
+            Main.getPlugin().getLogger().info("Handled args.length 1");
+            handleArgsLength1Execution(playerData, player, arg0);
         }
         else if (args.length == 2) {
             String arg0 = args[0];
             String arg1 = args[1];
-            handleArgsLength2Execution(player, arg0, arg1);
+            handleArgsLength2Execution(playerData, player, arg0, arg1);
         }
         else if (args.length == 3) {
             String arg0 = args[0];
@@ -61,26 +63,26 @@ public class GameCMD implements BasicCommand {
         }
     }
 
-    private void handleArgsLength1Execution(Player player, String arg0) {
+    private void handleArgsLength1Execution(PlayerData playerData, Player player, String arg0) {
         switch (arg0.toLowerCase()) {
             case "settings":
                 handleArgsLength1SettingsExecution(player);
                 break;
             case "lowerdifficulty":
-                handleArgsLength1LowerDifficultyExecution(player);
+                handleArgsLength1LowerDifficultyExecution(playerData, player);
                 break;
             case "introplayerdecidestousefeatures":
-                handleArgsLength1IntroPlayerDecidesToUseFeaturesExecution(player);
+                handleArgsLength1IntroPlayerDecidesToUseFeaturesExecution(playerData, player);
                 break;
             case "introplayerdecidestonotusefeatures":
-                handleArgsLength1IntroPlayerDecidesToNotUseFeaturesExecution(player);
+                handleArgsLength1IntroPlayerDecidesToNotUseFeaturesExecution(playerData, player);
                 break;
             case "setnotintroduced":
-                config.setIntroduction(player, false);
+                playerData.setIntroduction(false);
                 break;
             case "difficulty":
                 player.sendMessage(Component.text(tf.getTranslation(player, "diffAt")).color(NamedTextColor.GOLD)
-                        .append(Component.text(config.checkConfigInt(player, "Difficulty")).color(NamedTextColor.RED)));
+                        .append(Component.text(playerData.getDifficulty()).color(NamedTextColor.RED)));
                 break;
             case "setwaitinglistposition":
                 handleArgsLength1SetWaitingListPositionExecution(player);
@@ -88,17 +90,23 @@ public class GameCMD implements BasicCommand {
             case "decidednottosetposition":
                 player.sendMessage(Component.text(tf.getTranslation(player, "decidedNotToSetPosition")).color(NamedTextColor.RED));
                 break;
+            case "status":
+                player.sendMessage("Status: " + playerData.getStatus().toString());
+                break;
+            case "test":
+
         }
         if (inventories.containsKey(player.getUniqueId()) && !waitingListMinigame.contains(player) && DeathListener.getPlayerInArena() != player) {
             switch (arg0.toLowerCase()) {
                 case "start":
+                    Main.getPlugin().getLogger().info("Handled start");
                     handleArgsLength1StartExecution(player);
                     break;
                 case "ignore":
                     handleArgsLength1IgnoreExecution(player);
                     break;
                 default:
-                    if(!introduction.checkIfPlayerGotIntroduced(player)) {
+                    if(!playerData.getIntroduction()) {
                         player.sendMessage(Component.text("Usage: /game <start/ignore/difficulty>").color(NamedTextColor.RED));
                     }
                     break;
@@ -106,17 +114,17 @@ public class GameCMD implements BasicCommand {
         }
     }
 
-    private void handleArgsLength2Execution(Player player, String arg0, String arg1) {
+    private void handleArgsLength2Execution(PlayerData playerData, Player player, String arg0, String arg1) {
         if(player.isOp()) {
             switch (arg0) {
                 case "difficulty":
-                    handleArgsLength2DifficultyExecution(player, arg1);
+                    handleArgsLength2DifficultyExecution(playerData, player, arg1);
                     break;
                 case "introPlayerDecidesToUseFeatures":
-                    config.setUsesPlugin(player, true);
+                    playerData.setUsesPlugin(true);
                     break;
                 case "introPlayerDecidesToNotUseFeatures":
-                    config.setUsesPlugin(player, false);
+                    playerData.setUsesPlugin(false);
                     break;
             }
         }
@@ -153,17 +161,18 @@ public class GameCMD implements BasicCommand {
         }
     }
 
-    private void handleArgsLength1LowerDifficultyExecution(Player player) {
+    private void handleArgsLength1LowerDifficultyExecution(PlayerData playerData, Player player) {
         if(difficulty.checkIfPlayerCanPay(player)) {
-            if(config.checkConfigInt(player, "Difficulty") > 0) {
+            int diff = playerData.getDifficulty();
+            if(diff > 0) {
                 difficulty.playerPay(player);
                 difficulty.lowerDifficulty(player);
                 minigame.playSoundAtLocation(player.getEyeLocation(), 0.5F, Sound.ENTITY_ENDER_EYE_DEATH);
-                player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "changedDiff", config.checkConfigInt(player, "Difficulty"))).content()));
+                player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "changedDiff", diff)).content()));
             }
             else {
                 player.sendMessage(Component.text(tf.getTranslation(player, "diffAlreadyAt")).color(NamedTextColor.GOLD)
-                        .append(Component.text(config.checkConfigInt(player, "Difficulty")).color(NamedTextColor.RED)));
+                        .append(Component.text(diff).color(NamedTextColor.RED)));
             }
         }
         else {
@@ -171,10 +180,10 @@ public class GameCMD implements BasicCommand {
         }
     }
 
-    private void handleArgsLength1IntroPlayerDecidesToUseFeaturesExecution(Player player) {
+    private void handleArgsLength1IntroPlayerDecidesToUseFeaturesExecution(PlayerData playerData, Player player) {
         if (!introduction.checkIfPlayerGotIntroduced(player)) {
-            config.setIntroduction(player, true);
-            config.setUsesPlugin(player, true);
+            playerData.setIntroduction(true);
+            playerData.setUsesPlugin(true);
             Minigame.minigameStart(player);
             player.sendMessage(Component.text(tf.getTranslation(player, "playerDecided")).color(NamedTextColor.GOLD));
         }
@@ -183,10 +192,10 @@ public class GameCMD implements BasicCommand {
         }
     }
 
-    private void handleArgsLength1IntroPlayerDecidesToNotUseFeaturesExecution(Player player) {
-        if (!config.checkConfigBoolean(player, "Introduction")) {
-            config.setIntroduction(player, true);
-            config.setUsesPlugin(player, false);
+    private void handleArgsLength1IntroPlayerDecidesToNotUseFeaturesExecution(PlayerData playerData, Player player) {
+        if (!playerData.getIntroduction()) {
+            playerData.setIntroduction(true);
+            playerData.setUsesPlugin(false);
             introduction.dropInv(player);
             player.sendMessage(Component.text(tf.getTranslation(player, "playerDecided")).color(NamedTextColor.GOLD));
         }
@@ -202,6 +211,8 @@ public class GameCMD implements BasicCommand {
     }
 
     private void handleArgsLength1StartExecution(Player player) {
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        Main.getPlugin().getLogger().info("Started Minigame");
         minigame.playSoundAtLocation(player.getEyeLocation(), 0.5F, Sound.ENTITY_ENDER_EYE_DEATH);
         player.resetTitle();
         player.sendActionBar(Component.text(tf.getTranslation(player, "startingMinigame"))
@@ -209,14 +220,15 @@ public class GameCMD implements BasicCommand {
                 .decoration(TextDecoration.ITALIC, true));
         player.playSound(player.getEyeLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5F, 1.0F);
         waitingListMinigame.addLast(player);
-        Main.getPlugin().getLogger().info("player does not use plugin but is trying to start ");
-        respawnListener.setPlayerDecided(player,true);
+        playerData.setStatus(PlayerMinigameStatus.alive);
         Minigame.minigameStart(player);
     }
 
     private void handleArgsLength1IgnoreExecution(Player player) {
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+
         minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
-        respawnListener.setPlayerDecided(player,true);
+        playerData.setStatus(PlayerMinigameStatus.alive);
         player.resetTitle();
         if (!waitingListMinigame.contains(player) && inventories.containsKey(player.getUniqueId())) {
             player.sendMessage(Component.text(tf.getTranslation(player, "droppingInvAt")).color(NamedTextColor.GOLD)
@@ -230,7 +242,7 @@ public class GameCMD implements BasicCommand {
         }
     }
 
-    private void handleArgsLength2DifficultyExecution(Player player, String arg1) {
+    private void handleArgsLength2DifficultyExecution(PlayerData playerData, Player player, String arg1) {
         if(arg1 != null) {
             int i;
             try {
@@ -239,8 +251,8 @@ public class GameCMD implements BasicCommand {
                 player.sendMessage(Component.text(tf.getTranslation(player, "youHaveToEnterANumber")).color(NamedTextColor.RED));
                 return;
             }
-            config.setDifficulty(player, i);
-            player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "setDiffTo", config.checkConfigInt(player, "Difficulty"))).content()));
+            playerData.setDifficulty(i);
+            player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "setDiffTo", playerData.getDifficulty())).content()));
         }
         else {
             player.sendMessage(Component.text(tf.getTranslation(player, "youHaveToEnterANumber")));
@@ -258,8 +270,9 @@ public class GameCMD implements BasicCommand {
             }
             Player playerToEdit = Bukkit.getPlayer(arg1);
             assert playerToEdit != null;
-            config.setDifficulty(playerToEdit, i);
-            player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "setDiffOfTo", playerToEdit, config.checkConfigInt(playerToEdit, "Difficulty"))).content()));
+            PlayerData playerDataPlayerToEdit = HandlePlayers.getKnownPlayers().get(playerToEdit.getUniqueId());
+            playerDataPlayerToEdit.setDifficulty(i);
+            player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "setDiffOfTo", playerToEdit, playerDataPlayerToEdit.getDifficulty())).content()));
         }
         else {
             player.sendMessage(Component.text(tf.getTranslation(player, "youHaveToEnterANumber")).color(NamedTextColor.RED));
@@ -269,7 +282,8 @@ public class GameCMD implements BasicCommand {
     private void handleArgsLength3IntroPlayerDecidesToUseFeaturesExecution(Player player, String arg1) {
         Player playerToEdit = Bukkit.getPlayer(arg1);
         if(playerToEdit != null) {
-            config.setUsesPlugin(playerToEdit, true);
+            PlayerData playerDataPlayerToEdit = HandlePlayers.getKnownPlayers().get(playerToEdit.getUniqueId());
+            playerDataPlayerToEdit.setUsesPlugin(true);
         }
         else {
             player.sendMessage(Component.text());
@@ -279,7 +293,8 @@ public class GameCMD implements BasicCommand {
     private void handleArgsLength3introPlayerDecidesToNotUseFeaturesExecution(Player player, String arg1) {
         Player playerToEdit = Bukkit.getPlayer(arg1);
         if(playerToEdit != null) {
-            config.setUsesPlugin(playerToEdit, false);
+            PlayerData playerDataPlayerToEdit = HandlePlayers.getKnownPlayers().get(playerToEdit.getUniqueId());
+            playerDataPlayerToEdit.setUsesPlugin(false);
         }
         else {
             player.sendMessage(Component.text(tf.getTranslation(player, "didNotEnterKnownPlayer")));
@@ -297,8 +312,8 @@ public class GameCMD implements BasicCommand {
         else if (args.length == 2) {
             if(args[1].equals("difficulty")) {
                 Collection<String> suggestions2 = new ArrayList<>();
-                for (Player on : Bukkit.getOnlinePlayers()) {
-                    suggestions2.add(on.getName());
+                for (UUID uuid : HandlePlayers.getKnownPlayers().keySet()) {
+                    suggestions2.add(Bukkit.getPlayer(uuid).getName());
                 }
                 return suggestions2;
             }

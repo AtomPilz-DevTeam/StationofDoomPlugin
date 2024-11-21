@@ -1,5 +1,7 @@
 package de.j.deathMinigames.listeners;
 
+import de.j.deathMinigames.main.HandlePlayers;
+import de.j.deathMinigames.main.PlayerData;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -11,12 +13,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryHolder;
-import de.j.deathMinigames.deathMinigames.Config;
+import de.j.deathMinigames.main.Config;
 import de.j.stationofdoom.main.Main;
 import de.j.deathMinigames.minigames.Minigame;
 import de.j.deathMinigames.settings.GUI;
 import de.j.deathMinigames.settings.MainMenu;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class InventoryListener implements Listener {
@@ -70,8 +74,9 @@ public class InventoryListener implements Listener {
     }
 
     public Player getPlayerFromListFromSpecificInt(int placeInList) {
-        if (placeInList >= 0 && placeInList < Config.getKnownPlayers().size()) {
-            Player player = Bukkit.getPlayer(Config.getKnownPlayers().get(placeInList));
+        HashMap<UUID, PlayerData> knownPlayers = HandlePlayers.getKnownPlayers();
+        if (placeInList >= 0 && placeInList < knownPlayers.size()) {
+            Player player = Bukkit.getPlayer(knownPlayers.keySet().stream().toList().get(placeInList));
             assert player != null;
             return player;
         }
@@ -80,12 +85,13 @@ public class InventoryListener implements Listener {
 
     public void reloadInventory(String inventory, int slot, MainMenu mainMenu) {
         Config config = Config.getInstance();
+        PlayerData playerClickedData = HandlePlayers.getKnownPlayers().get(playerClicked.getUniqueId());
         if(playerClicked == null) {
             throw new IllegalStateException("No player selected");
         }
         switch (inventory) {
             case "Introduction":
-                if(config.checkConfigBoolean(playerClicked, "Introduction")) {
+                if(playerClickedData.getIntroduction()) {
                     MainMenu.getIntroduction().addClickableItemStack(playerClicked.getName(), Material.GREEN_CONCRETE_POWDER, 1, slot);
                 }
                 else {
@@ -93,7 +99,7 @@ public class InventoryListener implements Listener {
                 }
                 break;
             case "UsesPlugin":
-                if(config.checkConfigBoolean(playerClicked, "UsesPlugin")) {
+                if(playerClickedData.getUsesPlugin()) {
                     MainMenu.getUsesPlugin().addClickableItemStack(playerClicked.getName(), Material.GREEN_CONCRETE_POWDER, 1, slot);
                 }
                 else {
@@ -101,11 +107,11 @@ public class InventoryListener implements Listener {
                 }
                 break;
             case "Difficulty - Settings":
-                int difficulty = config.checkConfigInt(playerClicked, "Difficulty");
+                int difficulty = playerClickedData.getDifficulty();
                 mainMenu.difficultySettingsSetInventoryContents(difficulty);
                 break;
             case "Settings":
-                if(config.checkConfigBoolean("SetUp")) {
+                if(config.checkSetUp()) {
                     mainMenu.addClickableItemStack("SetUp", Material.GREEN_CONCRETE, 1, 0);
                 }
                 else {
@@ -117,17 +123,19 @@ public class InventoryListener implements Listener {
                 break;
         }
     }
+
     public void reloadInventory(String inventory, MainMenu mainMenu) {
-        Config config = Config.getInstance();
         switch (inventory) {
             case "Introduction":
-                for(int i = 0; i < Config.getKnownPlayers().size(); i++) {
+                HashMap<UUID, PlayerData> knownPlayers = HandlePlayers.getKnownPlayers();
+                for(int i = 0; i < knownPlayers.size(); i++) {
                     Material material;
                     Player currentPlayer = getPlayerFromListFromSpecificInt(i);
+                    PlayerData currentPlayerData = knownPlayers.get(currentPlayer.getUniqueId());
                     if(currentPlayer == null) {
                         continue;
                     }
-                    if(config.checkConfigBoolean(currentPlayer, "Introduction")) {
+                    if(currentPlayerData.getIntroduction()) {
                         material = Material.GREEN_CONCRETE_POWDER;
                     }
                     else {
@@ -137,9 +145,10 @@ public class InventoryListener implements Listener {
                 }
                 break;
             case "UsesPlugin":
-                for(int i = 0; i < Config.getKnownPlayers().size(); i++) {
+                for(int i = 0; i < HandlePlayers.getKnownPlayers().size(); i++) {
                     Material material;
-                    if(config.checkConfigBoolean(getPlayerFromListFromSpecificInt(i), "UsesPlugin")) {
+                    PlayerData playerData = HandlePlayers.getKnownPlayers().get(getPlayerFromListFromSpecificInt(i).getUniqueId());
+                    if(playerData.getUsesPlugin()) {
                         material = Material.GREEN_CONCRETE_POWDER;
                     }
                     else {
@@ -149,7 +158,8 @@ public class InventoryListener implements Listener {
                 }
                 break;
             case "Difficulty - Settings":
-                int difficulty = config.checkConfigInt(playerClicked, "Difficulty");
+                PlayerData playerClickedData = HandlePlayers.getKnownPlayers().get(playerClicked.getUniqueId());
+                int difficulty = playerClickedData.getDifficulty();
                 mainMenu.difficultySettingsSetInventoryContents(difficulty);
                 break;
             case "SetUp":
@@ -196,42 +206,46 @@ public class InventoryListener implements Listener {
     }
 
     private void handleIntroductionGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Config config, Minigame minigame) {
+        HashMap<UUID, PlayerData> knownPlayers = HandlePlayers.getKnownPlayers();
         event.setCancelled(true);
         if(slot == 53) {
             mainMenu.showPlayerSettings(player);
         }
-        else if (slot <= Config.getKnownPlayers().size()) {
+        else if (slot <= knownPlayers.size()) {
             playerClicked = getPlayerFromListFromSpecificInt(slot);
+            PlayerData playerClickedData = knownPlayers.get(playerClicked.getUniqueId());
             assert playerClicked != null : "playerClicked is null";
-            if(config.checkConfigBoolean(playerClicked, "Introduction")) {
+            if(playerClickedData.getIntroduction()) {
                 minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
-                config.setIntroduction(playerClicked, false);
-            } else if (!config.checkConfigBoolean(playerClicked, "Introduction")) {
+                playerClickedData.setIntroduction(false);
+            } else if (!playerClickedData.getIntroduction()) {
                 minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
-                config.setIntroduction(playerClicked, true);
+                playerClickedData.setIntroduction(true);
             }
             reloadInventory("Introduction", slot, mainMenu);
-            player.sendMessage(Component.text("Changed Introduction of " + playerClicked.getName() + " to " + config.checkConfigBoolean(playerClicked, "Introduction")).color(NamedTextColor.RED));
+            player.sendMessage(Component.text("Changed Introduction of " + playerClicked.getName() + " to " + playerClickedData.getIntroduction()).color(NamedTextColor.RED));
         }
     }
 
     private void handleUsesPluginGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Config config, Minigame minigame) {
+        HashMap<UUID, PlayerData> knownPlayers = HandlePlayers.getKnownPlayers();
         event.setCancelled(true);
         if(slot == 53) {
             mainMenu.showPlayerSettings(player);
         }
-        else if (slot <= Config.getKnownPlayers().size()) {
+        else if (slot <= knownPlayers.size()) {
             playerClicked = getPlayerFromListFromSpecificInt(slot);
+            PlayerData playerClickedData = knownPlayers.get(playerClicked.getUniqueId());
             assert playerClicked != null : "playerClicked is null";
-            if(config.checkConfigBoolean(playerClicked, "UsesPlugin")) {
+            if(playerClickedData.getUsesPlugin()) {
                 minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
-                config.setUsesPlugin(playerClicked, false);
-            } else if (!config.checkConfigBoolean(playerClicked, "UsesPlugin")) {
+                playerClickedData.setUsesPlugin(false);
+            } else if (!playerClickedData.getUsesPlugin()) {
                 minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
-                config.setUsesPlugin(playerClicked, true);
+                playerClickedData.setUsesPlugin(true);
             }
             reloadInventory("UsesPlugin", slot, mainMenu);
-            player.sendMessage(Component.text("Changed UsesPlugin of " + playerClicked.getName() + " to " + config.checkConfigBoolean(playerClicked, "UsesPlugin")).color(NamedTextColor.RED));
+            player.sendMessage(Component.text("Changed UsesPlugin of " + playerClickedData.getName() + " to " + playerClickedData.getUsesPlugin()).color(NamedTextColor.RED));
         }
     }
 
@@ -239,7 +253,7 @@ public class InventoryListener implements Listener {
         event.setCancelled(true);
         if (slot == 53) {
             mainMenu.showPlayerSettings(player);
-        } else if (slot <= Config.getKnownPlayers().size()) {
+        } else if (slot <= HandlePlayers.getKnownPlayers().size()) {
             playerClicked = getPlayerFromListFromSpecificInt(slot);
             assert playerClicked != null : "playerClicked is null";
             Main.getPlugin().getLogger().info(playerClicked.getName());
@@ -256,9 +270,10 @@ public class InventoryListener implements Listener {
         }
         else if (slot < 11){
             minigame.playSoundToPlayer(player, 0.5F, Sound.BLOCK_ANVIL_USE);
-            config.setDifficulty(playerClicked, slot);
+            PlayerData playerClickedData = HandlePlayers.getKnownPlayers().get(playerClicked.getUniqueId());
+            playerClickedData.setDifficulty(slot);
             reloadInventory("Difficulty - Settings", slot, mainMenu);
-            player.sendMessage(Component.text("Changed Difficulty of " + playerClicked.getName() + " to " + config.checkConfigInt(playerClicked, "Difficulty")).color(NamedTextColor.RED));
+            player.sendMessage(Component.text("Changed Difficulty of " + playerClickedData.getName() + " to " + playerClickedData.getDifficulty()).color(NamedTextColor.RED));
         }
     }
 

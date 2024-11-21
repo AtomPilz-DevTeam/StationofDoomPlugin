@@ -1,24 +1,30 @@
 package de.j.deathMinigames.minigames;
 
 import de.j.deathMinigames.listeners.DeathListener;
+import de.j.deathMinigames.main.HandlePlayers;
+import de.j.deathMinigames.main.PlayerData;
+import de.j.deathMinigames.main.PlayerMinigameStatus;
 import de.j.stationofdoom.util.translations.TranslationFactory;
-import io.papermc.paper.configuration.type.fallback.FallbackValue;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import de.j.deathMinigames.deathMinigames.Config;
+import de.j.deathMinigames.main.Config;
 import de.j.stationofdoom.main.Main;
+import org.bukkit.scheduler.BukkitTask;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static de.j.deathMinigames.listeners.DeathListener.playerInArena;
-import static de.j.deathMinigames.listeners.DeathListener.waitingListMinigame;
+import static de.j.deathMinigames.listeners.DeathListener.*;
 
 public class JumpAndRun {
     private static volatile JumpAndRun jumpAndRun;
+
+    private volatile BukkitTask task;
 
     private JumpAndRun() {}
 
@@ -40,6 +46,9 @@ public class JumpAndRun {
         return jumpAndRun;
     }
 
+    public BukkitTask getTask() {
+        return task;
+    }
     /**
      * runs the minigame JumpAndRun
      */
@@ -47,26 +56,27 @@ public class JumpAndRun {
         Minigame mg = Minigame.getInstance();
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
-        Player playerInArena = DeathListener.getPlayerInArena();
 
         // get the player int the arena from the waiting list
-        DeathListener.setPlayerInArena(waitingListMinigame.getFirst());
+        Player player = waitingListMinigame.getFirst();
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        DeathListener.setPlayerInArena(player);
+        playerData.setStatus(PlayerMinigameStatus.inMinigame);
+        Player playerInArena = DeathListener.getPlayerInArena();
 
         playerInArena.sendTitle("JumpNRun", "");
 
         World w = playerInArena.getWorld();
         Location spawnLocation = w.getSpawnLocation();
-        Location firstBlockPlayerTPLocation = new Location(playerInArena.getWorld(), spawnLocation.getBlockX(), config.checkConfigInt("ParkourStartHeight")+1, spawnLocation.getBlockZ());
+        Location firstBlockPlayerTPLocation = new Location(playerInArena.getWorld(), spawnLocation.getBlockX() + 0.5, config.checkParkourStartHeight() + 1, spawnLocation.getBlockZ() + 0.5);
         playerInArena.teleport(firstBlockPlayerTPLocation);
         mg.startMessage(playerInArena, tf.getTranslation(playerInArena, "introParkour"));
 
-        int heightToWin = config.checkConfigInt("ParkourStartHeight") + config.checkConfigInt("ParkourLength");
+        int heightToWin = config.checkParkourStartHeight() + config.checkParkourLength();
 
         // get the location and place the first block
-        int x = 93;
-        int y = config.checkConfigInt("ParkourStartHeight");
-        int z = 81;
-        Location firstBlock = new Location(firstBlockPlayerTPLocation.getWorld(), x, y, z);
+        Location firstBlock = firstBlockPlayerTPLocation;
+        firstBlock.setY(firstBlockPlayerTPLocation.getY() - 1);
         firstBlock.getBlock().setType(Material.GREEN_CONCRETE);
         blocksToDelete.add(firstBlock.getBlock());
 
@@ -130,9 +140,11 @@ public class JumpAndRun {
      */
     private boolean checkIfPlayerLost(Player player, int heightToLose) {
         Minigame mg = Minigame.getInstance();
+        UUID playerUUID = player.getUniqueId();
         if (player.getLocation().getBlockY() <= heightToLose) {
             mg.loseMessage(player);
-            mg.dropInvWithTeleport(player, true);
+            mg.dropInvAndClearData(player);
+            mg.tpPlayerToRespawnLocation(player);
             mg.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
             woolPlaced = false;
             goldPlaced = false;
@@ -201,10 +213,10 @@ public class JumpAndRun {
         Config config = Config.getInstance();
         Player playerInArena = DeathListener.getPlayerInArena();
 
-        int heightToLose = config.checkConfigInt("ParkourStartHeight") - 2;
+        int heightToLose = config.checkParkourStartHeight() - 2;
 
         Location nextBlock = firstBLock;
-        new BukkitRunnable() {
+        BukkitRunnable runnable = new BukkitRunnable() {
             public void run() {
                 if(checkIfPlayerWon(playerInArena) || checkIfPlayerLost(playerInArena, heightToLose)) {
                     if(!mg.checkIfWaitinglistIsEmpty()) {
@@ -256,7 +268,8 @@ public class JumpAndRun {
                     }
                 }
             }
-        }.runTaskTimer(Main.getPlugin(), 0, 5);
+        };
+        task = runnable.runTaskTimer(Main.getPlugin(), 0, 5);
     }
 
     private List<Integer> setValuesBasedOnDifficulty(Config config) {
@@ -265,7 +278,8 @@ public class JumpAndRun {
         int maxX = 0;
         int maxZ = 0;
         int maxDifficulty = 0;
-        switch(config.checkConfigInt(playerInArena, "Difficulty")) {
+        PlayerData playerInArenaData = HandlePlayers.getKnownPlayers().get(playerInArena.getUniqueId());
+        switch(playerInArenaData.getDifficulty()) {
             case 0:
             case 1:
                 minX = 1;
