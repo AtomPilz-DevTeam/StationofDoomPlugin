@@ -1,6 +1,6 @@
 package de.j.deathMinigames.minigames;
 
-import de.j.deathMinigames.deathMinigames.Introduction;
+import de.j.deathMinigames.main.*;
 import de.j.deathMinigames.listeners.DeathListener;
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
@@ -10,7 +10,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import de.j.deathMinigames.deathMinigames.Config;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
@@ -44,22 +43,24 @@ public class Minigame {
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
         Player playerInArena = DeathListener.getPlayerInArena();
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
 
         if(player == null) {
             throw new NullPointerException("player is null");
         }
-
         if(!introduction.checkIfPlayerGotIntroduced(player)) {
             introduction.introStart(player);
         }
-        else if(config.checkConfigBoolean(player, "UsesPlugin")) {
+        else if(playerData.getUsesPlugin()) {
             if(playerInArena == null) {
+                playerData.setStatus(PlayerMinigameStatus.inMinigame);
                 jumpAndRun.start();
             }
             else {
                 if(!player.getUniqueId().equals(playerInArena.getUniqueId())) {
+                    playerData.setStatus(PlayerMinigameStatus.inWaitingList);
                     player.sendMessage(Component.text(tf.getTranslation(player, "arenaIsFull")).color(NamedTextColor.GOLD));
-                    Location locationBox = config.checkConfigLocation("WaitingListPosition");
+                    Location locationBox = config.checkWaitingListLocation();
                     if(locationBox != null) {
                         minigame.teleportPlayerInBox(player, locationBox);
                     }
@@ -82,10 +83,12 @@ public class Minigame {
         if(player == null) {
             throw new NullPointerException("player is null");
         }
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         player.sendMessage(Component.text(message).color(NamedTextColor.GOLD));
         assert inventories.containsKey(player.getUniqueId());
         playerDeathInventory.setContents(inventories.get(player.getUniqueId()).getContents());
         waitingListMinigame.remove(player);
+        playerData.setStatus(PlayerMinigameStatus.inMinigame);
     }
 
     /**
@@ -93,14 +96,15 @@ public class Minigame {
      * @param player    the player who lost the game
      */
     public void loseMessage(Player player) {
-        Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+
         if(player == null) {
             throw new NullPointerException("player is null");
         }
-
         assert deaths.containsKey(player.getUniqueId());
-        if(config.checkConfigBoolean(player, "UsesPlugin")) {
+        playerData.setStatus(PlayerMinigameStatus.alive);
+        if(playerData.getUsesPlugin()) {
             player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "loseMessage", "X: " + deaths.get(player.getUniqueId()).getBlockX() + " " + "Y: " + deaths.get(player.getUniqueId()).getBlockY() + " " + "Z: " + deaths.get(player.getUniqueId()).getBlockZ())).content()));
         }
     }
@@ -109,24 +113,17 @@ public class Minigame {
      * drops the inventory of the player at his deathpoint, clears the playerDeathInventory, teleports him to his respawnlocation and removes him from the deaths HashMap
      * @param player    the player whose inventory is to be droopped
      */
-    public void dropInvWithTeleport(Player player, boolean doTeleport) {
+    public void dropInvAndClearData(Player player) {
         if(player == null) {
             throw new NullPointerException("player is null");
         }
         dropInv(player);
+        assert playerDeathInventory != null;
         playerDeathInventory.clear();
-        if(deaths.containsKey(player.getUniqueId())) {
-            deaths.remove(player.getUniqueId());
-        }
-        if(inventories.containsKey(player.getUniqueId())) {
-            inventories.remove(player.getUniqueId());
-        }
-        if(doTeleport) {
-            tpPlayerToRespawnLocation(player);
-        }
+        tpPlayerToRespawnLocation(player);
     }
 
-    private void tpPlayerToRespawnLocation(Player player) {
+    public void tpPlayerToRespawnLocation(Player player) {
         if(player == null) {
             throw new NullPointerException("player is null");
         }
@@ -148,8 +145,9 @@ public class Minigame {
             throw new NullPointerException("player is null");
         }
         UUID uuidPlayer = player.getUniqueId();
-        assert deaths.get(uuidPlayer) != null;
-        Location deathLocation = deaths.get(uuidPlayer);
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(uuidPlayer);
+        playerData.setStatus(PlayerMinigameStatus.alive);
+        Location deathLocation = playerData.getLastDeathLocation();
         if(deathLocation == null) {
             throw new NullPointerException("deathLocation is null");
         }
@@ -158,9 +156,6 @@ public class Minigame {
             if(item == null) continue;
             player.getWorld().dropItem(deathLocation, item);
         }
-        playerDeathInventory.clear();
-        deaths.remove(uuidPlayer);
-        inventories.remove(uuidPlayer);
     }
 
     /**
@@ -169,15 +164,15 @@ public class Minigame {
      */
     public void winMessage(Player player) {
         Difficulty difficulty = Difficulty.getInstance();
-        Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         if(player == null) {
             throw new NullPointerException("player is null");
         }
         player.sendMessage(Component.text(tf.getTranslation(player, "winMessage")).color(NamedTextColor.GOLD));
-        if(config.checkConfigInt(player, "Difficulty") < 10) {
+        if(playerData.getDifficulty() < 10) {
             difficulty.higherDifficulty(player);
-            player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "changedDiff", config.checkConfigInt(player, "Difficulty"))).content()));
+            player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "changedDiff", playerData.getDifficulty())).content()));
         }
     }
 
@@ -196,7 +191,8 @@ public class Minigame {
             throw new NullPointerException("player is null");
         }
         tpPlayerToRespawnLocation(player);
-
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        playerData.setStatus(PlayerMinigameStatus.alive);
         player.openInventory(inventory);
         playSoundAtLocation(player.getLocation(), 1F, Sound.ITEM_TOTEM_USE);
 

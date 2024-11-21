@@ -1,11 +1,12 @@
 package de.j.stationofdoom.main;
 
 import de.j.deathMinigames.commands.GameCMD;
-import de.j.deathMinigames.deathMinigames.Config;
+import de.j.deathMinigames.main.Config;
 import de.j.deathMinigames.listeners.DeathListener;
 import de.j.deathMinigames.listeners.InventoryListener;
 import de.j.deathMinigames.listeners.JoinListener;
 import de.j.deathMinigames.listeners.RespawnListener;
+import de.j.deathMinigames.database.Database;
 import de.j.stationofdoom.cmd.*;
 import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.FurnaceEvents;
@@ -29,7 +30,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -70,7 +70,9 @@ public final class Main extends JavaPlugin {
         Config config = Config.getInstance();
         saveDefaultConfig();
         config.initializeConfig();
-        config.cloneConfigToHashMap();
+        Database database = Database.getInstance();
+        database.initDatabase();
+
 
         LifecycleEventManager<Plugin> manager = getLifecycleManager();
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
@@ -119,6 +121,7 @@ public final class Main extends JavaPlugin {
     public void onDisable() {
         EntityManager.removeOldEntities();
         WhoIsOnline.shutdown();
+        Database.closeStatement();
     }
 
     public static Main getPlugin(){

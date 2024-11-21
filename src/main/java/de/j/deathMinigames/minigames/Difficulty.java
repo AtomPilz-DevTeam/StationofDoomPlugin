@@ -1,12 +1,14 @@
 package de.j.deathMinigames.minigames;
 
+import de.j.deathMinigames.main.HandlePlayers;
+import de.j.deathMinigames.main.PlayerData;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import de.j.deathMinigames.deathMinigames.Config;
+import de.j.deathMinigames.main.Config;
 
 public class Difficulty {
     private static volatile Difficulty instance;
@@ -25,31 +27,32 @@ public class Difficulty {
     private static final int maxDifficulty = 10;
 
     public void higherDifficulty(Player player) {
-        Config config = Config.getInstance();
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         TranslationFactory tf = new TranslationFactory();
 
-        int currentDifficulty = config.checkConfigInt(player, "Difficulty");
+        int currentDifficulty = playerData.getDifficulty();
         if(currentDifficulty == maxDifficulty) {
             player.sendMessage(Component.text(tf.getTranslation(player, "maxDiffAlreadyReached")).color(NamedTextColor.RED));
         }
         else {
-            config.setDifficulty(player, currentDifficulty + 1);
+            playerData.setDifficulty(currentDifficulty + 1);
         }
     }
 
     public void lowerDifficulty(Player player) {
-        Config config = Config.getInstance();
-        config.setDifficulty(player, config.checkConfigInt(player, "Difficulty") - 1);
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        int currentDifficulty = playerData.getDifficulty();
+        playerData.setDifficulty(currentDifficulty - 1);
     }
 
     public boolean checkIfPlayerCanPay(Player player) {
         Config config = Config.getInstance();
-        return player.getInventory().contains(Material.DIAMOND, config.checkConfigInt("CostToLowerTheDifficulty"));
+        return player.getInventory().contains(Material.DIAMOND, config.checkCostToLowerTheDifficulty());
     }
 
     public void playerPay(Player player) {
         Config config = Config.getInstance();
-        ItemStack diamonds = new ItemStack(Material.DIAMOND, config.checkConfigInt("CostToLowerTheDifficulty"));
+        ItemStack diamonds = new ItemStack(Material.DIAMOND, config.checkCostToLowerTheDifficulty());
         player.getInventory().removeItem(diamonds);
     }
 }
