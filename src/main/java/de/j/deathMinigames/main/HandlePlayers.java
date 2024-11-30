@@ -1,6 +1,7 @@
 package de.j.deathMinigames.main;
 
 import de.j.deathMinigames.database.PlayerDataDatabase;
+import de.j.stationofdoom.main.Main;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -39,12 +40,12 @@ public class HandlePlayers {
 
     //}
 
-    public synchronized static void initKnownPlayersPlayerData() {
+    public static void initKnownPlayersPlayerData() {
         PlayerDataDatabase playerDataDatabase = PlayerDataDatabase.getInstance();
         for(PlayerData playerData : playerDataDatabase.getAllPlayerDatas()) {
-            playerData.synchronizeWithDatabase();
             knownPlayers.put(playerData.getUUID(), playerData);
         }
+        Main.getPlugin().getLogger().info("Loaded " + knownPlayers.size() + " known players and their data");
     }
 
     public synchronized void addNewPlayer(Player player) {
