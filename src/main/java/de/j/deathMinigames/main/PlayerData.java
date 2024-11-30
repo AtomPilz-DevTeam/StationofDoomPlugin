@@ -139,17 +139,21 @@ public class PlayerData {
         this.introduction = false;
         this.usesPlugin = true;
         Main.getPlugin().getLogger().info("in constructor " + this.usesPlugin);
-        synchronizeWithDatabase();
     }
-
-    public void synchronizeWithDatabase() {
-        PlayerDataDatabase playerDataDatabase = PlayerDataDatabase.getInstance();
-        if(playerDataDatabase.checkIfPlayerExistsInDatabase(this.uuid)) {
-            playerDataDatabase.synchronizePlayerData(this);
-        }
-        else {
-            Main.getPlugin().getLogger().warning("Player " + this.name + " is not in database but should be!");
-        }
+    public PlayerData(String name, String uuid, boolean introduction, boolean usesPlugin, int difficulty, int decisionTimer, boolean hasWonParkourAtleastOnce, int bestParkourTime) {
+        Config config = Config.getInstance();
+        this.name = name;
+        this.uuid = UUID.fromString(uuid);
+        this.player = Bukkit.getPlayer(uuid);
+        this.status = PlayerMinigameStatus.alive;
+        this.lastDeathInventory = Bukkit.createInventory(null, 9*6);
+        this.decisionTimer = config.checkTimeToDecideWhenRespawning();
+        this.hasWonParkourAtleastOnce = hasWonParkourAtleastOnce;
+        this.bestParkourTime = bestParkourTime;
+        this.difficulty = difficulty;
+        this.introduction = introduction;
+        this.usesPlugin = usesPlugin;
+        Main.getPlugin().getLogger().info("in constructor " + this.usesPlugin);
     }
 
     public void updateName() {

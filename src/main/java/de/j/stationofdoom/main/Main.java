@@ -7,6 +7,7 @@ import de.j.deathMinigames.listeners.InventoryListener;
 import de.j.deathMinigames.listeners.JoinListener;
 import de.j.deathMinigames.listeners.RespawnListener;
 import de.j.deathMinigames.database.Database;
+import de.j.deathMinigames.main.HandlePlayers;
 import de.j.stationofdoom.cmd.*;
 import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.FurnaceEvents;
@@ -72,6 +73,7 @@ public final class Main extends JavaPlugin {
         config.initializeConfig();
         Database database = Database.getInstance();
         database.initDatabase();
+        HandlePlayers.initKnownPlayersPlayerData();
 
 
         LifecycleEventManager<Plugin> manager = getLifecycleManager();
