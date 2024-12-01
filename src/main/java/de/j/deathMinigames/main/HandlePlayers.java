@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class HandlePlayers {
     private volatile static HandlePlayers instance;
-    private volatile static HashMap<UUID, PlayerData> knownPlayers = new HashMap<>();
+    private static final HashMap<UUID, PlayerData> knownPlayers = new HashMap<>();
 
     public synchronized static HandlePlayers getInstance() {
         if(instance == null){
@@ -48,12 +48,17 @@ public class HandlePlayers {
         Main.getPlugin().getLogger().info("Loaded " + knownPlayers.size() + " known players and their data");
     }
 
+    public boolean checkIfPlayerIsKnown(UUID uuid) {
+        return knownPlayers.containsKey(uuid);
+    }
+
     public synchronized void addNewPlayer(Player player) {
-        PlayerDataDatabase playerDataDatabase = PlayerDataDatabase.getInstance();
         PlayerData playerData = new PlayerData(player);
         UUID playerUUID = player.getUniqueId();
-
-        HandlePlayers.getKnownPlayers().put(playerUUID, playerData);
-        playerDataDatabase.addPlayerToDatabase(playerData);
+        if(checkIfPlayerIsKnown(playerUUID)) {
+            Main.getPlugin().getLogger().warning("Player " + playerUUID + " was tried to add, but is already known!");
+            return;
+        }
+        knownPlayers.put(playerUUID, playerData);
     }
 }

@@ -23,6 +23,13 @@ public class PlayerDataDatabase {
         return instance;
     }
 
+    public List<PlayerData> getAllPlayerDatas() {
+        return Query.query("SELECT * FROM playerdata")
+                .single()
+                .map(row -> new PlayerData(row.getString("name"), row.getString("UUID"), row.getBoolean("introduction"), row.getBoolean("usesPlugin"), row.getInt("difficulty"), row.getInt("decisionTimer"), row.getBoolean("hasWonParkourAtleastOnce"), row.getInt("bestParkourTime")))
+                .all();
+    }
+
 //    public boolean checkIfPlayerExistsInDatabase(UUID uuid) {
 //        try {
 //            String selectSQL = "SELECT UUID FROM playerData WHERE UUID = '" + uuid + "';";
@@ -76,11 +83,4 @@ public class PlayerDataDatabase {
 //            e.printStackTrace();
 //        }
 //    }
-
-    public List<PlayerData> getAllPlayerDatas() {
-        return Query.query("SELECT * FROM playerdata")
-                .single()
-                .map(row -> new PlayerData(row.getString("name"), row.getString("UUID"), row.getBoolean("introduction"), row.getBoolean("usesPlugin"), row.getInt("difficulty"), row.getInt("decisionTimer"), row.getBoolean("hasWonParkourAtleastOnce"), row.getInt("bestParkourTime")))
-                .all();
-    }
 }
