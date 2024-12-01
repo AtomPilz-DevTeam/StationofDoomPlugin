@@ -31,7 +31,7 @@ public class JoinListener implements Listener {
                     .append(Component.text(" / ").color(NamedTextColor.GOLD))
                     .append(Component.text(tf.getTranslation(player, "no")).color(NamedTextColor.RED).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/game decidedNotToSetPosition"))));
         }
-        if(!playerDataDatabase.checkIfPlayerExistsInDatabase(player.getUniqueId())) {
+        if(!handlePlayers.checkIfPlayerIsKnown(player.getUniqueId())) {
             handlePlayers.addNewPlayer(player);
             player.sendMessage(Component.text(tf.getTranslation(player,"addedToPlayerList")).color(NamedTextColor.GOLD)
                     .append(Component.text(HandlePlayers.getKnownPlayers().get(player.getUniqueId()).getDifficulty()).color(NamedTextColor.RED)));
