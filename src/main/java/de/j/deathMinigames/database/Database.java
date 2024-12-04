@@ -1,25 +1,25 @@
 package de.j.deathMinigames.database;
 
 import com.zaxxer.hikari.HikariDataSource;
-import de.chojo.sadu.core.configuration.DatabaseConfig;
 import de.chojo.sadu.datasource.DataSourceCreator;
+import de.chojo.sadu.mapper.RowMapperRegistry;
 import de.chojo.sadu.postgresql.databases.PostgreSql;
-import de.chojo.sadu.queries.api.call.Call;
+import de.chojo.sadu.postgresql.mapper.PostgresqlMapper;
 import de.chojo.sadu.queries.api.configuration.QueryConfiguration;
-import de.chojo.sadu.queries.api.query.Query;
-import de.j.deathMinigames.main.HandlePlayers;
-import de.j.deathMinigames.main.PlayerData;
 import de.j.stationofdoom.main.Main;
-import org.postgresql.ds.PGSimpleDataSource;
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.HashMap;
 
 public class Database {
     private static Database instance;
+    private HikariDataSource dataSource;
+    private int port; // 9667
+    private String host; // localhost
+    private String database; // stationofdoom
+    private String user; // mc
+    private String password; // 65465
+    private String applicationName; // StationOfDoom
+    private String schema; // default
 
     private Database() {}
 
@@ -35,22 +35,55 @@ public class Database {
     }
 
     public void initDatabase(){
-        HikariDataSource dataSource = DataSourceCreator.create(PostgreSql.get()).configure(config -> config.host("localhost")
-                .port(9667)
-                .database("stationofdoom")
-                .user("mc")
-                .password("65465")
-                .currentSchema("default")
-                .applicationName("StationOfDoom")
+        dataSource = DataSourceCreator.create(PostgreSql.get()).configure(config -> config.host("localhost")
+                .port(port)
+                .database(database)
+                .user(user)
+                .password(password)
+                .currentSchema(schema)
+                .applicationName(applicationName)
         )
                 .create()
                 .withMaximumPoolSize(3)
                 .withMaximumPoolSize(1)
                 .build();
 
-        //QueryConfiguration. setDefault(QueryConfiguration) //TODO
+        configureDefaultQuery();
     }
-    
-    public static void closeStatement() {
+
+    private void configureDefaultQuery() {
+        QueryConfiguration config = QueryConfiguration.builder(dataSource)
+                .setExceptionHandler(err -> Main.getPlugin().getLogger().warning(err.getMessage()))
+                .setThrowExceptions(true)
+                .setAtomic(true)
+                .setRowMapperRegistry(new RowMapperRegistry().register(PostgresqlMapper.getDefaultMapper()))
+                .build();
+        QueryConfiguration.setDefault(config);
+    }
+
+    public void setConnectionInfo(String host, int port, String database, String user, String password, String applicationName, String schema) {
+        this.applicationName = applicationName;
+        this.schema = schema;
+        this.host = host;
+        this.port = port;
+        this.database = database;
+        this.user = user;
+        this.password = password;
+    }
+
+    public void closeConnection() {
+        dataSource.close();
+    }
+
+    public HashMap<String, Object> getConnectionInfo() {
+        HashMap<String, Object> info = new HashMap<>();
+        info.put("host", host);
+        info.put("port", port);
+        info.put("database", database);
+        info.put("user", user);
+        info.put("password", password);
+        info.put("applicationName", applicationName);
+        info.put("schema", schema);
+        return info;
     }
 }
