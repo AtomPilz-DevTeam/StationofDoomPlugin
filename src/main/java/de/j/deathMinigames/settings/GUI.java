@@ -28,16 +28,16 @@ public class GUI implements InventoryHolder {
         if(title == null) {
             throw new NullPointerException("Title is null!");
         }
-        Config config = Config.getInstance();
-        InventoryListener inventoryListener = new InventoryListener();
 
         int inventorySize = 54;
         inventory = Bukkit.createInventory(this, inventorySize, title);
         if(addAllPlayers) {
             HashMap<UUID, PlayerData> knownPlayers = HandlePlayers.getKnownPlayers();
             for(int i = 0; i < knownPlayers.size(); i++) {
-                Player player = Bukkit.getPlayer(knownPlayers.keySet().stream().toList().get(i));
-                PlayerData playerData = knownPlayers.get(player.getUniqueId());
+//                Player player = Bukkit.getPlayer(knownPlayers.keySet().stream().toList().get(i));
+//                PlayerData playerData = knownPlayers.get(player.getUniqueId());
+                PlayerData playerData = knownPlayers.get(knownPlayers.keySet().stream().toList().get(i));
+                Player player = Bukkit.getPlayer(playerData.getUUID());
                 if(player == null) continue;
                 Material material = Material.BARRIER;
                 if(title.equals("UsesPlugin")) {

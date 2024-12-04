@@ -1,6 +1,7 @@
 package de.j.stationofdoom.main;
 
 import de.j.deathMinigames.commands.GameCMD;
+import de.j.deathMinigames.dmUtil.TestCMD;
 import de.j.deathMinigames.main.Config;
 import de.j.deathMinigames.listeners.DeathListener;
 import de.j.deathMinigames.listeners.InventoryListener;
@@ -88,6 +89,7 @@ public final class Main extends JavaPlugin {
             COMMANDS.register("voterestart", new VoteRestartCMD());
             COMMANDS.register("sit", new PlayerSitListener());
             COMMANDS.register("game", "game related commands", new GameCMD());
+            COMMANDS.register("test", "testing", new TestCMD());
         });
 
         PluginManager pluginManager = Bukkit.getPluginManager();

@@ -13,13 +13,13 @@ import java.util.HashMap;
 public class Database {
     private static Database instance;
     private HikariDataSource dataSource;
-    private int port; // 9667
-    private String host; // localhost
-    private String database; // stationofdoom
-    private String user; // mc
-    private String password; // 65465
-    private String applicationName; // StationOfDoom
-    private String schema; // default
+    private int port = 9667; // 9667
+    private String host = "localhost"; // localhost
+    private String database = "stationofdoom"; // stationofdoom
+    private String user = "mc"; // mc
+    private String password = "65465"; // 65465
+    private String applicationName = "StationOfDoom"; // StationOfDoom
+    private String schema = "public"; // default
 
     private Database() {}
 
@@ -49,6 +49,7 @@ public class Database {
                 .build();
 
         configureDefaultQuery();
+        PlayerDataDatabase.getInstance().createTable();
     }
 
     private void configureDefaultQuery() {
