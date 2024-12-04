@@ -124,7 +124,6 @@ public final class Main extends JavaPlugin {
         EntityManager.removeOldEntities();
         WhoIsOnline.shutdown();
         HandlePlayers.copyAllPlayerDataIntoDatabase();
-        Database.closeStatement();
     }
 
     public static Main getPlugin(){
