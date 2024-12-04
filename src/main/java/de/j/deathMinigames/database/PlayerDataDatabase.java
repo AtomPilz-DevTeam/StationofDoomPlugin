@@ -43,7 +43,11 @@ public class PlayerDataDatabase {
                 .all().getFirst();
     }
 
-
+    public void removePlayerFromDatabase(UUID uuid) {
+        Query.query("DELETE FROM playerdata WHERE UUID = :uuid")
+                .single(Call.of().bind("uuid", uuid, UUIDAdapter.AS_STRING))
+                .delete();
+    }
 
     public void updatePlayerDataDatabase(Collection<PlayerData> playerDatas) {
         int newlyAddedPlayers = 0;
