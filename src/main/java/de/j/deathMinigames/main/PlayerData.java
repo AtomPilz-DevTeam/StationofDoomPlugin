@@ -1,5 +1,4 @@
 package de.j.deathMinigames.main;
-import de.j.deathMinigames.database.PlayerDataDatabase;
 import de.j.stationofdoom.main.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -115,13 +114,13 @@ public class PlayerData {
     private volatile String name; // in database
     private volatile UUID uuid; // in database
     private final Player player;
-    private volatile PlayerMinigameStatus status; // in database
+    private volatile PlayerMinigameStatus status;
     private volatile Inventory lastDeathInventory;
     private volatile Location lastDeathLocation;
     private volatile boolean introduction; // in database
     private volatile boolean usesPlugin; // in database
     private volatile int difficulty; // in database
-    private volatile int decisionTimer; // in database
+    private volatile int decisionTimer;
     private volatile boolean hasWonParkourAtleastOnce; // in database
     private volatile int bestParkourTime; // in database
 
@@ -138,9 +137,8 @@ public class PlayerData {
         this.difficulty = 0;
         this.introduction = false;
         this.usesPlugin = true;
-        Main.getPlugin().getLogger().info("in constructor " + this.usesPlugin);
     }
-    public PlayerData(String name, String uuid, boolean introduction, boolean usesPlugin, int difficulty, int decisionTimer, boolean hasWonParkourAtleastOnce, int bestParkourTime) {
+    public PlayerData(String name, String uuid, boolean introduction, boolean usesPlugin, int difficulty, boolean hasWonParkourAtleastOnce, int bestParkourTime) {
         Config config = Config.getInstance();
         this.name = name;
         this.uuid = UUID.fromString(uuid);
@@ -153,7 +151,6 @@ public class PlayerData {
         this.difficulty = difficulty;
         this.introduction = introduction;
         this.usesPlugin = usesPlugin;
-        Main.getPlugin().getLogger().info("in constructor " + this.usesPlugin);
     }
 
     public void updateName() {

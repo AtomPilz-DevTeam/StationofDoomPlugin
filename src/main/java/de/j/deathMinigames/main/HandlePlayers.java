@@ -67,6 +67,7 @@ public class HandlePlayers {
             return;
         }
         knownPlayers.put(playerUUID, playerData);
+        Main.getPlugin().getLogger().info("Added new player " + playerData.getName() + " " + playerData.getIntroduction());
     }
 
 

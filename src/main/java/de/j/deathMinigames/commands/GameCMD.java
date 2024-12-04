@@ -1,5 +1,6 @@
 package de.j.deathMinigames.commands;
 
+import de.j.deathMinigames.database.Database;
 import de.j.deathMinigames.listeners.DeathListener;
 import de.j.deathMinigames.main.*;
 import de.j.stationofdoom.util.translations.TranslationFactory;
@@ -22,6 +23,7 @@ import de.j.deathMinigames.settings.MainMenu;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.UUID;
 
 import static de.j.deathMinigames.listeners.DeathListener.*;
@@ -30,7 +32,6 @@ public class GameCMD implements BasicCommand {
 
     private final Difficulty difficulty = Difficulty.getInstance();
     private final Minigame minigame = Minigame.getInstance();
-    private final RespawnListener respawnListener = new RespawnListener();
     private final Introduction introduction = Introduction.getInstance();
     private final MainMenu mainMenu = new MainMenu();
     private final Config config = Config.getInstance();
