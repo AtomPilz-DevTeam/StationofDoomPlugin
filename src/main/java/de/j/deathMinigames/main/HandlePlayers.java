@@ -52,6 +52,13 @@ public class HandlePlayers {
         return knownPlayers.containsKey(uuid);
     }
 
+    /**
+     * Adds a new player to the known players map.
+     *
+     * If the player is already known, a warning is logged and the method does nothing.
+     *
+     * @param player The player to add.
+     */
     public synchronized void addNewPlayer(Player player) {
         PlayerData playerData = new PlayerData(player);
         UUID playerUUID = player.getUniqueId();
@@ -60,5 +67,17 @@ public class HandlePlayers {
             return;
         }
         knownPlayers.put(playerUUID, playerData);
+    }
+
+
+    /**
+     * Copies all known player data into the database.
+     *
+     * This should be used when the server is shutting down, to ensure that all
+     * player data is saved.
+     */
+    public static void copyAllPlayerDataIntoDatabase() {
+        PlayerDataDatabase playerDataDatabase = PlayerDataDatabase.getInstance();
+        playerDataDatabase.updatePlayerDataDatabase(knownPlayers.values());
     }
 }

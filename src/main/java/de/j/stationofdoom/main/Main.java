@@ -123,6 +123,7 @@ public final class Main extends JavaPlugin {
     public void onDisable() {
         EntityManager.removeOldEntities();
         WhoIsOnline.shutdown();
+        HandlePlayers.copyAllPlayerDataIntoDatabase();
         Database.closeStatement();
     }
 

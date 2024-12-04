@@ -5,6 +5,7 @@ import de.chojo.sadu.core.configuration.DatabaseConfig;
 import de.chojo.sadu.datasource.DataSourceCreator;
 import de.chojo.sadu.postgresql.databases.PostgreSql;
 import de.chojo.sadu.queries.api.call.Call;
+import de.chojo.sadu.queries.api.configuration.QueryConfiguration;
 import de.chojo.sadu.queries.api.query.Query;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
@@ -46,6 +47,8 @@ public class Database {
                 .withMaximumPoolSize(3)
                 .withMaximumPoolSize(1)
                 .build();
+
+        //QueryConfiguration. setDefault(QueryConfiguration) //TODO
     }
     
     public static void closeStatement() {
