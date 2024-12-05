@@ -65,12 +65,25 @@ public class MainMenu implements InventoryHolder {
     private static final GUI costToLowerTheDifficulty = new GUI("CostToLowerTheDifficulty", false);
     private static final GUI timeToDecideWhenRespawning = new GUI("TimeToDecideWhenRespawning", false);
 
+    /**
+     * Opens the main menu for the given player, where the player can
+     * click on sub-menus to view the settings.
+     *
+     * @param player The player to open the menu for
+     */
     public void showPlayerSettings(Player player) {
-
         addSubmenus();
         showPlayerInv(player);
     }
 
+    /**
+     * Adds clickable items to the main menu that link to the sub-menus.
+     * The items are added in the following order:
+     * - "SetUp" (green if set up, red if not)
+     * - "Introduction"
+     * - "UsesPlugin"
+     * - "Difficulty"
+     */
     private void addSubmenus() {
         Config config = Config.getInstance();
         if(config.checkSetUp()) {
@@ -84,6 +97,13 @@ public class MainMenu implements InventoryHolder {
         addClickableItemStack("Difficulty", Material.RED_CONCRETE, 1, 3);
     }
 
+    /**
+     * Shows the main menu to the given player. The player can click on
+     * the items in the inventory to view the settings.
+     *
+     * @param player The player to show the menu to
+     * @throws IllegalStateException if the inventory is null
+     */
     private void showPlayerInv(Player player) {
         if(inventory == null) {
             throw new IllegalStateException("Inventory is null");
@@ -91,8 +111,16 @@ public class MainMenu implements InventoryHolder {
         player.openInventory(inventory);
     }
 
+    /**
+     * Adds a clickable item to the inventory.
+     * Note: Click handling must be implemented in InventoryListener.
+     * @param name  The display name of the item
+     * @param material  The material type
+     * @param amount    Item stack size
+     * @param slotWhereToPutTheItem Inventory slot
+     * @throws IllegalArgumentException if the slot is out of bounds
+     */
     public void addClickableItemStack(String name, Material material, int amount, int slotWhereToPutTheItem) {
-        // item has to be added in InventoryListener manually to make it clickable
         if(slotWhereToPutTheItem < 0 || slotWhereToPutTheItem > inventory.getSize()) {
             throw new IllegalArgumentException("Invalid slot index: " + slotWhereToPutTheItem);
         }
@@ -104,6 +132,12 @@ public class MainMenu implements InventoryHolder {
         inventory.setItem(slotWhereToPutTheItem, itemStack);
     }
 
+    /**
+     * Sets the contents of the difficulty player settings inventory to show all difficulties
+     * from 0 to maxDifficulty, with the given difficulty highlighted in green.
+     * @param difficulty The difficulty to highlight in green, must be between 0 and maxDifficulty
+     * @throws IllegalArgumentException if the difficulty is out of range
+     */
     public void difficultySettingsSetInventoryContents(int difficulty) {
         int maxDifficulty = 10;
         if(difficulty < 0 || difficulty > maxDifficulty) {
@@ -115,6 +149,12 @@ public class MainMenu implements InventoryHolder {
         MainMenu.getDifficultyPlayerSettings().addClickableItemStack(Integer.toString(difficulty), Material.GREEN_CONCRETE_POWDER, 1 ,difficulty);
     }
 
+    /**
+     * Sets the contents of the inventory used to show the variables importent for setting up the plugin.
+     * The settings that are shown are the parcourse start height, the parcourse length,
+     * the waiting list position, the cost to lower the difficulty and the time to decide
+     * when respawning.
+     */
     public void setUpSettingsSetInventoryContents() {
         Config config = Config.getInstance();
         Location waitingListPosition = config.checkWaitingListLocation();
@@ -160,6 +200,11 @@ public class MainMenu implements InventoryHolder {
         }
     }
 
+    /**
+     * Sets the contents of the inventory used to set the parcourse start height.
+     * The options are shown as clickable items in the inventory, with the current
+     * start height being green and the other options being red.
+     */
     public void parkourStartHeightSettingsSetInventoryContents() {
         Config config = Config.getInstance();
         int startHeight = config.checkParkourStartHeight();
@@ -173,6 +218,11 @@ public class MainMenu implements InventoryHolder {
         }
     }
 
+    /**
+     * Sets the contents of the inventory used to set the parcourse length.
+     * The options are shown as clickable items in the inventory, with the current
+     * length being green and the other options being red.
+     */
     public void parkourLengthSettingsSetInventoryContents() {
         Config config = Config.getInstance();
         int length = config.checkParkourLength();
@@ -186,6 +236,11 @@ public class MainMenu implements InventoryHolder {
         }
     }
 
+    /**
+     * Sets the contents of the inventory used to set the cost to lower the difficulty.
+     * The options are shown as clickable items in the inventory, with the current
+     * cost being green and the other options being red.
+     */
     public void costToLowerTheDifficultySettingsSetInventoryContents() {
         Config config = Config.getInstance();
         int length = config.checkCostToLowerTheDifficulty();
@@ -199,6 +254,12 @@ public class MainMenu implements InventoryHolder {
         }
     }
 
+    /**
+     * Sets the contents of the inventory used to set the time to decide when respawning.
+     * The options are shown as clickable items in the inventory, with the current
+     * time being green and the other options being red. The options are from 5 seconds
+     * to 30 seconds.
+     */
     public void timeToDecideWhenRespawningSettingsSetInventoryContents() {
         Config config = Config.getInstance();
         int time = config.checkTimeToDecideWhenRespawning();
@@ -212,6 +273,11 @@ public class MainMenu implements InventoryHolder {
         }
     }
 
+    /**
+     * Returns the inventory associated with this MainMenu.
+     *
+     * @return The inventory associated with this MainMenu.
+     */
     @Override
     public Inventory getInventory() {
         return inventory;

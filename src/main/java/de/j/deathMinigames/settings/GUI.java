@@ -102,6 +102,13 @@ public class GUI implements InventoryHolder {
         inventory.setItem(slotWhereToPutTheItem, itemStack);
     }
 
+    /**
+     * Adds contents to the inventory using an array of ItemStacks.
+     * If the array is larger than the inventory size, an exception is thrown.
+     *
+     * @param itemStackList An array of ItemStacks to be added to the inventory.
+     * @throws IllegalArgumentException if the itemS tackList size exceeds the inventory size.
+     */
     public void addClickableContentsViaItemStackList(ItemStack[] itemStackList) {
         if(itemStackList.length > inventory.getSize()) {
             throw new IllegalArgumentException("The StackList is bigger then the size of the inventory!");
@@ -109,18 +116,38 @@ public class GUI implements InventoryHolder {
         inventory.setContents(itemStackList);
     }
 
+    /**
+     * Opens the inventory for the player to see.
+     * @param playerToShowTheInvTo The player to show the inventory to.
+     */
     public void showInventory(Player playerToShowTheInvTo) {
         playerToShowTheInvTo.openInventory(inventory);
     }
 
+    /**
+     * Adds a back button to the inventory.
+     * The back button is represented by a red concrete block and is placed in the last slot of the inventory.
+     *
+     * @param player The player for whom the translation of the back button's name is retrieved.
+     */
     public void addBackButton(Player player) {
         addClickableItemStack(new TranslationFactory().getTranslation(player, "backButton"), Material.RED_CONCRETE, 1, 53);
     }
 
+    /**
+     * Returns the inventory associated with this GUI.
+     *
+     * @return The inventory associated with this GUI.
+     */
     public @NotNull Inventory getInventory() {
         return inventory;
     }
 
+    /**
+     * Returns the UUID associated with this GUI.
+     *
+     * @return The UUID associated with this GUI.
+     */
     public UUID getUUID() {
         return uuid;
     }

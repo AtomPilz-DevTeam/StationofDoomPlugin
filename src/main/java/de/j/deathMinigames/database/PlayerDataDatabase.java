@@ -19,6 +19,15 @@ public class PlayerDataDatabase {
 
     private PlayerDataDatabase() {}
 
+    /**
+     * Returns the single instance of this class.
+     *
+     * <p>This class is a singleton, meaning that only one instance of this class
+     * will ever exist. This method will return the same instance every time it is
+     * called.
+     *
+     * @return The single instance of this class.
+     */
     public static PlayerDataDatabase getInstance() {
         if (instance == null) {
             synchronized (Database.class) {
@@ -30,12 +39,30 @@ public class PlayerDataDatabase {
         return instance;
     }
 
+    /**
+     * Creates the playerData table in the database if it does not exist.
+     *
+     * <p>This method executes a SQL query to create a table named 'playerData'
+     * with columns for storing player information such as name, UUID, introduction
+     * status, plugin usage status, difficulty level, parkour win status, and best
+     * parkour time.
+     */
     public void createTable() {
         Query.query("CREATE TABLE IF NOT EXISTS playerData (name VARCHAR(255), UUID VARCHAR(255), introduction BOOLEAN, usesPlugin BOOLEAN, difficulty INT, hasWonParkourAtleastOnce BOOLEAN, bestParkourTime INT);")
                 .single()
                 .insert();
     }
 
+    /**
+     * Retrieves all playerData records from the database.
+     *
+     * <p>This method executes a SQL query to fetch all records from the 'playerdata'
+     * table. Each record is mapped to a PlayerData object containing the player's
+     * name, UUID, introduction status, plugin usage status, difficulty level,
+     * parkour win status, and best parkour time.
+     *
+     * @return A list of PlayerData objects representing all players in the database.
+     */
     public List<PlayerData> getAllPlayerDatas() {
         return Query.query("SELECT * FROM playerdata;")
                 .single()
@@ -49,19 +76,15 @@ public class PlayerDataDatabase {
                 .all();
     }
 
-    public PlayerData getPlayerData(UUID uuid) {
-        return Query.query("SELECT * FROM playerdata WHERE UUID = :uuid;")
-                .single(Call.of().bind("uuid", uuid, UUIDAdapter.AS_STRING))
-                .map(row -> new PlayerData(Bukkit.getPlayer(row.getString("uuid"))))
-                .all().getFirst();
-    }
-
-    public void removePlayerFromDatabase(UUID uuid) {
-        Query.query("DELETE FROM playerdata WHERE UUID = :uuid;")
-                .single(Call.of().bind("uuid", uuid, UUIDAdapter.AS_STRING))
-                .delete();
-    }
-
+    /**
+     * Updates the playerData database with the given player data collection.
+     *
+     * <p>This method will check if a player is already in the database and if so
+     * it will update the player's data. If the player is not in the database, it
+     * will add the player to the database.
+     *
+     * @param playerDatas The collection of player data to update the database with.
+     */
     public void updatePlayerDataDatabase(Collection<PlayerData> playerDatas) {
         int newlyAddedPlayers = 0;
         int updatedPlayers = 0;
@@ -83,17 +106,17 @@ public class PlayerDataDatabase {
                 newlyAddedPlayers++;
             }
         }
-        Main.getPlugin().getLogger().info("Updated PlayerDataDatabase, added " + newlyAddedPlayers + " and updated " + updatedPlayers + " players");
+        Main.getMainLogger().info("Updated PlayerDataDatabase, added " + newlyAddedPlayers + " and updated " + updatedPlayers + " players");
     }
 
-    public int getQuantityOfPlayers() {
-        return Query.query("SELECT * FROM playerdata;")
-                .single()
-                .map(row -> new PlayerData(row.getString("name"), row.getString("UUID"), row.getBoolean("introduction"), row.getBoolean("usesPlugin"), row.getInt("difficulty"), row.getBoolean("hasWonParkourAtleastOnce"), row.getInt("bestParkourTime")))
-                .all()
-                .size();
-    }
-
+    /**
+     * Adds a player to the database.
+     *
+     * <p>This method executes a SQL query to insert a new record into the
+     * 'playerData' table with the given player data.
+     *
+     * @param playerData The player data to add to the database.
+     */
     public void addPlayerToDatabase(PlayerData playerData) {
         Query.query("INSERT INTO playerData (name, UUID, introduction, usesPlugin, difficulty, hasWonParkourAtleastOnce, bestParkourTime) VALUES (:name, :uuid, :introduction, :usesPlugin, :difficulty, :hasWonParkourAtleastOnce, :bestParkourTime);")
                 .single(Call.of().bind("name", playerData.getName())
@@ -106,6 +129,15 @@ public class PlayerDataDatabase {
                 .insert();
     }
 
+    /**
+     * Checks if a player is in the database.
+     *
+     * <p>This method fetches all player data records from the database and checks
+     * if the player with the given UUID is present in the list.
+     *
+     * @param playerDataPlayerToCheck The player data to check.
+     * @return true if the player is in the database, false otherwise.
+     */
     public boolean checkIfPlayerIsInDatabase(PlayerData playerDataPlayerToCheck) {
         List<PlayerData> playerDatas =  getAllPlayerDatas();
         boolean isInDatabase = false;

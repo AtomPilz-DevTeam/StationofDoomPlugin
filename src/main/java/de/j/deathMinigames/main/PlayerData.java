@@ -138,6 +138,7 @@ public class PlayerData {
         this.introduction = false;
         this.usesPlugin = true;
     }
+
     public PlayerData(String name, String uuid, boolean introduction, boolean usesPlugin, int difficulty, boolean hasWonParkourAtleastOnce, int bestParkourTime) {
         Config config = Config.getInstance();
         this.name = name;
@@ -153,20 +154,44 @@ public class PlayerData {
         this.usesPlugin = usesPlugin;
     }
 
+    /**
+     * Updates the player's name to the current name of the player entity.
+     * This method synchronizes the stored name with the live player's name.
+     */
     public void updateName() {
         this.name = player.getName();
     }
 
+    /**
+     * Resets the decision timer to its default value.
+     *
+     * This method retrieves the default time to decide when respawning
+     * from the configuration and sets the player's decision timer to this value.
+     */
     public void setDecisionTimerDefault() {
         Config config = Config.getInstance();
         this.decisionTimer = config.checkTimeToDecideWhenRespawning();
     }
 
+    /**
+     * Resets the player's location and inventory from their last death to null.
+     *
+     * This method sets the player's last death location and last death inventory to null.
+     * This is used to reset the player's location and inventory after they decide
+     * to respawn or use a feature.
+     */
     public void setLocationAndInventoryNull() {
         this.lastDeathLocation = null;
         this.lastDeathInventory = null;
     }
 
+    /**
+     * Resets the player's decision timer and status.
+     *
+     * This method sets the player's status to 'alive' and resets the decision timer
+     * to its default value as specified in the configuration. It is used to
+     * reset these for the next time the player respawns or after completing a decision process.
+     */
     public void resetDecisionTimerAndStatus(){
         this.status = PlayerMinigameStatus.alive;
         setDecisionTimerDefault();
