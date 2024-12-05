@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -51,7 +52,7 @@ public class PlayerDataDatabase {
     public PlayerData getPlayerData(UUID uuid) {
         return Query.query("SELECT * FROM playerdata WHERE UUID = :uuid;")
                 .single(Call.of().bind("uuid", uuid, UUIDAdapter.AS_STRING))
-                .map(row -> new PlayerData(Bukkit.getPlayer(row.getString("UUID"))))
+                .map(row -> new PlayerData(Bukkit.getPlayer(row.getString("uuid"))))
                 .all().getFirst();
     }
 
@@ -64,17 +65,16 @@ public class PlayerDataDatabase {
     public void updatePlayerDataDatabase(Collection<PlayerData> playerDatas) {
         int newlyAddedPlayers = 0;
         int updatedPlayers = 0;
-        List<PlayerData> playerDatasInDatabase = getAllPlayerDatas();
         for (PlayerData playerData : playerDatas) {
-            if(playerDatasInDatabase.contains(playerData)) {
-                Query.query("UPDATE playerData SET introduction = :introduction, usesPlugin = :usesPlugin, difficulty = :difficulty, hasWonParkourAtleastOnce = :hasWonParkourAtleastOnce, bestParkourTime = :bestParkourTime WHERE UUID = :uuid;")
+            if(checkIfPlayerIsInDatabase(playerData)) {
+                Query.query("UPDATE playerData SET name = :name, introduction = :introduction, usesPlugin = :usesPlugin, difficulty = :difficulty, hasWonParkourAtleastOnce = :hasWonParkourAtleastOnce, bestParkourTime = :bestParkourTime WHERE uuid = :uuid;")
                         .single(Call.of().bind("name", playerData.getName())
-                                .bind("uuid", playerData.getUUID(), UUIDAdapter.AS_STRING)
                                 .bind("introduction", playerData.getIntroduction())
                                 .bind("usesPlugin", playerData.getUsesPlugin())
                                 .bind("difficulty", playerData.getDifficulty())
                                 .bind("hasWonParkourAtleastOnce", playerData.getHasWonParkourAtleastOnce())
-                                .bind("bestParkourTime", playerData.getBestParkourTime()))
+                                .bind("bestParkourTime", playerData.getBestParkourTime())
+                                .bind("uuid", playerData.getUUID(), UUIDAdapter.AS_STRING))
                         .update();
                 updatedPlayers++;
             }
@@ -104,5 +104,17 @@ public class PlayerDataDatabase {
                         .bind("hasWonParkourAtleastOnce", playerData.getHasWonParkourAtleastOnce())
                         .bind("bestParkourTime", playerData.getBestParkourTime()))
                 .insert();
+    }
+
+    public boolean checkIfPlayerIsInDatabase(PlayerData playerDataPlayerToCheck) {
+        List<PlayerData> playerDatas =  getAllPlayerDatas();
+        boolean isInDatabase = false;
+        if(playerDatas.isEmpty()) return false;
+        for (PlayerData playerDataToCompare : playerDatas) {
+            if(playerDataToCompare.getUUID().equals(playerDataPlayerToCheck.getUUID())) {
+                isInDatabase = true;
+            }
+        }
+        return isInDatabase;
     }
 }
