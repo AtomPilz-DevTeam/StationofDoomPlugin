@@ -24,6 +24,14 @@ import java.util.UUID;
 public class RespawnListener implements Listener {
     private volatile BukkitTask task;
 
+    /**
+     * Called when a player respawns.
+     * <p>
+     * This method is used to handle the decision process of the player after death.
+     * It clears the inventory of the player and sets the status of the player to alive.
+     * If the player has a last death inventory, it sets the status of the player to deciding and starts the decision timer.
+     * @param event the event that is called when a player respawns
+     */
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
@@ -42,6 +50,13 @@ public class RespawnListener implements Listener {
         }
     }
 
+    /**
+     * Called when a player starts deciding whether to play a minigame after a death.
+     * <p>
+     * This method sends a message to the player with the options to play a minigame or ignore it.
+     * It also starts a timer, which calls {@link #timerWhilePlayerDecides(Player)} after it expired.
+     * @param player the player who should decide whether to play a minigame
+     */
     public void handleTimerWhilePlayerDecides(Player player) {
         TranslationFactory tf = new TranslationFactory();
         player.sendMessage(Component.text(tf.getTranslation(player, "decision")).color(NamedTextColor.GOLD));
@@ -51,21 +66,31 @@ public class RespawnListener implements Listener {
         timerWhilePlayerDecides(player);
     }
 
+    /**
+     * A timer that is running while the player is deciding whether to play a minigame or not.
+     * <p>
+     * This method is called when a player is deciding whether to play a minigame or not.
+     * It will send a title to the player with the remaining time to decide.
+     * If the player is not deciding anymore, it will cancel the timer and reset the decision timer and status.
+     * If the player is offline, it will cancel the timer and keep the decision timer and status as they are.
+     * If the decision timer is 0, it will drop the inventory at the death location and reset the decision timer and status.
+     * @param player the player who is deciding to play a minigame or not
+     */
     private void timerWhilePlayerDecides(Player player) {
         TranslationFactory tf = new TranslationFactory();
-        DmUtil util = DmUtil.getInstance();
+        DmUtil util = new DmUtil();
         UUID uuidPlayer = player.getUniqueId();
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(uuidPlayer);
         BukkitRunnable runnable = new BukkitRunnable() {
             public void run() {
                 if(playerData.getStatus().equals(PlayerMinigameStatus.offline)) {
                     // timer and decision stays the same if player is login out during timer, so when he is logging in again it can continue
-                    Main.getPlugin().getLogger().info("Player is offline and timerWhilePlayerDecides is stopped");
+                    Main.getMainLogger().info("Player is offline and timerWhilePlayerDecides is stopped");
                     getTask().cancel();
-                    Main.getPlugin().getLogger().warning("Task should be canceled but is not!");
+                    Main.getMainLogger().warning("Task should be canceled but is not!");
                 }
                 if(!playerData.getStatus().equals(PlayerMinigameStatus.deciding)) {
-                    Main.getPlugin().getLogger().info("Task is canceled because player is not deciding");
+                    Main.getMainLogger().info("Task is canceled because player is not deciding");
                     if(playerData.getLastDeathInventory() != null && playerData.getLastDeathLocation() != null) {
                         util.dropInv(player, playerData.getLastDeathLocation());
                         playerData.setLocationAndInventoryNull();
@@ -77,7 +102,7 @@ public class RespawnListener implements Listener {
                 switch (decisionTimer) {
                     case 0:
                         if(playerData.getLastDeathLocation() == null) {
-                            Main.getPlugin().getLogger().warning("Deathlocation of player is null and timer is stopped!");
+                            Main.getMainLogger().warning("Deathlocation of player is null and timer is stopped!");
                             getTask().cancel();
                         }
                         Location deathLocation = playerData.getLastDeathLocation();
@@ -91,7 +116,7 @@ public class RespawnListener implements Listener {
                         getTask().cancel();
                         break;
                     case -1:
-                        Main.getPlugin().getLogger().info("Timer is below 0, stopping timer");
+                        Main.getMainLogger().info("Timer is below 0, stopping timer");
                         getTask().cancel();
                         break;
                     default:
@@ -107,6 +132,10 @@ public class RespawnListener implements Listener {
         task = runnable.runTaskTimer(Main.getPlugin(), 0, 20);
     }
 
+    /**
+     * @return the task currently running to count down the decision timer
+     *         of the player. Null if no timer is running.
+     */
     public BukkitTask getTask() {
         return task;
     }

@@ -7,21 +7,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 public class DmUtil {
-    private static volatile DmUtil instance;
 
-    private DmUtil() {}
-
-    public static DmUtil getInstance()  {
-        if(instance == null) {
-            synchronized (DmUtil.class) {
-                if(instance == null) {
-                    instance = new DmUtil();
-                }
-            }
-        }
-        return instance;
-    }
-
+    /**
+     * Drops the items in the player's last death inventory at the given location.
+     *
+     * <p>This method will drop all items in the player's last death inventory at the given location. If the player
+     * does not have a last death inventory, this method will do nothing.
+     *
+     * @param player    The player whose last death inventory is to be dropped. This parameter must not be
+     *                  {@code null}.
+     * @param location  The location at which the items are to be dropped. This parameter must not be
+     *                  {@code null}.
+     */
     public void dropInv(Player player, Location location) {
         assert player != null : "player is null!";
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());

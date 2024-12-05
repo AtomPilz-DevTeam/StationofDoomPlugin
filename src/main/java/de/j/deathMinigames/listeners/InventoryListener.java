@@ -19,19 +19,23 @@ import de.j.deathMinigames.minigames.Minigame;
 import de.j.deathMinigames.settings.GUI;
 import de.j.deathMinigames.settings.MainMenu;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class InventoryListener implements Listener {
     private Player playerClicked;
 
+    /**
+     * Handles InventoryClickEvent's for the main settings menu and submenus.
+     *
+     * @param event the InventoryClickEvent
+     */
     @EventHandler
     public void onSettingsClick(InventoryClickEvent event) {
         Config config = Config.getInstance();
         MainMenu mainMenu = new MainMenu();
         InventoryHolder invHolder = event.getInventory().getHolder();
-        Minigame minigame = Minigame.getInstance();
+        Minigame minigame = new Minigame();
 
         UUID ID;
         int slot = event.getSlot();
@@ -44,16 +48,16 @@ public class InventoryListener implements Listener {
             GUI gui = (GUI) invHolder;
             ID = gui.getUUID();
             if(ID == MainMenu.getIntroduction().getUUID()) {
-                handleIntroductionGUI(event, player, mainMenu, slot, config, minigame);
+                handleIntroductionGUI(event, player, mainMenu, slot, minigame);
             }
             else if (ID == MainMenu.getUsesPlugin().getUUID()) {
-                handleUsesPluginGUI(event, player, mainMenu, slot, config, minigame);
+                handleUsesPluginGUI(event, player, mainMenu, slot, minigame);
             }
             else if (ID == MainMenu.getDifficulty().getUUID()) {
                 handleDifficultyGUI(event, player, mainMenu, slot);
             }
             else if(ID == MainMenu.getDifficultyPlayerSettings().getUUID()) {
-                handleDifficultyPlayerSettingsGUI(event, player, mainMenu, slot, minigame, config);
+                handleDifficultyPlayerSettingsGUI(event, player, mainMenu, slot, minigame);
             }
             else if(ID == MainMenu.getSetUp().getUUID()) {
                 handleSetUpGUI(event, player, mainMenu, slot, config);
@@ -73,7 +77,17 @@ public class InventoryListener implements Listener {
         }
     }
 
-    public Player getPlayerFromListFromSpecificInt(int placeInList) {
+
+    /**
+     * Gets the player associated with the given position in the list of known players.
+     * <p>
+     * If the given position is negative or greater than or equal to the size of the list of known players, this method
+     * will return null.
+     *
+     * @param placeInList the position in the list of known players
+     * @return the player associated with the given position, or null if none exists
+     */
+    public Player getIndexAssociatedWithPlayerInKnownPlayersList(int placeInList) {
         HashMap<UUID, PlayerData> knownPlayers = HandlePlayers.getKnownPlayers();
         if (placeInList >= 0 && placeInList < knownPlayers.size()) {
             Player player = Bukkit.getPlayer(knownPlayers.keySet().stream().toList().get(placeInList));
@@ -83,6 +97,12 @@ public class InventoryListener implements Listener {
         return null;
     }
 
+    /**
+     * Reloads the inventory given as a parameter, to reflect the latest changes of the player's data.
+     * @param inventory the inventory to reload
+     * @param slot the slot of the player in the inventory
+     * @param mainMenu the main menu to get the inventory from
+     */
     public void reloadInventory(String inventory, int slot, MainMenu mainMenu) {
         Config config = Config.getInstance();
         PlayerData playerClickedData = HandlePlayers.getKnownPlayers().get(playerClicked.getUniqueId());
@@ -124,13 +144,18 @@ public class InventoryListener implements Listener {
         }
     }
 
+    /**
+     * Reloads the inventory given as a parameter, to reflect the latest changes of the player's data.
+     * @param inventory the inventory to reload
+     * @param mainMenu the main menu to get the inventory from
+     */
     public void reloadInventory(String inventory, MainMenu mainMenu) {
         switch (inventory) {
             case "Introduction":
                 HashMap<UUID, PlayerData> knownPlayers = HandlePlayers.getKnownPlayers();
                 for(int i = 0; i < knownPlayers.size(); i++) {
                     Material material;
-                    Player currentPlayer = getPlayerFromListFromSpecificInt(i);
+                    Player currentPlayer = getIndexAssociatedWithPlayerInKnownPlayersList(i);
                     PlayerData currentPlayerData = knownPlayers.get(currentPlayer.getUniqueId());
                     if(currentPlayer == null) {
                         continue;
@@ -147,14 +172,14 @@ public class InventoryListener implements Listener {
             case "UsesPlugin":
                 for(int i = 0; i < HandlePlayers.getKnownPlayers().size(); i++) {
                     Material material;
-                    PlayerData playerData = HandlePlayers.getKnownPlayers().get(getPlayerFromListFromSpecificInt(i).getUniqueId());
+                    PlayerData playerData = HandlePlayers.getKnownPlayers().get(getIndexAssociatedWithPlayerInKnownPlayersList(i).getUniqueId());
                     if(playerData.getUsesPlugin()) {
                         material = Material.GREEN_CONCRETE_POWDER;
                     }
                     else {
                         material = Material.RED_CONCRETE_POWDER;
                     }
-                    MainMenu.getUsesPlugin().addClickableItemStack(getPlayerFromListFromSpecificInt(i).getName(), material, 1, i);
+                    MainMenu.getUsesPlugin().addClickableItemStack(getIndexAssociatedWithPlayerInKnownPlayersList(i).getName(), material, 1, i);
                 }
                 break;
             case "Difficulty - Settings":
@@ -180,6 +205,22 @@ public class InventoryListener implements Listener {
         }
     }
 
+
+/**
+ * Handles the main menu GUI interaction when a player clicks on an inventory slot.
+ *
+ * This method cancels the inventory click event and opens the corresponding
+ * submenu based on the clicked slot:
+ * - Slot 0: Opens the "SetUp" submenu.
+ * - Slot 1: Opens the "Introduction" submenu.
+ * - Slot 2: Opens the "UsesPlugin" submenu.
+ * - Slot 3: Opens the "Difficulty" submenu.
+ *
+ * @param event The InventoryClickEvent triggered by the player's click.
+ * @param player The player who clicked the inventory.
+ * @param mainMenu The main menu instance to manage GUI interactions.
+ * @param slot The slot number that was clicked by the player.
+ */
     private void handleMainMenuGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot) {
         event.setCancelled(true);
         switch (slot) {
@@ -205,14 +246,22 @@ public class InventoryListener implements Listener {
         }
     }
 
-    private void handleIntroductionGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Config config, Minigame minigame) {
+    /**
+     * Handles the introduction GUI interaction when a player clicks on an inventory slot.
+     * @param event The InventoryClickEvent triggered by the player's click.
+     * @param player The player who clicked the inventory.
+     * @param mainMenu The main menu instance to manage GUI interactions.
+     * @param slot The slot number that was clicked by the player.
+     * @param minigame The minigame instance to manage GUI interactions.
+     */
+    private void handleIntroductionGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Minigame minigame) {
         HashMap<UUID, PlayerData> knownPlayers = HandlePlayers.getKnownPlayers();
         event.setCancelled(true);
         if(slot == 53) {
             mainMenu.showPlayerSettings(player);
         }
         else if (slot <= knownPlayers.size()) {
-            playerClicked = getPlayerFromListFromSpecificInt(slot);
+            playerClicked = getIndexAssociatedWithPlayerInKnownPlayersList(slot);
             PlayerData playerClickedData = knownPlayers.get(playerClicked.getUniqueId());
             assert playerClicked != null : "playerClicked is null";
             if(playerClickedData.getIntroduction()) {
@@ -227,14 +276,22 @@ public class InventoryListener implements Listener {
         }
     }
 
-    private void handleUsesPluginGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Config config, Minigame minigame) {
+    /**
+     * Handles the usesPlugin GUI interaction when a player clicks on an inventory slot.
+     * @param event The InventoryClickEvent triggered by the player's click.
+     * @param player The player who clicked the inventory.
+     * @param mainMenu The main menu instance to manage GUI interactions.
+     * @param slot The slot number that was clicked by the player.
+     * @param minigame The minigame instance.
+     */
+    private void handleUsesPluginGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Minigame minigame) {
         HashMap<UUID, PlayerData> knownPlayers = HandlePlayers.getKnownPlayers();
         event.setCancelled(true);
         if(slot == 53) {
             mainMenu.showPlayerSettings(player);
         }
         else if (slot <= knownPlayers.size()) {
-            playerClicked = getPlayerFromListFromSpecificInt(slot);
+            playerClicked = getIndexAssociatedWithPlayerInKnownPlayersList(slot);
             PlayerData playerClickedData = knownPlayers.get(playerClicked.getUniqueId());
             assert playerClicked != null : "playerClicked is null";
             if(playerClickedData.getUsesPlugin()) {
@@ -249,21 +306,36 @@ public class InventoryListener implements Listener {
         }
     }
 
+    /**
+     * Handles the difficulty GUI interaction when a player clicks on an inventory slot.
+     * @param event The InventoryClickEvent triggered by the player's click.
+     * @param player The player who clicked the inventory.
+     * @param mainMenu The main menu instance to manage GUI interactions.
+     * @param slot The slot number that was clicked by the player.
+     */
     private void handleDifficultyGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot) {
         event.setCancelled(true);
         if (slot == 53) {
             mainMenu.showPlayerSettings(player);
         } else if (slot <= HandlePlayers.getKnownPlayers().size()) {
-            playerClicked = getPlayerFromListFromSpecificInt(slot);
+            playerClicked = getIndexAssociatedWithPlayerInKnownPlayersList(slot);
             assert playerClicked != null : "playerClicked is null";
-            Main.getPlugin().getLogger().info(playerClicked.getName());
+            Main.getMainLogger().info(playerClicked.getName());
             reloadInventory("Difficulty - Settings", slot, mainMenu);
             MainMenu.getDifficultyPlayerSettings().addBackButton(player);
             MainMenu.getDifficultyPlayerSettings().showInventory(player);
         }
     }
 
-    private void handleDifficultyPlayerSettingsGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Minigame minigame, Config config) {
+    /**
+     * Handles the difficulty player settings GUI interaction when a player clicks on an inventory slot.
+     * @param event The InventoryClickEvent triggered by the player's click.
+     * @param player The player who clicked the inventory.
+     * @param mainMenu The main menu instance to manage GUI interactions.
+     * @param slot The slot number that was clicked by the player.
+     * @param minigame The minigame instance.
+     */
+    private void handleDifficultyPlayerSettingsGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Minigame minigame) {
         event.setCancelled(true);
         if(slot == 53) {
             mainMenu.showPlayerSettings(player);
@@ -277,6 +349,14 @@ public class InventoryListener implements Listener {
         }
     }
 
+    /**
+     * Handles the set up GUI interaction when a player clicks on an inventory slot.
+     * @param event The InventoryClickEvent triggered by the player's click.
+     * @param player The player who clicked the inventory.
+     * @param mainMenu The main menu instance to manage GUI interactions.
+     * @param slot The slot number that was clicked by the player.
+     * @param config The config instance.
+     */
     private void handleSetUpGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Config config) {
         event.setCancelled(true);
         if(slot == 53) {
@@ -313,6 +393,15 @@ public class InventoryListener implements Listener {
         }
     }
 
+    /**
+     * Handles the parkour start height GUI interaction when a player clicks on an inventory slot.
+     * @param event The InventoryClickEvent triggered by the player's click.
+     * @param player The player who clicked the inventory.
+     * @param mainMenu The main menu instance to manage GUI interactions.
+     * @param slot The slot number that was clicked by the player.
+     * @param config The config instance.
+     * @param minigame The minigame instance.
+     */
     private void handleParkourStartHeightGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Config config, Minigame minigame) {
         event.setCancelled(true);
         if(slot == 53) {
@@ -326,6 +415,15 @@ public class InventoryListener implements Listener {
         }
     }
 
+    /**
+     * Handles the parkour length GUI interaction when a player clicks on an inventory slot.
+     * @param event The InventoryClickEvent triggered by the player's click.
+     * @param player The player who clicked the inventory.
+     * @param mainMenu The main menu instance to manage GUI interactions.
+     * @param slot The slot number that was clicked by the player.
+     * @param config The config instance.
+     * @param minigame The minigame instance.
+     */
     private void handleParkourLengthGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Config config, Minigame minigame) {
         event.setCancelled(true);
         if(slot == 53) {
@@ -338,6 +436,15 @@ public class InventoryListener implements Listener {
         }
     }
 
+    /**
+     * Handles the cost to lower the difficulty GUI interaction when a player clicks on an inventory slot.
+     * @param event The InventoryClickEvent triggered by the player's click.
+     * @param player The player who clicked the inventory.
+     * @param mainMenu The main menu instance to manage GUI interactions.
+     * @param slot The slot number that was clicked by the player.
+     * @param config The config instance.
+     * @param minigame The minigame instance.
+     */
     private void handleCostToLowerTheDifficultyGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Config config, Minigame minigame) {
         event.setCancelled(true);
         if(slot == 53) {
@@ -351,6 +458,15 @@ public class InventoryListener implements Listener {
         }
     }
 
+    /**
+     * Handles the time to decide when respawning GUI interaction when a player clicks on an inventory slot.
+     * @param event The InventoryClickEvent triggered by the player's click.
+     * @param player The player who clicked the inventory.
+     * @param mainMenu The main menu instance to manage GUI interactions.
+     * @param slot The slot number that was clicked by the player.
+     * @param config The config instance.
+     * @param minigame The minigame instance.
+     */
     private void handleTimeToDecideWhenRespawningGUI(InventoryClickEvent event, Player player, MainMenu mainMenu, int slot, Config config, Minigame minigame) {
         event.setCancelled(true);
         if(slot == 53) {

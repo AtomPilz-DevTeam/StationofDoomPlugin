@@ -35,6 +35,15 @@ public class JumpAndRun {
     private int _y = 0;
     private int _z = 0;
 
+    /**
+     * Returns the single instance of the JumpAndRun class.
+     *
+     * <p>This class is a singleton, meaning that only one instance of this class
+     * will ever exist. This method will return the same instance every time it is
+     * called.
+     *
+     * @return The single instance of the JumpAndRun class.
+     */
     public static JumpAndRun getInstance() {
         if(jumpAndRun == null) {
             synchronized (JumpAndRun.class) {
@@ -46,14 +55,32 @@ public class JumpAndRun {
         return jumpAndRun;
     }
 
+    /**
+     * Returns the BukkitTask currently running to generate the parkour.
+     * <p>
+     * This method is thread-safe and may be called from any thread.
+     * <p>
+     * If no task is currently running, this method will return null.
+     *
+     * @return The BukkitTask currently running to generate the parkour,
+     *         or null if no task is currently running.
+     */
     public BukkitTask getTask() {
         return task;
     }
+
     /**
-     * runs the minigame JumpAndRun
+     * Starts the JumpAndRun minigame. This method is not thread-safe.
+     * <p>
+     * This method is used to start a new JumpAndRun minigame for the first player in the waiting list.
+     * It will teleport the player to the starting location of the parkour and send a message to the player.
+     * It will also start a new BukkitRunnable that will generate the parkour.
+     * <p>
+     * The method will also add the first block to the list of blocks to delete.
+     * @see #parkourGenerator(Location, int)
      */
     public void start() {
-        Minigame mg = Minigame.getInstance();
+        Minigame mg = new Minigame();
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
 
@@ -95,7 +122,6 @@ public class JumpAndRun {
         return block.getBlock().getType() == Material.GREEN_CONCRETE;
     }
 
-
     /**
      * gives back a random number between min and max
      * @param min   the minimum number
@@ -112,7 +138,7 @@ public class JumpAndRun {
      * @return              true if he reaches that height or higher, false if he does not reach that height
      */
     private boolean checkIfPlayerWon(Player player) {
-        Minigame mg = Minigame.getInstance();
+        Minigame mg = new Minigame();
         if (checkIfOnGold(player)) {
             mg.winMessage(player);
             mg.showInv(player);
@@ -139,8 +165,7 @@ public class JumpAndRun {
      * @return              true if he lost, false if he did not lose
      */
     private boolean checkIfPlayerLost(Player player, int heightToLose) {
-        Minigame mg = Minigame.getInstance();
-        UUID playerUUID = player.getUniqueId();
+        Minigame mg = new Minigame();
         if (player.getLocation().getBlockY() <= heightToLose) {
             mg.loseMessage(player);
             mg.dropInvAndClearData(player);
@@ -209,7 +234,7 @@ public class JumpAndRun {
      * @param heightToWin   at which height to check if the player won
      */
     private void parkourGenerator(Location firstBLock, int heightToWin) {
-        Minigame mg = Minigame.getInstance();
+        Minigame mg = new Minigame();
         Config config = Config.getInstance();
         Player playerInArena = DeathListener.getPlayerInArena();
 
@@ -220,12 +245,12 @@ public class JumpAndRun {
             public void run() {
                 if(checkIfPlayerWon(playerInArena) || checkIfPlayerLost(playerInArena, heightToLose)) {
                     if(!mg.checkIfWaitinglistIsEmpty()) {
-                        Minigame.minigameStart(waitingListMinigame.getFirst());
+                        new Minigame().minigameStart(waitingListMinigame.getFirst());
                     }
                     cancel();
                 }
                 else {
-                    List<Integer> values = setValuesBasedOnDifficulty(config);
+                    List<Integer> values = setValuesBasedOnDifficulty();
                     int minX = values.getFirst();
                     int minZ = values.get(1);
                     int maxX = values.get(2);
@@ -272,7 +297,12 @@ public class JumpAndRun {
         task = runnable.runTaskTimer(Main.getPlugin(), 0, 5);
     }
 
-    private List<Integer> setValuesBasedOnDifficulty(Config config) {
+    /**
+     * Set the values of min and max x and z, as well as the maximum difficulty,
+     * based on the difficulty of the player in the arena.
+     * @return A list of 5 integers: min x, min z, max x, max z, and max difficulty
+     */
+    private List<Integer> setValuesBasedOnDifficulty() {
         int minX = 0;
         int minZ = 0;
         int maxX = 0;
@@ -321,6 +351,26 @@ public class JumpAndRun {
         return Arrays.asList(minX, minZ, maxX, maxZ, maxDifficulty);
     }
 
+    /**
+     * Randomizes the X coordinate based on the provided case.
+     *
+     * <p>This method adjusts the X coordinate value according to a specified
+     * case number. Each case corresponds to a specific transformation:
+     * <ul>
+     * <li>Case 1: Negates the X coordinate value.</li>
+     * <li>Case 2: Leaves the X coordinate value unchanged.</li>
+     * <li>Case 3: Negates the X coordinate value.</li>
+     * <li>Case 4: Leaves the X coordinate value unchanged.</li>
+     * <li>Case 5: Sets the X coordinate value to 0 for a 4-block jump north.</li>
+     * <li>Case 6: Sets the X coordinate value to -4 for a 4-block jump east.</li>
+     * <li>Case 7: Sets the X coordinate value to 4 for a 4-block jump south.</li>
+     * <li>Case 8: Sets the X coordinate value to 0 for a 4-block jump west.</li>
+     * </ul>
+     *
+     * @param _x   The initial X coordinate value.
+     * @param cas  The case number determining the transformation.
+     * @return     The transformed X coordinate value.
+     */
     private int coordinatesRandomizerCasesX(int _x, int cas) {
         switch(cas) {
             case 1:
@@ -357,6 +407,26 @@ public class JumpAndRun {
         return _x;
     }
 
+    /**
+     * Randomizes the Z coordinate based on the provided case.
+     *
+     * <p>This method adjusts the Z coordinate value according to a specified
+     * case number. Each case corresponds to a specific transformation:
+     * <ul>
+     * <li>Case 1: Negates the Z coordinate value.</li>
+     * <li>Case 2: Leaves the Z coordinate value unchanged.</li>
+     * <li>Case 3: Leaves the Z coordinate value unchanged.</li>
+     * <li>Case 4: Negates the Z coordinate value.</li>
+     * <li>Case 5: Sets the Z coordinate value to -4 for a 4-block jump north.</li>
+     * <li>Case 6: Sets the Z coordinate value to 0 for a 4-block jump east.</li>
+     * <li>Case 7: Sets the Z coordinate value to 0 for a 4-block jump south.</li>
+     * <li>Case 8: Sets the Z coordinate value to 4 for a 4-block jump west.</li>
+     * </ul>
+     *
+     * @param _z   The initial Z coordinate value.
+     * @param cas  The case number determining the transformation.
+     * @return     The transformed Z coordinate value.
+     */
     private int coordinatesRandomizerCasesZ(int _z, int cas) {
         switch(cas) {
             case 1:

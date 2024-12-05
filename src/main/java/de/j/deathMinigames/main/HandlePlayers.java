@@ -11,6 +11,15 @@ public class HandlePlayers {
     private volatile static HandlePlayers instance;
     private static final HashMap<UUID, PlayerData> knownPlayers = new HashMap<>();
 
+    /**
+     * Returns the single instance of this class.
+     *
+     * <p>This class is a singleton, meaning that only one instance of this class
+     * will ever exist. This method will return the same instance every time it is
+     * called.
+     *
+     * @return The single instance of this class.
+     */
     public synchronized static HandlePlayers getInstance() {
         if(instance == null){
             synchronized (Config.class){
@@ -24,30 +33,49 @@ public class HandlePlayers {
 
     private HandlePlayers() {}
 
+    /**
+     * Returns a map of all known players to their player data.
+     *
+     * <p>This map is a snapshot of the current state of the known players map.
+     *
+     * @return A map of known players to their player data.
+     */
     public static HashMap<UUID, PlayerData> getKnownPlayers() {
         return knownPlayers;
     }
 
-    //public synchronized Player getPlayerInArena() {
+    //public synchronized Player getPlayerInArena() { // TODO: implement
 
     //}
 
-    //public synchronized List<Player> getWaitingList() {
+    //public synchronized List<Player> getWaitingList() { // TODO: implement
 
     //}
 
-    //public synchronized PlayerMinigameStatus getPlayerMinigameStatus(UUID uuid) {
+    //public synchronized PlayerMinigameStatus getPlayerMinigameStatus(UUID uuid) { // TODO: implement
 
     //}
 
+    /**
+     * Initializes the known players map by loading all player data from the database.
+     *
+     * <p>This method is called when the plugin is enabled. It loads all player data from the database
+     * and stores it in the known players map.
+     */
     public static void initKnownPlayersPlayerData() {
         PlayerDataDatabase playerDataDatabase = PlayerDataDatabase.getInstance();
         for(PlayerData playerData : playerDataDatabase.getAllPlayerDatas()) {
             knownPlayers.put(playerData.getUUID(), playerData);
         }
-        Main.getPlugin().getLogger().info("Loaded " + knownPlayers.size() + " known players and their data");
+        Main.getMainLogger().info("Loaded " + knownPlayers.size() + " known players and their data");
     }
 
+    /**
+     * Checks if a player with the given UUID is known.
+     *
+     * @param uuid The UUID of the player to check.
+     * @return true if the player is known, false otherwise.
+     */
     public boolean checkIfPlayerIsKnown(UUID uuid) {
         return knownPlayers.containsKey(uuid);
     }
@@ -63,11 +91,11 @@ public class HandlePlayers {
         PlayerData playerData = new PlayerData(player);
         UUID playerUUID = player.getUniqueId();
         if(checkIfPlayerIsKnown(playerUUID)) {
-            Main.getPlugin().getLogger().warning("Player " + playerUUID + " was tried to add, but is already known!");
+            Main.getMainLogger().warning("Player " + playerUUID + " was tried to add, but is already known!");
             return;
         }
         knownPlayers.put(playerUUID, playerData);
-        Main.getPlugin().getLogger().info("Added new player " + playerData.getName() + " " + playerData.getIntroduction());
+        Main.getMainLogger().info("Added new player " + playerData.getName() + " " + playerData.getIntroduction());
     }
 
 

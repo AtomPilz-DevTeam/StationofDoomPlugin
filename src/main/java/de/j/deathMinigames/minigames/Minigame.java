@@ -17,29 +17,14 @@ import java.util.UUID;
 import static de.j.deathMinigames.listeners.DeathListener.*;
 
 public class Minigame {
-    private volatile static Minigame minigame;
-
-    private Minigame() {}
-
-    public static Minigame getInstance() {
-        if(minigame == null) {
-            synchronized (Minigame.class) {
-                if(minigame == null) {
-                    minigame = new Minigame();
-                }
-            }
-        }
-        return minigame;
-    }
-
     /**
-     * starts a random minigame
+     * starts a parkour minigame
      * @param player    the player who is starting a random minigame
      */
-    public static void minigameStart(Player player) {
+    public void minigameStart(Player player) {
         JumpAndRun jumpAndRun = JumpAndRun.getInstance();
-        Minigame minigame = Minigame.getInstance();
-        Introduction introduction = Introduction.getInstance();
+        Minigame minigame = new Minigame();
+        Introduction introduction = new Introduction();
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
         Player playerInArena = DeathListener.getPlayerInArena();
@@ -48,28 +33,31 @@ public class Minigame {
         if(player == null) {
             throw new NullPointerException("player is null");
         }
-        if(!introduction.checkIfPlayerGotIntroduced(player)) {
+        if(!playerData.getIntroduction()) {
             introduction.introStart(player);
         }
-        else if(playerData.getUsesPlugin()) {
-            if(playerInArena == null) {
-                playerData.setStatus(PlayerMinigameStatus.inMinigame);
-                jumpAndRun.start();
+        else if(!playerData.getUsesPlugin()) {
+            return;
+        }
+        if(playerInArena == null) {
+            playerData.setStatus(PlayerMinigameStatus.inMinigame);
+            jumpAndRun.start();
+        }
+        else {
+            if(!player.getUniqueId().equals(playerInArena.getUniqueId())) {
+                return;
+            }
+            waitingListMinigame.addLast(player);
+            playerData.setStatus(PlayerMinigameStatus.inWaitingList);
+            player.sendMessage(Component.text(tf.getTranslation(player, "arenaIsFull")).color(NamedTextColor.GOLD));
+            Location locationBox = config.checkWaitingListLocation();
+            if(locationBox != null) {
+                minigame.teleportPlayerInBox(player, locationBox);
             }
             else {
-                if(!player.getUniqueId().equals(playerInArena.getUniqueId())) {
-                    playerData.setStatus(PlayerMinigameStatus.inWaitingList);
-                    player.sendMessage(Component.text(tf.getTranslation(player, "arenaIsFull")).color(NamedTextColor.GOLD));
-                    Location locationBox = config.checkWaitingListLocation();
-                    if(locationBox != null) {
-                        minigame.teleportPlayerInBox(player, locationBox);
-                    }
-                    else {
-                        Main.getPlugin().getLogger().warning("WaitingListPosition is not set in the config!");
-                        minigame.teleportPlayerInBox(player, player.getRespawnLocation());
-                        player.sendMessage(tf.getTranslation(player, "waitingListPositionNotSet"));
-                    }
-                }
+                Main.getMainLogger().warning("WaitingListPosition is not set in the config!");
+                minigame.teleportPlayerInBox(player, player.getRespawnLocation());
+                player.sendMessage(tf.getTranslation(player, "waitingListPositionNotSet"));
             }
         }
     }
@@ -163,7 +151,7 @@ public class Minigame {
      * @param player    the player who won the minigame
      */
     public void winMessage(Player player) {
-        Difficulty difficulty = Difficulty.getInstance();
+        Difficulty difficulty = new Difficulty();
         TranslationFactory tf = new TranslationFactory();
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         if(player == null) {

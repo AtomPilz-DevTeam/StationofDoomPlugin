@@ -27,28 +27,49 @@ public class DeathListener implements Listener {
     /** Maps player UUIDs to their death locations */
     public static ConcurrentHashMap<UUID, Location> deaths = new ConcurrentHashMap<>();
     /** Temporary inventory used during death processing */
-    public static Inventory playerDeathInventory = Bukkit.createInventory(null, 54);
+    public static Inventory playerDeathInventory = Bukkit.createInventory(null, 54); // TODO: replace with playerData
     /** List of players waiting to join a minigame */
     public static ArrayList<Player> waitingListMinigame = new ArrayList<Player>();
-
+    /** Current player in the arena, null if arena is empty */
+    public volatile static Player playerInArena;
+    /**
+     * Get the current player in the arena, or null if the arena is empty.
+     *
+     * @return the current player in the arena, or null if the arena is empty
+     */
     public synchronized static Player getPlayerInArena() {
         return playerInArena;
     }
 
+    /**
+     * Set the current player in the arena.
+     *
+     * @param playerInArena the new player in the arena, or null to clear the arena
+     */
     public synchronized static void setPlayerInArena(Player playerInArena) {
         DeathListener.playerInArena = playerInArena;
     }
 
-    /** Current player in the arena, null if arena is empty */
-    public volatile static Player playerInArena;
-
+    /**
+     * Called when a player dies.
+     * <p>
+     * This will check if the player uses the plugin and if their inventory is not empty.
+     * If the player uses the plugin and the inventory is not empty, it will save the inventory
+     * and the death location. If the player does not use the plugin or the inventory is empty,
+     * it will not save the inventory and will drop the player's items at the death location.
+     * <p>
+     * It will also send an action bar message to the player, telling them if their inventory was
+     * saved or not.
+     * <p>
+     * @param event the event
+     */
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
         TranslationFactory tf = new TranslationFactory();
-        DmUtil util = DmUtil.getInstance();
+        DmUtil util = new DmUtil();
 
         if(event == null || event.getPlayer() == null ) {
-            Main.getPlugin().getLogger().warning("Event or player in onDeath is null!");
+            Main.getMainLogger().warning("Event or player in onDeath is null!");
             return;
         }
         Player player = event.getPlayer();
@@ -56,7 +77,7 @@ public class DeathListener implements Listener {
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(uuid);
         playerData.setStatus(PlayerMinigameStatus.dead);
         if(player.getInventory() == null) {
-            Main.getPlugin().getLogger().warning("Player inventory is null!");
+            Main.getMainLogger().warning("Player inventory is null!");
             return;
         }
         if(!playerData.getUsesPlugin()) {
