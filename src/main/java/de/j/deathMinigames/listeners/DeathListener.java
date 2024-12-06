@@ -22,10 +22,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DeathListener implements Listener {
-    /** Maps player UUIDs to their saved inventories upon death */
-    public static ConcurrentHashMap<UUID, Inventory> inventories = new ConcurrentHashMap<>();
-    /** Maps player UUIDs to their death locations */
-    public static ConcurrentHashMap<UUID, Location> deaths = new ConcurrentHashMap<>();
     /** Temporary inventory used during death processing */
     public static Inventory playerDeathInventory = Bukkit.createInventory(null, 54); // TODO: replace with playerData
     /** List of players waiting to join a minigame */

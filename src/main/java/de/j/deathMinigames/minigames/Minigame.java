@@ -68,13 +68,16 @@ public class Minigame {
      * @param message   the message as declared in the Minigame
      */
     public void startMessage(Player player, String message) {
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        Inventory lastDeathInventory = playerData.getLastDeathInventory();
         if(player == null) {
             throw new NullPointerException("player is null");
         }
-        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         player.sendMessage(Component.text(message).color(NamedTextColor.GOLD));
-        assert inventories.containsKey(player.getUniqueId());
-        playerDeathInventory.setContents(inventories.get(player.getUniqueId()).getContents());
+
+        assert !lastDeathInventory.isEmpty() : "lastDeathInventory is empty!";
+
+        playerDeathInventory.setContents(lastDeathInventory.getContents());
         waitingListMinigame.remove(player);
         playerData.setStatus(PlayerMinigameStatus.inMinigame);
     }
@@ -86,14 +89,17 @@ public class Minigame {
     public void loseMessage(Player player) {
         TranslationFactory tf = new TranslationFactory();
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        Location deathLocation = playerData.getLastDeathLocation();
 
         if(player == null) {
             throw new NullPointerException("player is null");
         }
-        assert deaths.containsKey(player.getUniqueId());
+
+        assert deathLocation != null : "lastDeathInventory is null";
+
         playerData.setStatus(PlayerMinigameStatus.alive);
         if(playerData.getUsesPlugin()) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "loseMessage", "X: " + deaths.get(player.getUniqueId()).getBlockX() + " " + "Y: " + deaths.get(player.getUniqueId()).getBlockY() + " " + "Z: " + deaths.get(player.getUniqueId()).getBlockZ())).content()));
+            player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "loseMessage", "X: " + deathLocation.getBlockX() + " " + "Y: " + deathLocation.getBlockY() + " " + "Z: " + deathLocation.getBlockZ())).content()));
         }
     }
 
@@ -185,8 +191,7 @@ public class Minigame {
         playSoundAtLocation(player.getLocation(), 1F, Sound.ITEM_TOTEM_USE);
 
         playerDeathInventory.clear();
-        inventories.remove(player.getUniqueId());
-        deaths.remove(player.getUniqueId());
+        playerData.getLastDeathInventory().clear();
     }
 
     /**

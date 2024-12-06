@@ -25,6 +25,7 @@ public class DmUtil {
         Inventory inv = playerData.getLastDeathInventory();
         assert !inv.isEmpty() : "inv is null!";
         for(int i = 0; i < inv.getSize(); i++) {
+            if(inv.getItem(i) == null) continue;
             player.getWorld().dropItem(location, inv.getItem(i));
         }
     }

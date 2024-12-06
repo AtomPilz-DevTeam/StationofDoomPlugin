@@ -67,7 +67,7 @@ public class PlayerDataDatabase {
         return Query.query("SELECT * FROM playerdata;")
                 .single()
                 .map(row -> new PlayerData(row.getString("name"),
-                        row.getString("UUID"),
+                        row.getString("uuid"),
                         row.getBoolean("introduction"),
                         row.getBoolean("usesPlugin"),
                         row.getInt("difficulty"),
