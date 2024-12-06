@@ -19,6 +19,7 @@ import de.j.stationofdoom.main.Main;
 import de.j.deathMinigames.minigames.Difficulty;
 import de.j.deathMinigames.minigames.Minigame;
 import de.j.deathMinigames.settings.MainMenu;
+import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -139,7 +140,7 @@ public class GameCMD implements BasicCommand {
             case "test":
 
         }
-        if (inventories.containsKey(player.getUniqueId()) && !waitingListMinigame.contains(player) && DeathListener.getPlayerInArena() != player) {
+        if (!playerData.getLastDeathInventory().isEmpty() && !waitingListMinigame.contains(player) && DeathListener.getPlayerInArena() != player) {
             switch (arg0.toLowerCase()) {
                 case "start":
                     Main.getMainLogger().info("Handled start");
@@ -382,19 +383,21 @@ public class GameCMD implements BasicCommand {
      */
     private void handleArgsLength1IgnoreExecution(Player player) {
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        Inventory lastDeathInventory = playerData.getLastDeathInventory();
+        Location deathLocation = playerData.getLastDeathLocation();
 
         minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
         playerData.setStatus(PlayerMinigameStatus.alive);
         player.resetTitle();
-        if (!waitingListMinigame.contains(player) && inventories.containsKey(player.getUniqueId())) {
+        if (!waitingListMinigame.contains(player) && !lastDeathInventory.isEmpty()) {
             player.sendMessage(Component.text(tf.getTranslation(player, "droppingInvAt")).color(NamedTextColor.GOLD)
-                    .append(Component.text("X: " + deaths.get(player.getUniqueId()).getBlockX() + " Y: " + deaths.get(player.getUniqueId()).getBlockY() + " Z: " + deaths.get(player.getUniqueId()).getBlockZ()).color(NamedTextColor.RED))
+                    .append(Component.text("X: " + deathLocation.getBlockX() + " Y: " + deathLocation.getBlockY() + " Z: " + deathLocation.getBlockZ()).color(NamedTextColor.RED))
                     .append(Component.text(")")).color(NamedTextColor.GOLD));
-            for (int i = 0; i < inventories.get(player.getUniqueId()).getSize(); i++) {
-                if (inventories.get(player.getUniqueId()).getItem(i) == null) continue;
-                player.getWorld().dropItem(deaths.get(player.getUniqueId()), inventories.get(player.getUniqueId()).getItem(i));
+            for (int i = 0; i < lastDeathInventory.getSize(); i++) {
+                if (lastDeathInventory.getItem(i) == null) continue;
+                player.getWorld().dropItem(deathLocation, lastDeathInventory.getItem(i));
             }
-            inventories.remove(player.getUniqueId());
+            playerData.getLastDeathInventory().clear();
         }
     }
 

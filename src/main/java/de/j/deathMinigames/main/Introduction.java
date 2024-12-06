@@ -13,9 +13,6 @@ import org.bukkit.inventory.Inventory;
 
 import java.util.UUID;
 
-import static de.j.deathMinigames.listeners.DeathListener.deaths;
-import static de.j.deathMinigames.listeners.DeathListener.inventories;
-
 public class Introduction {
     /**
      * Teleports the player to a position above the start of the parkour and sends a introduction message.
@@ -121,16 +118,19 @@ public class Introduction {
     public void dropInv(Player player) {
         Minigame minigame = new Minigame();
         UUID uuid = player.getUniqueId();
-        Inventory inv = inventories.get(uuid);
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(uuid);
 
-        assert inventories.containsKey(uuid) : "inventories does not contain player";
-        assert deaths.containsKey(uuid) : "deaths does not contain player";
+        Inventory inv = playerData.getLastDeathInventory();
+        Location death = playerData.getLastDeathLocation();
+
+        assert !inv.isEmpty() : "inventories does not contain player";
+        assert death != null : "deaths does not contain player";
 
         minigame.loseMessage(player);
         try {
             for (int i = 0; i < inv.getSize(); i++) {
                 if (inv.getItem(i) == null) continue;
-                player.getWorld().dropItem(deaths.get(uuid), inv.getItem(i));
+                player.getWorld().dropItem(playerData.getLastDeathLocation(), inv.getItem(i));
             }
         }
         catch (IllegalArgumentException e) {
@@ -138,8 +138,7 @@ public class Introduction {
         }
         teleportPlayerToRespawnLocation(player);
         minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
-        inventories.remove(uuid);
-        deaths.remove(uuid);
+        playerData.getLastDeathInventory().clear();
     }
 
     /**
