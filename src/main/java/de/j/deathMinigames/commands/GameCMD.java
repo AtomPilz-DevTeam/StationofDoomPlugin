@@ -488,7 +488,7 @@ public class GameCMD implements BasicCommand {
             playerDataPlayerToEdit.setUsesPlugin(true);
         }
         else {
-            player.sendMessage(Component.text());
+            player.sendMessage(Component.text("didNotEnterKnownPlayer"));
         }
     }
 

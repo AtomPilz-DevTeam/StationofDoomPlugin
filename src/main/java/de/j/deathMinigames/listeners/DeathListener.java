@@ -23,7 +23,7 @@ public class DeathListener implements Listener {
     /** Temporary inventory used during death processing */
     public static Inventory playerDeathInventory = Bukkit.createInventory(null, 54); // TODO: replace with playerData
     /** List of players waiting to join a minigame */
-    public static ArrayList<Player> waitingListMinigame = new ArrayList<Player>();
+    public static ArrayList<Player> waitingListMinigame = new ArrayList<>();
     /** Current player in the arena, null if arena is empty */
     public volatile static Player playerInArena;
     /**
