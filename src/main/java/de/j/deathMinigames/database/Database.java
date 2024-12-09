@@ -62,7 +62,7 @@ public class Database {
         )
                 .create()
                 .withMaximumPoolSize(3)
-                .withMaximumPoolSize(1)
+                .withMinimumIdle(1)
                 .build();
 
         configureDefaultQuery();
