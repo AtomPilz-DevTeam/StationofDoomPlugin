@@ -4,6 +4,7 @@ import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -120,11 +121,12 @@ public class Introduction {
         UUID uuid = player.getUniqueId();
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(uuid);
 
-        Inventory inv = playerData.getLastDeathInventory();
+        Inventory inv = Bukkit.createInventory(null, 9*6);
+        inv.setContents(playerData.getLastDeathInventory().getContents());
         Location death = playerData.getLastDeathLocation();
 
-        assert !inv.isEmpty() : "inventories does not contain player";
-        assert death != null : "deaths does not contain player";
+        assert !inv.isEmpty() : "inventory is empty!";
+        assert death != null : "death location is null!";
 
         minigame.loseMessage(player);
         try {
@@ -138,7 +140,6 @@ public class Introduction {
         }
         teleportPlayerToRespawnLocation(player);
         minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
-        playerData.getLastDeathInventory().clear();
     }
 
     /**

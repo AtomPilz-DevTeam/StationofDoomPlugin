@@ -90,10 +90,8 @@ public class RespawnListener implements Listener {
                     Main.getMainLogger().warning("Task should be canceled but is not!");
                 }
                 if(!playerData.getStatus().equals(PlayerMinigameStatus.deciding)) {
-                    Main.getMainLogger().info("Task is canceled because player is not deciding");
                     if(playerData.getLastDeathInventory() != null && playerData.getLastDeathLocation() != null) {
                         util.dropInv(player, playerData.getLastDeathLocation());
-                        playerData.setLocationAndInventoryNull();
                     }
                     playerData.resetDecisionTimerAndStatus();
                     getTask().cancel();
@@ -116,7 +114,7 @@ public class RespawnListener implements Listener {
                         getTask().cancel();
                         break;
                     case -1:
-                        Main.getMainLogger().info("Timer is below 0, stopping timer");
+                        Main.getMainLogger().warning("Timer is below 0, stopping timer!");
                         getTask().cancel();
                         break;
                     default:

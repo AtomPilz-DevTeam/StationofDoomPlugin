@@ -69,7 +69,8 @@ public class Minigame {
      */
     public void startMessage(Player player, String message) {
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
-        Inventory lastDeathInventory = playerData.getLastDeathInventory();
+        Inventory lastDeathInventory = Bukkit.createInventory(null, 9*6);
+        lastDeathInventory.setContents(playerData.getLastDeathInventory().getContents());
         if(player == null) {
             throw new NullPointerException("player is null");
         }
@@ -191,7 +192,6 @@ public class Minigame {
         playSoundAtLocation(player.getLocation(), 1F, Sound.ITEM_TOTEM_USE);
 
         playerDeathInventory.clear();
-        playerData.getLastDeathInventory().clear();
     }
 
     /**
