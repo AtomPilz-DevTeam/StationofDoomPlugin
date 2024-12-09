@@ -16,10 +16,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.Inventory;
-import de.j.deathMinigames.main.Config;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class DeathListener implements Listener {
     /** Temporary inventory used during death processing */
@@ -87,12 +85,10 @@ public class DeathListener implements Listener {
         if(inventory.isEmpty()) {
             message = Component.text(tf.getTranslation(player, "didNotSaveInv"));
             util.dropInv(player, deathpoint);
-            playerData.setLastDeathInventory(null);
-            playerData.setLastDeathLocation(null);
         }
         else {
             message = Component.text(tf.getTranslation(player, "savedInv"));
-            playerData.setLastDeathInventory(inventory);
+            playerData.setLastDeathInventoryContents(inventory);
             playerData.setLastDeathLocation(deathpoint);
         }
         player.sendActionBar(message

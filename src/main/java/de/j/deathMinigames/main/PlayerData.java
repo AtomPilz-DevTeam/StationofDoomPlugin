@@ -44,8 +44,8 @@ public class PlayerData {
         return lastDeathInventory;
     }
 
-    public synchronized void setLastDeathInventory(Inventory lastDeathInventory) {
-        this.lastDeathInventory = lastDeathInventory;
+    public synchronized void setLastDeathInventoryContents(Inventory lastDeathInventory) {
+        this.lastDeathInventory.setContents(lastDeathInventory.getContents());
     }
 
     public synchronized Location getLastDeathLocation() {
@@ -115,7 +115,7 @@ public class PlayerData {
     private volatile UUID uuid; // in database
     private final Player player;
     private volatile PlayerMinigameStatus status;
-    private volatile Inventory lastDeathInventory;
+    private volatile Inventory lastDeathInventory = Bukkit.createInventory(null, 9*6);
     private volatile Location lastDeathLocation;
     private volatile boolean introduction; // in database
     private volatile boolean usesPlugin; // in database
@@ -171,18 +171,6 @@ public class PlayerData {
     public void setDecisionTimerDefault() {
         Config config = Config.getInstance();
         this.decisionTimer = config.checkTimeToDecideWhenRespawning();
-    }
-
-    /**
-     * Resets the player's location and inventory from their last death to null.
-     *
-     * This method sets the player's last death location and last death inventory to null.
-     * This is used to reset the player's location and inventory after they decide
-     * to respawn or use a feature.
-     */
-    public void setLocationAndInventoryNull() {
-        this.lastDeathLocation = null;
-        this.lastDeathInventory = null;
     }
 
     /**

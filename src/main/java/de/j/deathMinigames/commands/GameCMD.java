@@ -14,12 +14,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import de.j.stationofdoom.main.Main;
 import de.j.deathMinigames.minigames.Difficulty;
 import de.j.deathMinigames.minigames.Minigame;
 import de.j.deathMinigames.settings.MainMenu;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -137,9 +139,8 @@ public class GameCMD implements BasicCommand {
             case "status":
                 player.sendMessage("Status: " + playerData.getStatus().toString());
                 break;
-            case "test":
-
         }
+        Main.getMainLogger().info("Inv empty: " + playerData.getLastDeathInventory().isEmpty() + " WaitingList: " + waitingListMinigame.contains(player) + " playerInArena: " + DeathListener.getPlayerInArena());
         if (!playerData.getLastDeathInventory().isEmpty() && !waitingListMinigame.contains(player) && DeathListener.getPlayerInArena() != player) {
             switch (arg0.toLowerCase()) {
                 case "start":
@@ -368,6 +369,7 @@ public class GameCMD implements BasicCommand {
                 .decoration(TextDecoration.ITALIC, true));
         player.playSound(player.getEyeLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5F, 1.0F);
         playerData.setStatus(PlayerMinigameStatus.alive);
+        player.sendMessage("Set status to alive");
         new Minigame().minigameStart(player);
     }
 
@@ -388,14 +390,16 @@ public class GameCMD implements BasicCommand {
 
         minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
         playerData.setStatus(PlayerMinigameStatus.alive);
+        player.sendMessage("Set status to alive");
         player.resetTitle();
         if (!waitingListMinigame.contains(player) && !lastDeathInventory.isEmpty()) {
             player.sendMessage(Component.text(tf.getTranslation(player, "droppingInvAt")).color(NamedTextColor.GOLD)
                     .append(Component.text("X: " + deathLocation.getBlockX() + " Y: " + deathLocation.getBlockY() + " Z: " + deathLocation.getBlockZ()).color(NamedTextColor.RED))
                     .append(Component.text(")")).color(NamedTextColor.GOLD));
             for (int i = 0; i < lastDeathInventory.getSize(); i++) {
-                if (lastDeathInventory.getItem(i) == null) continue;
-                player.getWorld().dropItem(deathLocation, lastDeathInventory.getItem(i));
+                ItemStack item = lastDeathInventory.getItem(i);
+                if(item == null) continue;
+                player.getWorld().dropItem(deathLocation, item);
             }
             playerData.getLastDeathInventory().clear();
         }

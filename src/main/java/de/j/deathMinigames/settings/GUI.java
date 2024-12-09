@@ -6,6 +6,7 @@ import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import de.j.deathMinigames.main.Config;
 import de.j.deathMinigames.listeners.InventoryListener;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -24,45 +26,63 @@ public class GUI implements InventoryHolder {
     private final Inventory inventory;
     private final UUID uuid = UUID.randomUUID();
 
-    public GUI(String title, boolean addAllPlayers) {
+    public GUI(String title, boolean addAllPlayers, boolean addAsPlayerHeads) {
         if(title == null) {
             throw new NullPointerException("Title is null!");
         }
-
         int inventorySize = 54;
         inventory = Bukkit.createInventory(this, inventorySize, title);
         if(addAllPlayers) {
             HashMap<UUID, PlayerData> knownPlayers = HandlePlayers.getKnownPlayers();
-            for(int i = 0; i < knownPlayers.size(); i++) {
-//                Player player = Bukkit.getPlayer(knownPlayers.keySet().stream().toList().get(i));
-//                PlayerData playerData = knownPlayers.get(player.getUniqueId());
-                PlayerData playerData = knownPlayers.get(knownPlayers.keySet().stream().toList().get(i));
-                Player player = Bukkit.getPlayer(playerData.getUUID());
-                if(player == null) continue;
-                Material material = Material.BARRIER;
-                if(title.equals("UsesPlugin")) {
-                    if(playerData.getUsesPlugin()) {
-                        material = Material.GREEN_CONCRETE_POWDER;
-                    }
-                    else {
-                        material = Material.RED_CONCRETE_POWDER;
-                    }
-                }
-                else if(title.equals("Introduction")) {
-                    if(playerData.getIntroduction()) {
-                        material = Material.GREEN_CONCRETE_POWDER;
-                    }
-                    else {
-                        material = Material.RED_CONCRETE_POWDER;
-                    }
-                }
-                ItemStack itemStack = new ItemStack(material);
-                ItemMeta itemMeta = itemStack.getItemMeta();
-                itemMeta.displayName(Component.text(player.getName()));
-                itemStack.setItemMeta(itemMeta);
-
-                inventory.setItem(i, itemStack);
+            if(addAsPlayerHeads) {
+                addPlayerHeads(knownPlayers);
             }
+            else {
+                addBooleanBased(knownPlayers, title);
+            }
+        }
+    }
+
+    private void addPlayerHeads(HashMap<UUID, PlayerData> knownPlayers) {
+        for(int i = 0; i < knownPlayers.size(); i++) {
+            PlayerData playerData = knownPlayers.get(knownPlayers.keySet().stream().toList().get(i));
+
+            ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
+            SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
+            skullMeta.setOwningPlayer(playerData.getPlayer());
+            skullMeta.displayName(Component.text(playerData.getName()));
+            head.setItemMeta(skullMeta);
+
+            inventory.setItem(i, head);
+        }
+    }
+
+    private void addBooleanBased(HashMap<UUID, PlayerData> knownPlayers, String title) {
+        for(int i = 0; i < knownPlayers.size(); i++) {
+            PlayerData playerData = knownPlayers.get(knownPlayers.keySet().stream().toList().get(i));
+            Material material = Material.BEDROCK;
+            if(title.equals("UsesPlugin")) {
+                if(playerData.getUsesPlugin()) {
+                    material = Material.GREEN_CONCRETE_POWDER;
+                }
+                else {
+                    material = Material.RED_CONCRETE_POWDER;
+                }
+            }
+            else if(title.equals("Introduction")) {
+                if(playerData.getIntroduction()) {
+                    material = Material.GREEN_CONCRETE_POWDER;
+                }
+                else {
+                    material = Material.RED_CONCRETE_POWDER;
+                }
+            }
+            ItemStack itemStack = new ItemStack(material);
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            itemMeta.displayName(Component.text(playerData.getName()));
+            itemStack.setItemMeta(itemMeta);
+
+            inventory.setItem(i, itemStack);
         }
     }
 

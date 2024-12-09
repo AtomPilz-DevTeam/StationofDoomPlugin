@@ -2,6 +2,7 @@ package de.j.deathMinigames.dmUtil;
 
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -22,8 +23,9 @@ public class DmUtil {
     public void dropInv(Player player, Location location) {
         assert player != null : "player is null!";
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
-        Inventory inv = playerData.getLastDeathInventory();
-        assert !inv.isEmpty() : "inv is null!";
+        Inventory inv = Bukkit.createInventory(null, 9*6);
+        inv.setContents(playerData.getLastDeathInventory().getContents());
+        assert !inv.isEmpty() : "inv is empty!";
         for(int i = 0; i < inv.getSize(); i++) {
             if(inv.getItem(i) == null) continue;
             player.getWorld().dropItem(location, inv.getItem(i));
