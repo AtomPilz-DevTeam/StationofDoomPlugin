@@ -30,7 +30,7 @@ public class PlayerDataDatabase {
      */
     public static PlayerDataDatabase getInstance() {
         if (instance == null) {
-            synchronized (Database.class) {
+            synchronized (PlayerDataDatabase.class) {
                 if (instance == null) {
                     instance = new PlayerDataDatabase();
                 }
