@@ -31,4 +31,10 @@ public class DmUtil {
             player.getWorld().dropItem(location, inv.getItem(i));
         }
     }
+
+    public boolean validatePlayerAndPlayerData(Player player) {
+        return player != null &&
+                HandlePlayers.getKnownPlayers() != null &&
+                HandlePlayers.getKnownPlayers().get(player.getUniqueId()) != null;
+    }
 }

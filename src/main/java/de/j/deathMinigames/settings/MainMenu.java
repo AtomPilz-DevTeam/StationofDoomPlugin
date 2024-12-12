@@ -121,7 +121,10 @@ public class MainMenu implements InventoryHolder {
      * @throws IllegalArgumentException if the slot is out of bounds
      */
     public void addClickableItemStack(String name, Material material, int amount, int slotWhereToPutTheItem) {
-        if(slotWhereToPutTheItem < 0 || slotWhereToPutTheItem > inventory.getSize()) {
+        if(name == null) throw new NullPointerException("name is null!");
+        if(material == null) throw new NullPointerException("material is null!");
+        if(amount <= 0) throw new IllegalArgumentException("amount must be greater than 0!");
+        if(slotWhereToPutTheItem < 0 || slotWhereToPutTheItem >= inventory.getSize()) {
             throw new IllegalArgumentException("Invalid slot index: " + slotWhereToPutTheItem);
         }
         ItemStack itemStack = new ItemStack(material, amount);

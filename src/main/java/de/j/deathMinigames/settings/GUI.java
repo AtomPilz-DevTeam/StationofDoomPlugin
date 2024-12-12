@@ -44,8 +44,9 @@ public class GUI implements InventoryHolder {
     }
 
     private void addPlayerHeads(HashMap<UUID, PlayerData> knownPlayers) {
+        List<UUID> playerKeys = new ArrayList<>(knownPlayers.keySet());
         for(int i = 0; i < knownPlayers.size(); i++) {
-            PlayerData playerData = knownPlayers.get(knownPlayers.keySet().stream().toList().get(i));
+            PlayerData playerData = knownPlayers.get(playerKeys.get(i));
 
             ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
             SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
