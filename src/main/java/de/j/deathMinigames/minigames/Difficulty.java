@@ -1,5 +1,6 @@
 package de.j.deathMinigames.minigames;
 
+import de.j.deathMinigames.database.PlayerDataDatabase;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.stationofdoom.util.translations.TranslationFactory;
@@ -11,7 +12,21 @@ import org.bukkit.inventory.ItemStack;
 import de.j.deathMinigames.main.Config;
 
 public class Difficulty {
+    private static Difficulty instance;
     private static final int maxDifficulty = 10;
+
+    private Difficulty() {}
+
+    public static Difficulty getInstance() {
+        if (instance == null) {
+            synchronized (Difficulty.class) {
+                if (instance == null) {
+                    instance = new Difficulty();
+                }
+            }
+        }
+        return instance;
+    }
 
     /**
      * Increases the difficulty of a player by one, but only if the maximum difficulty hasn't been reached yet.

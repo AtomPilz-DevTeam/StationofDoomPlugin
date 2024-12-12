@@ -36,6 +36,10 @@ public class RespawnListener implements Listener {
     public void onRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        if(playerData == null) {
+            Main.getMainLogger().warning("PlayerData of player " + player.getName() + " is null!");
+            return;
+        }
         player.getInventory().clear();
         playerData.setStatus(PlayerMinigameStatus.alive);
         if(!playerData.getUsesPlugin()) {
@@ -79,55 +83,75 @@ public class RespawnListener implements Listener {
     private void timerWhilePlayerDecides(Player player) {
         TranslationFactory tf = new TranslationFactory();
         DmUtil util = new DmUtil();
+        if(!util.validatePlayerAndPlayerData(player)) {
+            Main.getMainLogger().warning("Player is null or playerData is null!");
+            return;
+        }
         UUID uuidPlayer = player.getUniqueId();
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(uuidPlayer);
         BukkitRunnable runnable = new BukkitRunnable() {
             public void run() {
-                if(playerData.getStatus().equals(PlayerMinigameStatus.offline)) {
-                    // timer and decision stays the same if player is login out during timer, so when he is logging in again it can continue
-                    Main.getMainLogger().info("Player is offline and timerWhilePlayerDecides is stopped");
-                    getTask().cancel();
-                    Main.getMainLogger().warning("Task should be canceled but is not!");
-                }
-                if(!playerData.getStatus().equals(PlayerMinigameStatus.deciding)) {
-                    if(playerData.getLastDeathInventory() != null && playerData.getLastDeathLocation() != null) {
-                        util.dropInv(player, playerData.getLastDeathLocation());
-                    }
-                    playerData.resetDecisionTimerAndStatus();
-                    getTask().cancel();
-                }
+                if(handlePlayerOffline(playerData)) return;
+                if(handlePlayerNotDeciding(player, playerData, util)) return;
                 int decisionTimer = playerData.getDecisionTimer();
                 switch (decisionTimer) {
                     case 0:
-                        if(playerData.getLastDeathLocation() == null) {
-                            Main.getMainLogger().warning("Deathlocation of player is null and timer is stopped!");
-                            getTask().cancel();
-                        }
-                        Location deathLocation = playerData.getLastDeathLocation();
-                        player.sendTitle("", tf.getTranslation(player, "droppingInvAt2"), 10, 40, 10);
-                        player.sendMessage(Component.text(new TranslationFactory().getTranslation(player, "deathpoint")).color(NamedTextColor.GOLD)
-                                .append(Component.text("X: " + deathLocation.getBlockX() + " ").color(NamedTextColor.RED))
-                                .append(Component.text("Y: " + deathLocation.getBlockY() + " ").color(NamedTextColor.RED))
-                                .append(Component.text("Z: " + deathLocation.getBlockZ()).color(NamedTextColor.RED)));
-                        util.dropInv(player, deathLocation);
-                        playerData.resetDecisionTimerAndStatus();
-                        getTask().cancel();
-                        break;
+                        handleTimer0(playerData, player, util, tf);
+                        return;
                     case -1:
                         Main.getMainLogger().warning("Timer is below 0, stopping timer!");
                         getTask().cancel();
-                        break;
+                        return;
                     default:
                         Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(1), Duration.ofMillis(500));
                         Title title = Title.title(Component.text(tf.getTranslation(player, "decideInChat")).color(NamedTextColor.GOLD),
                                 MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "decideTime", decisionTimer)).content()), times);
                         player.showTitle(title);
                         playerData.setDecisionTimer(decisionTimer - 1);
-                        break;
+                        return;
                 }
             }
         };
         task = runnable.runTaskTimer(Main.getPlugin(), 0, 20);
+    }
+
+    private boolean handlePlayerOffline(PlayerData playerData) {
+        if(playerData.getStatus().equals(PlayerMinigameStatus.offline)) {
+            // timer and decision stays the same if player is login out during timer, so when he is logging in again it can continue
+            Main.getMainLogger().info("Player" + playerData.getName() + "is offline and timerWhilePlayerDecides is stopped");
+            getTask().cancel();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handlePlayerNotDeciding(Player player, PlayerData playerData, DmUtil util) {
+        if(!playerData.getStatus().equals(PlayerMinigameStatus.deciding)) {
+            if(playerData.getLastDeathInventory() != null && playerData.getLastDeathLocation() != null) {
+                util.dropInv(player, playerData.getLastDeathLocation());
+            }
+            playerData.resetDecisionTimerAndStatus();
+            getTask().cancel();
+            return true;
+        }
+        return false;
+    }
+
+    private void handleTimer0(PlayerData playerData, Player player, DmUtil util, TranslationFactory tf) {
+        if(playerData.getLastDeathLocation() == null) {
+            Main.getMainLogger().warning("Deathlocation of player is null and timer is stopped!");
+            getTask().cancel();
+            return;
+        }
+        Location deathLocation = playerData.getLastDeathLocation();
+        player.sendTitle("", tf.getTranslation(player, "droppingInvAt2"), 10, 40, 10);
+        player.sendMessage(Component.text(new TranslationFactory().getTranslation(player, "deathpoint")).color(NamedTextColor.GOLD)
+                .append(Component.text("X: " + deathLocation.getBlockX() + " ").color(NamedTextColor.RED))
+                .append(Component.text("Y: " + deathLocation.getBlockY() + " ").color(NamedTextColor.RED))
+                .append(Component.text("Z: " + deathLocation.getBlockZ()).color(NamedTextColor.RED)));
+        util.dropInv(player, deathLocation);
+        playerData.resetDecisionTimerAndStatus();
+        getTask().cancel();
     }
 
     /**

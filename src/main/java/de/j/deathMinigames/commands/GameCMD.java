@@ -31,7 +31,7 @@ import static de.j.deathMinigames.listeners.DeathListener.*;
 
 public class GameCMD implements BasicCommand {
 
-    private final Difficulty difficulty = new Difficulty();
+    private final Difficulty difficulty = Difficulty.getInstance();
     private final Minigame minigame = new Minigame();
     private final Introduction introduction = new Introduction();
     private final MainMenu mainMenu = new MainMenu();
@@ -62,22 +62,26 @@ public class GameCMD implements BasicCommand {
      */
     @Override
     public void execute(CommandSourceStack stack, String[] args) {
+        if(stack == null) throw new NullPointerException("stack is null!");
+        if(args == null) throw new NullPointerException("args is null!");
         Player player = (Player) stack.getSender();
+        if(player == null) throw new NullPointerException("player is null!");
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        if(playerData == null) throw new NullPointerException("playerData is null!");
         if (args.length == 1) {
-            String arg0 = args[0];
+            String arg0 = args[0].toLowerCase();
             Main.getMainLogger().info("Handled args.length 1");
             handleArgsLength1Execution(playerData, player, arg0);
         }
         else if (args.length == 2) {
-            String arg0 = args[0];
-            String arg1 = args[1];
+            String arg0 = args[0].toLowerCase();
+            String arg1 = args[1].toLowerCase();
             handleArgsLength2Execution(playerData, player, arg0, arg1);
         }
         else if (args.length == 3) {
-            String arg0 = args[0];
-            String arg1 = args[1];
-            String arg2 = args[2];
+            String arg0 = args[0].toLowerCase();
+            String arg1 = args[1].toLowerCase();
+            String arg2 = args[2].toLowerCase();
             handleArgsLength3Execution(player, arg0, arg1, arg2);
         }
     }
@@ -453,16 +457,18 @@ public class GameCMD implements BasicCommand {
      */
     private void handleArgsLength3DifficultyExecution(Player player, String arg2, String arg1) {
         if(arg2 != null) {
-            int i = 0;
+            int i;
             try{
                 i = Integer.parseInt(arg2);
             }
             catch (NumberFormatException e) {
                 player.sendMessage(Component.text(tf.getTranslation(player, "youHaveToEnterANumber")).color(NamedTextColor.RED));
+                return;
             }
             Player playerToEdit = Bukkit.getPlayer(arg1);
             assert playerToEdit != null;
             PlayerData playerDataPlayerToEdit = HandlePlayers.getKnownPlayers().get(playerToEdit.getUniqueId());
+            if(playerDataPlayerToEdit == null) throw new NullPointerException("playerDataPlayerToEdit is null!");
             playerDataPlayerToEdit.setDifficulty(i);
             player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "setDiffOfTo", playerToEdit, playerDataPlayerToEdit.getDifficulty())).content()));
         }
@@ -488,7 +494,7 @@ public class GameCMD implements BasicCommand {
             playerDataPlayerToEdit.setUsesPlugin(true);
         }
         else {
-            player.sendMessage(Component.text("didNotEnterKnownPlayer"));
+            player.sendMessage(Component.text(tf.getTranslation(player, "didNotEnterKnownPlayer")).color(NamedTextColor.RED));
         }
     }
 
@@ -522,19 +528,19 @@ public class GameCMD implements BasicCommand {
      */
     @Override
     public @NotNull Collection<String> suggest(@NotNull CommandSourceStack commandSourceStack, @NotNull String[] args) {
+        Collection<String> suggestions = new ArrayList<>();
         if (args.length == 0) {
-            Collection<String> suggestions = new ArrayList<>();
             suggestions.add("difficulty");
             suggestions.add("lowerDifficulty");
             return suggestions;
         }
         else if (args.length == 2) {
-            if(args[1].equals("difficulty")) {
-                Collection<String> suggestions2 = new ArrayList<>();
+            if(args[1].equalsIgnoreCase("difficulty")) {
                 for (UUID uuid : HandlePlayers.getKnownPlayers().keySet()) {
-                    suggestions2.add(Bukkit.getPlayer(uuid).getName());
+                    Player player = Bukkit.getPlayer(uuid);
+                    if(player != null) suggestions.add(player.getName());
                 }
-                return suggestions2;
+                return suggestions;
             }
         }
         return BasicCommand.super.suggest(commandSourceStack, args);

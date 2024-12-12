@@ -128,7 +128,7 @@ public class Introduction {
         assert !inv.isEmpty() : "inventory is empty!";
         assert death != null : "death location is null!";
 
-        minigame.loseMessage(player);
+        minigame.sendLoseMessage(player);
         try {
             for (int i = 0; i < inv.getSize(); i++) {
                 if (inv.getItem(i) == null) continue;

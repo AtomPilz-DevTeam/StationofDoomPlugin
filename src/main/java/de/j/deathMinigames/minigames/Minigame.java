@@ -23,18 +23,19 @@ public class Minigame {
      */
     public void minigameStart(Player player) {
         JumpAndRun jumpAndRun = JumpAndRun.getInstance();
-        Minigame minigame = new Minigame();
         Introduction introduction = new Introduction();
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
         Player playerInArena = DeathListener.getPlayerInArena();
-        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
-
         if(player == null) {
             throw new NullPointerException("player is null");
         }
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        if(playerData == null) throw new NullPointerException("playerData is null!");
+
         if(!playerData.getIntroduction()) {
             introduction.introStart(player);
+            return;
         }
         else if(!playerData.getUsesPlugin()) {
             return;
@@ -52,11 +53,11 @@ public class Minigame {
             player.sendMessage(Component.text(tf.getTranslation(player, "arenaIsFull")).color(NamedTextColor.GOLD));
             Location locationBox = config.checkWaitingListLocation();
             if(locationBox != null) {
-                minigame.teleportPlayerInBox(player, locationBox);
+                teleportPlayerInBox(player, locationBox);
             }
             else {
                 Main.getMainLogger().warning("WaitingListPosition is not set in the config!");
-                minigame.teleportPlayerInBox(player, player.getRespawnLocation());
+                teleportPlayerInBox(player, player.getRespawnLocation());
                 player.sendMessage(tf.getTranslation(player, "waitingListPositionNotSet"));
             }
         }
@@ -67,13 +68,12 @@ public class Minigame {
      * @param player    the player in the minigame
      * @param message   the message as declared in the Minigame
      */
-    public void startMessage(Player player, String message) {
+    public void sendStartMessage(Player player, String message) {
+        if(player == null) throw new NullPointerException("player is null!");
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        if(playerData == null) throw new NullPointerException("playerData is null!");
         Inventory lastDeathInventory = Bukkit.createInventory(null, 9*6);
         lastDeathInventory.setContents(playerData.getLastDeathInventory().getContents());
-        if(player == null) {
-            throw new NullPointerException("player is null");
-        }
         player.sendMessage(Component.text(message).color(NamedTextColor.GOLD));
 
         assert !lastDeathInventory.isEmpty() : "lastDeathInventory is empty!";
@@ -87,20 +87,20 @@ public class Minigame {
      * sends the player a message that he lost the minigame annd removes him from the inventories HashMap
      * @param player    the player who lost the game
      */
-    public void loseMessage(Player player) {
+    public void sendLoseMessage(Player player) {
         TranslationFactory tf = new TranslationFactory();
+        if(player == null) throw new NullPointerException("player is null");
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        if(playerData == null) throw new NullPointerException("playerData is null!");
         Location deathLocation = playerData.getLastDeathLocation();
-
-        if(player == null) {
-            throw new NullPointerException("player is null");
-        }
 
         assert deathLocation != null : "lastDeathInventory is null";
 
         playerData.setStatus(PlayerMinigameStatus.alive);
         if(playerData.getUsesPlugin()) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "loseMessage", "X: " + deathLocation.getBlockX() + " " + "Y: " + deathLocation.getBlockY() + " " + "Z: " + deathLocation.getBlockZ())).content()));
+            player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "loseMessage", "X: " + deathLocation.getBlockX() +
+                    " " + "Y: " + deathLocation.getBlockY() +
+                    " " + "Z: " + deathLocation.getBlockZ())).content()));
         }
     }
 
@@ -157,13 +157,13 @@ public class Minigame {
      * sends the player a message that he won the minigame
      * @param player    the player who won the minigame
      */
-    public void winMessage(Player player) {
-        Difficulty difficulty = new Difficulty();
+    public void sendWinMessage(Player player) {
+        Difficulty difficulty = Difficulty.getInstance();
         TranslationFactory tf = new TranslationFactory();
-        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         if(player == null) {
             throw new NullPointerException("player is null");
         }
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         player.sendMessage(Component.text(tf.getTranslation(player, "winMessage")).color(NamedTextColor.GOLD));
         if(playerData.getDifficulty() < 10) {
             difficulty.higherDifficulty(player);
@@ -213,10 +213,22 @@ public class Minigame {
     }
 
     public void teleportPlayerInBox(Player player, Location locationOfBox) {
+        if(player == null) {
+            throw new NullPointerException("player is null!");
+        }
+        if(locationOfBox == null) {
+            throw new NullPointerException("location is null!");
+        }
+        if(locationOfBox.getWorld() == null) {
+            throw new IllegalArgumentException("Location must have a valid world!");
+        }
         player.teleport(locationOfBox);
     }
 
     public boolean checkIfWaitinglistIsEmpty() {
+        if(waitingListMinigame == null) {
+            throw new NullPointerException("WaitingList is null!");
+        }
         return waitingListMinigame.isEmpty();
     }
 }

@@ -16,7 +16,6 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static de.j.deathMinigames.listeners.DeathListener.*;
@@ -97,7 +96,7 @@ public class JumpAndRun {
         Location spawnLocation = w.getSpawnLocation();
         Location firstBlockPlayerTPLocation = new Location(playerInArena.getWorld(), spawnLocation.getBlockX() + 0.5, config.checkParkourStartHeight() + 1, spawnLocation.getBlockZ() + 0.5);
         playerInArena.teleport(firstBlockPlayerTPLocation);
-        mg.startMessage(playerInArena, tf.getTranslation(playerInArena, "introParkour"));
+        mg.sendStartMessage(playerInArena, tf.getTranslation(playerInArena, "introParkour"));
 
         int heightToWin = config.checkParkourStartHeight() + config.checkParkourLength();
 
@@ -140,7 +139,7 @@ public class JumpAndRun {
     private boolean checkIfPlayerWon(Player player) {
         Minigame mg = new Minigame();
         if (checkIfOnGold(player)) {
-            mg.winMessage(player);
+            mg.sendWinMessage(player);
             mg.showInv(player);
             woolPlaced = false;
             goldPlaced = false;
@@ -167,7 +166,7 @@ public class JumpAndRun {
     private boolean checkIfPlayerLost(Player player, int heightToLose) {
         Minigame mg = new Minigame();
         if (player.getLocation().getBlockY() <= heightToLose) {
-            mg.loseMessage(player);
+            mg.sendLoseMessage(player);
             mg.dropInvAndClearData(player);
             mg.tpPlayerToRespawnLocation(player);
             mg.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
