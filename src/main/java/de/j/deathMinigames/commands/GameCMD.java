@@ -1,6 +1,7 @@
 package de.j.deathMinigames.commands;
 
 import de.j.deathMinigames.database.Database;
+import de.j.deathMinigames.dmUtil.DmUtil;
 import de.j.deathMinigames.listeners.DeathListener;
 import de.j.deathMinigames.main.*;
 import de.j.stationofdoom.util.translations.TranslationFactory;
@@ -324,10 +325,15 @@ public class GameCMD implements BasicCommand {
      * @param player the player executing the command
      */
     private void handleArgsLength1IntroPlayerDecidesToNotUseFeaturesExecution(PlayerData playerData, Player player) {
+        DmUtil util = new DmUtil();
         if (!playerData.getIntroduction()) {
             playerData.setIntroduction(true);
             playerData.setUsesPlugin(false);
-            introduction.dropInv(player);
+            Location lastDeathLocation = playerData.getLastDeathLocation();
+            if(lastDeathLocation == null) throw new NullPointerException("lastDeathLocation is null!");
+            util.dropInv(player, lastDeathLocation);
+            minigame.sendLoseMessage(player);
+            introduction.teleportPlayerToRespawnLocation(player);
             player.sendMessage(Component.text(tf.getTranslation(player, "playerDecided")).color(NamedTextColor.GOLD));
         }
         else {

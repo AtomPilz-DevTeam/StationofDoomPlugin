@@ -20,8 +20,6 @@ import org.bukkit.inventory.Inventory;
 import java.util.*;
 
 public class DeathListener implements Listener {
-    /** Temporary inventory used during death processing */
-    public static Inventory playerDeathInventory = Bukkit.createInventory(null, 54); // TODO: replace with playerData
     /** List of players waiting to join a minigame */
     public static ArrayList<Player> waitingListMinigame = new ArrayList<>();
     /** Current player in the arena, null if arena is empty */
@@ -84,7 +82,7 @@ public class DeathListener implements Listener {
         Location deathpoint = player.getLocation();
         if(inventory.isEmpty()) {
             message = Component.text(tf.getTranslation(player, "didNotSaveInv"));
-            util.dropInv(player, deathpoint);
+            playerData.getLastDeathInventory().clear();
         }
         else {
             message = Component.text(tf.getTranslation(player, "savedInv"));

@@ -2,10 +2,13 @@ package de.j.deathMinigames.dmUtil;
 
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
+import de.j.stationofdoom.main.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class DmUtil {
 
@@ -27,8 +30,9 @@ public class DmUtil {
         inv.setContents(playerData.getLastDeathInventory().getContents());
         assert !inv.isEmpty() : "inv is empty!";
         for(int i = 0; i < inv.getSize(); i++) {
-            if(inv.getItem(i) == null) continue;
-            player.getWorld().dropItem(location, inv.getItem(i));
+            ItemStack item = inv.getItem(i);
+            if(item == null) continue;
+            player.getWorld().dropItem(location, item);
         }
     }
 
