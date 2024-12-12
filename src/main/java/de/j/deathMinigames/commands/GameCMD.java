@@ -71,7 +71,6 @@ public class GameCMD implements BasicCommand {
         if(playerData == null) throw new NullPointerException("playerData is null!");
         if (args.length == 1) {
             String arg0 = args[0].toLowerCase();
-            Main.getMainLogger().info("Handled args.length 1");
             handleArgsLength1Execution(playerData, player, arg0);
         }
         else if (args.length == 2) {
@@ -145,11 +144,9 @@ public class GameCMD implements BasicCommand {
                 player.sendMessage("Status: " + playerData.getStatus().toString());
                 break;
         }
-        Main.getMainLogger().info("Inv empty: " + playerData.getLastDeathInventory().isEmpty() + " WaitingList: " + waitingListMinigame.contains(player) + " playerInArena: " + DeathListener.getPlayerInArena());
         if (!playerData.getLastDeathInventory().isEmpty() && !waitingListMinigame.contains(player) && DeathListener.getPlayerInArena() != player) {
             switch (arg0.toLowerCase()) {
                 case "start":
-                    Main.getMainLogger().info("Handled start");
                     handleArgsLength1StartExecution(player);
                     break;
                 case "ignore":
@@ -371,7 +368,6 @@ public class GameCMD implements BasicCommand {
      */
     private void handleArgsLength1StartExecution(Player player) {
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
-        Main.getMainLogger().info("Started Minigame");
         minigame.playSoundAtLocation(player.getEyeLocation(), 0.5F, Sound.ENTITY_ENDER_EYE_DEATH);
         player.resetTitle();
         player.sendActionBar(Component.text(tf.getTranslation(player, "startingMinigame"))
@@ -379,7 +375,6 @@ public class GameCMD implements BasicCommand {
                 .decoration(TextDecoration.ITALIC, true));
         player.playSound(player.getEyeLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5F, 1.0F);
         playerData.setStatus(PlayerMinigameStatus.alive);
-        player.sendMessage("Set status to alive");
         new Minigame().minigameStart(player);
     }
 
@@ -400,7 +395,6 @@ public class GameCMD implements BasicCommand {
 
         minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
         playerData.setStatus(PlayerMinigameStatus.alive);
-        player.sendMessage("Set status to alive");
         player.resetTitle();
         if (!waitingListMinigame.contains(player) && !lastDeathInventory.isEmpty()) {
             player.sendMessage(Component.text(tf.getTranslation(player, "droppingInvAt")).color(NamedTextColor.GOLD)

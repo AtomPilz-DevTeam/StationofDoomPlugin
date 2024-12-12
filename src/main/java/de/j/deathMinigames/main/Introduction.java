@@ -68,6 +68,8 @@ public class Introduction {
         if(location.getBlock().getType() != Material.BARRIER) {
             placeBarrierCageAroundLoc(location);
         }
+        location.setX(location.getX() + 0.5);
+        location.setZ(location.getZ() + 0.5);
         player.teleport(location);
         minigame.playSoundAtLocation(location, 0.5F, Sound.ENTITY_ENDER_EYE_DEATH);
     }
