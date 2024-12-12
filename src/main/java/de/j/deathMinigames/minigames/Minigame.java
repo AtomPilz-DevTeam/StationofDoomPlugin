@@ -40,6 +40,7 @@ public class Minigame {
         else if(!playerData.getUsesPlugin()) {
             return;
         }
+        waitingListMinigame.addLast(player);
         if(playerInArena == null) {
             playerData.setStatus(PlayerMinigameStatus.inMinigame);
             jumpAndRun.start();
@@ -48,7 +49,6 @@ public class Minigame {
             if(!player.getUniqueId().equals(playerInArena.getUniqueId())) {
                 return;
             }
-            waitingListMinigame.addLast(player);
             playerData.setStatus(PlayerMinigameStatus.inWaitingList);
             player.sendMessage(Component.text(tf.getTranslation(player, "arenaIsFull")).color(NamedTextColor.GOLD));
             Location locationBox = config.checkWaitingListLocation();
