@@ -169,7 +169,6 @@ public class JumpAndRun {
         if (player.getLocation().getBlockY() <= heightToLose) {
             mg.sendLoseMessage(player);
             mg.dropInvAndClearData(player);
-            Main.getMainLogger().info("dropped inv in checkIfPlayerLost");
             mg.tpPlayerToRespawnLocation(player);
             mg.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
             woolPlaced = false;

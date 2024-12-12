@@ -67,6 +67,7 @@ public class Database {
 
         configureDefaultQuery();
         PlayerDataDatabase.getInstance().createTable();
+        Main.getMainLogger().info("Database initialized");
     }
 
     /**
