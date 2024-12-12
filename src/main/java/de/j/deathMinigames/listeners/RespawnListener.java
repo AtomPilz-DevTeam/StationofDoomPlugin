@@ -48,7 +48,7 @@ public class RespawnListener implements Listener {
         if(playerData.getDecisionTimer() == 0) {
             playerData.setDecisionTimerDefault();
         }
-        if (playerData.getLastDeathInventory() != null) {
+        if (!playerData.getLastDeathInventory().isEmpty()) {
             playerData.setStatus(PlayerMinigameStatus.deciding);
             handleTimerWhilePlayerDecides(player);
         }
@@ -92,7 +92,7 @@ public class RespawnListener implements Listener {
         BukkitRunnable runnable = new BukkitRunnable() {
             public void run() {
                 if(handlePlayerOffline(playerData)) return;
-                if(handlePlayerNotDeciding(player, playerData, util)) return;
+                if(handlePlayerNotDeciding(playerData)) return;
                 int decisionTimer = playerData.getDecisionTimer();
                 switch (decisionTimer) {
                     case 0:
@@ -125,11 +125,8 @@ public class RespawnListener implements Listener {
         return false;
     }
 
-    private boolean handlePlayerNotDeciding(Player player, PlayerData playerData, DmUtil util) {
+    private boolean handlePlayerNotDeciding(PlayerData playerData) {
         if(!playerData.getStatus().equals(PlayerMinigameStatus.deciding)) {
-            if(playerData.getLastDeathInventory() != null && playerData.getLastDeathLocation() != null) {
-                util.dropInv(player, playerData.getLastDeathLocation());
-            }
             playerData.resetDecisionTimerAndStatus();
             getTask().cancel();
             return true;

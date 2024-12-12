@@ -105,50 +105,12 @@ public class Introduction {
     }
 
     /**
-     * Drops the player's inventory items at their last death location, sends a lose message,
-     * plays a sound, and removes the player from tracking maps.
-     *
-     * <p>This method retrieves the player's inventory and death location from the respective maps,
-     * asserts their presence, and iterates over the inventory to drop each item at the death location.
-     * If successful, the player is teleported, a sound is played, and the player is removed from the
-     * inventories and deaths maps.</p>
-     *
-     * @param player the player whose inventory is to be dropped
-     * @throws IllegalArgumentException if an error occurs while dropping items
-     */
-    public void dropInv(Player player) {
-        Minigame minigame = new Minigame();
-        UUID uuid = player.getUniqueId();
-        PlayerData playerData = HandlePlayers.getKnownPlayers().get(uuid);
-
-        Inventory inv = Bukkit.createInventory(null, 9*6);
-        inv.setContents(playerData.getLastDeathInventory().getContents());
-        Location death = playerData.getLastDeathLocation();
-
-        assert !inv.isEmpty() : "inventory is empty!";
-        assert death != null : "death location is null!";
-
-        minigame.sendLoseMessage(player);
-        try {
-            for (int i = 0; i < inv.getSize(); i++) {
-                if (inv.getItem(i) == null) continue;
-                player.getWorld().dropItem(playerData.getLastDeathLocation(), inv.getItem(i));
-            }
-        }
-        catch (IllegalArgumentException e) {
-            Main.getMainLogger().warning("Failed to drop items for player " + player.getName());
-        }
-        teleportPlayerToRespawnLocation(player);
-        minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
-    }
-
-    /**
      * Teleports the player to either their respawn location or the world spawn,
      * whichever is applicable, and plays a sound effect.
      *
      * @param player the player to teleport
      */
-    private void teleportPlayerToRespawnLocation(Player player) {
+    public void teleportPlayerToRespawnLocation(Player player) {
         player.playSound(player.getEyeLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5F, 1.0F);
         if(player.getRespawnLocation() == null) {
                 player.teleport(player.getWorld().getSpawnLocation());

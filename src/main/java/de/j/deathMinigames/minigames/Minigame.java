@@ -1,5 +1,6 @@
 package de.j.deathMinigames.minigames;
 
+import de.j.deathMinigames.dmUtil.DmUtil;
 import de.j.deathMinigames.main.*;
 import de.j.deathMinigames.listeners.DeathListener;
 import de.j.stationofdoom.main.Main;
@@ -10,9 +11,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.UUID;
 
 import static de.j.deathMinigames.listeners.DeathListener.*;
 
@@ -78,7 +76,6 @@ public class Minigame {
 
         assert !lastDeathInventory.isEmpty() : "lastDeathInventory is empty!";
 
-        playerDeathInventory.setContents(lastDeathInventory.getContents());
         waitingListMinigame.remove(player);
         playerData.setStatus(PlayerMinigameStatus.inMinigame);
     }
@@ -109,12 +106,16 @@ public class Minigame {
      * @param player    the player whose inventory is to be droopped
      */
     public void dropInvAndClearData(Player player) {
-        if(player == null) {
-            throw new NullPointerException("player is null");
-        }
-        dropInv(player);
-        assert playerDeathInventory != null;
-        playerDeathInventory.clear();
+        DmUtil util = new DmUtil();
+
+        if(player == null) throw new NullPointerException("player is null");
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        if(playerData == null) throw new NullPointerException("playerData is null!");
+        playerData.setStatus(PlayerMinigameStatus.alive);
+        Location deathLocation = playerData.getLastDeathLocation();
+        if(deathLocation == null) throw new NullPointerException("deathLocation is null!");
+        util.dropInv(player, deathLocation);
+
         tpPlayerToRespawnLocation(player);
     }
 
@@ -128,28 +129,6 @@ public class Minigame {
         } else {
             player.playSound(player.getEyeLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5F, 1.0F);
             player.teleport(player.getRespawnLocation());
-        }
-    }
-
-    /**
-     * drops the inventory of the player at his deathpoint, clears the playerDeathInventory and removes him from the deaths HashMap
-     * @param player    the player whose inventory is to be droopped
-     */
-    private void dropInv(Player player) {
-        if(player == null) {
-            throw new NullPointerException("player is null");
-        }
-        UUID uuidPlayer = player.getUniqueId();
-        PlayerData playerData = HandlePlayers.getKnownPlayers().get(uuidPlayer);
-        playerData.setStatus(PlayerMinigameStatus.alive);
-        Location deathLocation = playerData.getLastDeathLocation();
-        if(deathLocation == null) {
-            throw new NullPointerException("deathLocation is null");
-        }
-        for(int i = 0; i < playerDeathInventory.getSize(); i++) {
-            ItemStack item = playerDeathInventory.getItem(i);
-            if(item == null) continue;
-            player.getWorld().dropItem(deathLocation, item);
         }
     }
 
@@ -178,20 +157,19 @@ public class Minigame {
     public void showInv(Player player) {
         TranslationFactory tf = new TranslationFactory();
         Inventory inventory = Bukkit.createInventory(null, 54, Component.text(tf.getTranslation(player, "winInv")).color(NamedTextColor.GOLD));
-        if(playerDeathInventory.isEmpty()) {
+        if(player == null) throw new NullPointerException("player is null");
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        if(playerData == null) throw new NullPointerException("playerData is null!");
+        Inventory lastDeahtInventory = playerData.getLastDeathInventory();
+        if(lastDeahtInventory.isEmpty()) {
             throw new NullPointerException("playerDeathInventory is empty");
         }
-        inventory.setContents(playerDeathInventory.getContents());
-        if(player == null) {
-            throw new NullPointerException("player is null");
-        }
+        inventory.setContents(lastDeahtInventory.getContents());
+
         tpPlayerToRespawnLocation(player);
-        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         playerData.setStatus(PlayerMinigameStatus.alive);
         player.openInventory(inventory);
         playSoundAtLocation(player.getLocation(), 1F, Sound.ITEM_TOTEM_USE);
-
-        playerDeathInventory.clear();
     }
 
     /**
