@@ -128,6 +128,7 @@ public class JumpAndRun {
      * @return      the number as an int
      */
     private int randomizer(int min, int max) {
+        if(min == max + 1) return min;
         return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
 
