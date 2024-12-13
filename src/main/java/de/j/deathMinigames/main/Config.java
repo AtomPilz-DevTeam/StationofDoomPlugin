@@ -104,12 +104,19 @@ public class Config {
     }
 
     public void cloneWaitingListLocationToPlugin(World world) {
+        if(world == null) {
+            Main.getMainLogger().severe("Ca not set waitingListLocation because world is null!");
+            return;
+        }
         if(Main.getPlugin().getConfig().contains("WaitingListPosition")) {
             int x = Main.getPlugin().getConfig().getInt("WaitingListPosition.x");
             int y = Main.getPlugin().getConfig().getInt("WaitingListPosition.y");
             int z = Main.getPlugin().getConfig().getInt("WaitingListPosition.z");
             configWaitingListPosition = new Location(world, x, y, z);
             Main.getMainLogger().info("set WaitingListPosition from config to: " + configWaitingListPosition.getBlockX() + ", " + configWaitingListPosition.getBlockY() + ", " + configWaitingListPosition.getBlockZ());
+        }
+        else {
+            Main.getMainLogger().warning("WaitingListPosition not found in config!");
         }
     }
 
@@ -190,6 +197,7 @@ public class Config {
      * @param location The waiting list position to be set.
      */
     public synchronized void setWaitingListPosition(Location location) {
+        if(location == null) throw new NullPointerException("location is null!");
         configWaitingListPosition = location;
         Main.getPlugin().getConfig().set("WaitingListPosition.x", location.getBlockX());
         Main.getPlugin().getConfig().set("WaitingListPosition.y", location.getBlockY());

@@ -47,10 +47,15 @@ public class GUI implements InventoryHolder {
     }
 
     private void addPlayerHeads(HashMap<UUID, PlayerData> knownPlayers) {
+        int maxSlots = inventory.getSize() - 1;
         List<UUID> playerKeys = new ArrayList<>(knownPlayers.keySet());
         for(int i = 0; i < knownPlayers.size(); i++) {
+            if(i > maxSlots)  {
+                Main.getMainLogger().warning("Not enough slots to add all players!");
+                break;
+            }
             PlayerData playerData = knownPlayers.get(playerKeys.get(i));
-
+            if(playerData == null || playerData.getUUID() == null) continue;
             ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
             SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
             skullMeta.setOwnerProfile(Bukkit.createProfile(playerData.getUUID()));
