@@ -69,10 +69,6 @@ public class HandlePlayers {
         HandlePlayers.playerInArena = playerInArena;
     }
 
-    //public synchronized PlayerMinigameStatus getPlayerMinigameStatus(UUID uuid) { // TODO: implement
-
-    //}
-
     /**
      * Initializes the known players map by loading all player data from the database.
      *
