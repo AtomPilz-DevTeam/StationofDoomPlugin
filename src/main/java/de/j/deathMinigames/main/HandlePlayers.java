@@ -1,15 +1,22 @@
 package de.j.deathMinigames.main;
 
 import de.j.deathMinigames.database.PlayerDataDatabase;
+import de.j.deathMinigames.listeners.DeathListener;
 import de.j.stationofdoom.main.Main;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class HandlePlayers {
     private volatile static HandlePlayers instance;
     private static final HashMap<UUID, PlayerData> knownPlayers = new HashMap<>();
+
+    /** List of players waiting to join a minigame */
+    public static ArrayList<Player> waitingListMinigame = new ArrayList<>();
+    /** Current player in the arena, null if arena is empty */
+    public volatile static Player playerInArena;
 
     /**
      * Returns the single instance of this class.
@@ -44,13 +51,23 @@ public class HandlePlayers {
         return knownPlayers;
     }
 
-    //public synchronized Player getPlayerInArena() { // TODO: implement
+    /**
+     * Get the current player in the arena, or null if the arena is empty.
+     *
+     * @return the current player in the arena, or null if the arena is empty
+     */
+    public synchronized static Player getPlayerInArena() {
+        return playerInArena;
+    }
 
-    //}
-
-    //public synchronized List<Player> getWaitingList() { // TODO: implement
-
-    //}
+    /**
+     * Set the current player in the arena.
+     *
+     * @param playerInArena the new player in the arena, or null to clear the arena
+     */
+    public synchronized static void setPlayerInArena(Player playerInArena) {
+        HandlePlayers.playerInArena = playerInArena;
+    }
 
     //public synchronized PlayerMinigameStatus getPlayerMinigameStatus(UUID uuid) { // TODO: implement
 

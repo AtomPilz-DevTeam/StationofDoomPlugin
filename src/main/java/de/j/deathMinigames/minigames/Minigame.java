@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import static de.j.deathMinigames.listeners.DeathListener.*;
+import static de.j.deathMinigames.main.HandlePlayers.waitingListMinigame;
 
 public class Minigame {
     /**
@@ -24,7 +25,7 @@ public class Minigame {
         Introduction introduction = new Introduction();
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
-        Player playerInArena = DeathListener.getPlayerInArena();
+        Player playerInArena = HandlePlayers.getPlayerInArena();
         if(player == null) throw new NullPointerException("player is null");
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         if(playerData == null) throw new NullPointerException("playerData is null!");

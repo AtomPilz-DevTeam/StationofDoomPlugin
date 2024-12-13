@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 import static de.j.deathMinigames.listeners.DeathListener.*;
+import static de.j.deathMinigames.main.HandlePlayers.waitingListMinigame;
 
 public class GameCMD implements BasicCommand {
 
@@ -142,7 +143,11 @@ public class GameCMD implements BasicCommand {
                 player.sendMessage("Status: " + playerData.getStatus().toString());
                 break;
         }
-        if (!playerData.getLastDeathInventory().isEmpty() && !waitingListMinigame.contains(player) && DeathListener.getPlayerInArena() != player) {
+        handleDecisionCMDsWhenRespawning(playerData, player, arg0);
+    }
+
+    private void handleDecisionCMDsWhenRespawning(PlayerData playerData, Player player, String arg0) {
+        if (!playerData.getLastDeathInventory().isEmpty() && !waitingListMinigame.contains(player) && HandlePlayers.getPlayerInArena() != player) {
             switch (arg0.toLowerCase()) {
                 case "start":
                     handleArgsLength1StartExecution(player);
