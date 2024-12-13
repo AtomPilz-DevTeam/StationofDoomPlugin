@@ -1,5 +1,6 @@
 package de.j.deathMinigames.main;
 
+import de.j.deathMinigames.dmUtil.DmUtil;
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
@@ -13,6 +14,8 @@ import de.j.deathMinigames.minigames.Minigame;
 import org.bukkit.inventory.Inventory;
 
 import java.util.UUID;
+
+import static io.papermc.paper.util.TraceUtil.printStackTrace;
 
 public class Introduction {
     /**
@@ -31,7 +34,7 @@ public class Introduction {
         }
         catch(Exception e) {
             Main.getMainLogger().warning("Could not start intro!");
-            player.sendMessage(Component.text("Could not start intro!", NamedTextColor.RED));
+            player.sendMessage(Component.text("Could not start intro!" + e.getMessage()).color(NamedTextColor.RED));
         }
     }
 
@@ -63,7 +66,7 @@ public class Introduction {
      * @param location the location to teleport to
      */
     private void teleportPlayerToIntroLocation(Player player, Location location) {
-        Minigame minigame = new Minigame();
+        DmUtil dmUtil = DmUtil.getInstance();
 
         if(location.getBlock().getType() != Material.BARRIER) {
             placeBarrierCageAroundLoc(location);
@@ -71,7 +74,7 @@ public class Introduction {
         location.setX(location.getX() + 0.5);
         location.setZ(location.getZ() + 0.5);
         player.teleport(location);
-        minigame.playSoundAtLocation(location, 0.5F, Sound.ENTITY_ENDER_EYE_DEATH);
+        dmUtil.playSoundAtLocation(location, 0.5F, Sound.ENTITY_ENDER_EYE_DEATH);
     }
 
     /**
@@ -90,6 +93,10 @@ public class Introduction {
      * @param location the location to place the barrier cage around
      */
     private void placeBarrierCageAroundLoc(Location location) {
+        if(location == null) {
+            Main.getMainLogger().warning("Tried to place barrier cage at null location!");
+            return;
+        }
         int[][] offsets = {
                 {0, -1, 0},
                 {1, 0, 0}, {-1, 0, 0}, {0, 0, 1}, {0, 0, -1},
@@ -102,7 +109,7 @@ public class Introduction {
             }
         }
         catch (IllegalStateException e) {
-            Main.getMainLogger().warning(String.format("Failes to place barrier cage at %s",location));
+            Main.getMainLogger().warning(String.format("Failes to place barrier cage at %s", location));
         }
     }
 
@@ -113,11 +120,12 @@ public class Introduction {
      * @param player the player to teleport
      */
     public void teleportPlayerToRespawnLocation(Player player) {
+        if(player == null) throw new NullPointerException("player is null!");
         player.playSound(player.getEyeLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5F, 1.0F);
         if(player.getRespawnLocation() == null) {
-                player.teleport(player.getWorld().getSpawnLocation());
-            } else {
-                player.teleport(player.getRespawnLocation());
-            }
+        player.teleport(player.getWorld().getSpawnLocation());
+        } else {
+            player.teleport(player.getRespawnLocation());
+        }
     }
 }

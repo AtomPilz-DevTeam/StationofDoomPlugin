@@ -82,7 +82,7 @@ public class RespawnListener implements Listener {
      */
     private void timerWhilePlayerDecides(Player player) {
         TranslationFactory tf = new TranslationFactory();
-        DmUtil util = new DmUtil();
+        DmUtil util = DmUtil.getInstance();
         if(!util.validatePlayerAndPlayerData(player)) {
             Main.getMainLogger().warning("Player is null or playerData is null!");
             return;
@@ -135,6 +135,7 @@ public class RespawnListener implements Listener {
     }
 
     private void handleTimer0(PlayerData playerData, Player player, DmUtil util, TranslationFactory tf) {
+        if(playerData == null) throw new NullPointerException("playerData is null!");
         if(playerData.getLastDeathLocation() == null) {
             Main.getMainLogger().warning("Deathlocation of player is null and timer is stopped!");
             getTask().cancel();

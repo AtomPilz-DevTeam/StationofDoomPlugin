@@ -59,25 +59,15 @@ public class GUI implements InventoryHolder {
     }
 
     private void addBooleanBased(HashMap<UUID, PlayerData> knownPlayers, String title) {
+        List<UUID> playerKeys = new ArrayList<>(knownPlayers.keySet());
         for(int i = 0; i < knownPlayers.size(); i++) {
-            PlayerData playerData = knownPlayers.get(knownPlayers.keySet().stream().toList().get(i));
-            Material material = Material.BEDROCK;
-            if(title.equals("UsesPlugin")) {
-                if(playerData.getUsesPlugin()) {
-                    material = Material.GREEN_CONCRETE_POWDER;
-                }
-                else {
-                    material = Material.RED_CONCRETE_POWDER;
-                }
-            }
-            else if(title.equals("Introduction")) {
-                if(playerData.getIntroduction()) {
-                    material = Material.GREEN_CONCRETE_POWDER;
-                }
-                else {
-                    material = Material.RED_CONCRETE_POWDER;
-                }
-            }
+            PlayerData playerData = knownPlayers.get(playerKeys.get(i));
+            boolean value = switch (title) {
+                case "UsesPlugin" -> playerData.getUsesPlugin();
+                case "Introduction" -> playerData.getIntroduction();
+                default -> false;
+            };
+            Material material = value ? Material.GREEN_CONCRETE_POWDER : Material.RED_CONCRETE_POWDER;
             ItemStack itemStack = new ItemStack(material);
             ItemMeta itemMeta = itemStack.getItemMeta();
             itemMeta.displayName(Component.text(playerData.getName()));

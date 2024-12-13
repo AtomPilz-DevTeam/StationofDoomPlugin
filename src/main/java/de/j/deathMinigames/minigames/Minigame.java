@@ -25,9 +25,7 @@ public class Minigame {
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
         Player playerInArena = DeathListener.getPlayerInArena();
-        if(player == null) {
-            throw new NullPointerException("player is null");
-        }
+        if(player == null) throw new NullPointerException("player is null");
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         if(playerData == null) throw new NullPointerException("playerData is null!");
 
@@ -106,7 +104,7 @@ public class Minigame {
      * @param player    the player whose inventory is to be droopped
      */
     public void dropInvAndClearData(Player player) {
-        DmUtil util = new DmUtil();
+        DmUtil util = DmUtil.getInstance();
 
         if(player == null) throw new NullPointerException("player is null");
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
@@ -155,9 +153,10 @@ public class Minigame {
      * @param player    the play to open the inventory to
      */
     public void showInv(Player player) {
+        DmUtil util = DmUtil.getInstance();
+        if(player == null) throw new NullPointerException("player is null");
         TranslationFactory tf = new TranslationFactory();
         Inventory inventory = Bukkit.createInventory(null, 54, Component.text(tf.getTranslation(player, "winInv")).color(NamedTextColor.GOLD));
-        if(player == null) throw new NullPointerException("player is null");
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         if(playerData == null) throw new NullPointerException("playerData is null!");
         Inventory lastDeahtInventory = playerData.getLastDeathInventory();
@@ -169,17 +168,7 @@ public class Minigame {
         tpPlayerToRespawnLocation(player);
         playerData.setStatus(PlayerMinigameStatus.alive);
         player.openInventory(inventory);
-        playSoundAtLocation(player.getLocation(), 1F, Sound.ITEM_TOTEM_USE);
-    }
-
-    /**
-     * Plays a sound at a location
-     * @param location  the location to play the sound at
-     * @param volume    how loud the
-     * @param sound     the sound to play
-     */
-    public void playSoundAtLocation(Location location, Float volume, Sound sound) {
-        location.getWorld().playSound(location, sound, volume, 1F);
+        util.playSoundAtLocation(player.getLocation(), 1F, Sound.ITEM_TOTEM_USE);
     }
 
     public void playSoundToPlayer(Player player, Float volume, Sound sound) {
@@ -187,7 +176,15 @@ public class Minigame {
     }
 
     public void spawnParticles(Player player, Location location, Particle particle) {
-        player.getWorld().spawnParticle(particle, location, 20, 1, 1, 1);
+        if(player == null) throw new NullPointerException("player is null!");
+        if(location == null) throw new NullPointerException("location is null!");
+        if(particle == null) throw new NullPointerException("particle is null!");
+
+        int count = 20;
+        int offsetX = 1;
+        int offsetY = 1;
+        int offsetZ = 1;
+        player.getWorld().spawnParticle(particle, location, count, offsetX, offsetY, offsetZ);
     }
 
     public void teleportPlayerInBox(Player player, Location locationOfBox) {

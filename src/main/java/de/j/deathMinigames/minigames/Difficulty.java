@@ -1,6 +1,5 @@
 package de.j.deathMinigames.minigames;
 
-import de.j.deathMinigames.database.PlayerDataDatabase;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.stationofdoom.util.translations.TranslationFactory;
@@ -80,7 +79,7 @@ public class Difficulty {
      *
      * @param player the player who should pay the cost
      */
-    public void playerPay(Player player) {
+    public void removePaymentFromPlayerInventory(Player player) {
         Config config = Config.getInstance();
         ItemStack diamonds = new ItemStack(Material.DIAMOND, config.checkCostToLowerTheDifficulty());
         player.getInventory().removeItem(diamonds);

@@ -58,7 +58,7 @@ public class DeathListener implements Listener {
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
         TranslationFactory tf = new TranslationFactory();
-        DmUtil util = new DmUtil();
+        DmUtil util = DmUtil.getInstance();
 
         if(event == null || event.getPlayer() == null ) {
             Main.getMainLogger().warning("Event or player in onDeath is null!");

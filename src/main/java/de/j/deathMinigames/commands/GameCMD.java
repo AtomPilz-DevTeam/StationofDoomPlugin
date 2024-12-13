@@ -1,9 +1,9 @@
 package de.j.deathMinigames.commands;
 
-import de.j.deathMinigames.database.Database;
 import de.j.deathMinigames.dmUtil.DmUtil;
 import de.j.deathMinigames.listeners.DeathListener;
 import de.j.deathMinigames.main.*;
+import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -15,9 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import de.j.stationofdoom.main.Main;
 import de.j.deathMinigames.minigames.Difficulty;
 import de.j.deathMinigames.minigames.Minigame;
 import de.j.deathMinigames.settings.MainMenu;
@@ -264,12 +262,13 @@ public class GameCMD implements BasicCommand {
      * @param player the player executing the command
      */
     private void handleArgsLength1LowerDifficultyExecution(PlayerData playerData, Player player) {
+        DmUtil util = DmUtil.getInstance();
         if(difficulty.checkIfPlayerCanPay(player)) {
             int diff = playerData.getDifficulty();
             if(diff > 0) {
-                difficulty.playerPay(player);
+                difficulty.removePaymentFromPlayerInventory(player);
                 difficulty.lowerDifficulty(player);
-                minigame.playSoundAtLocation(player.getEyeLocation(), 0.5F, Sound.ENTITY_ENDER_EYE_DEATH);
+                util.playSoundAtLocation(player.getEyeLocation(), 0.5F, Sound.ENTITY_ENDER_EYE_DEATH);
                 player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "changedDiff", diff)).content()));
             }
             else {
@@ -322,7 +321,7 @@ public class GameCMD implements BasicCommand {
      * @param player the player executing the command
      */
     private void handleArgsLength1IntroPlayerDecidesToNotUseFeaturesExecution(PlayerData playerData, Player player) {
-        DmUtil util = new DmUtil();
+        DmUtil util = DmUtil.getInstance();
         if (!playerData.getIntroduction()) {
             playerData.setIntroduction(true);
             playerData.setUsesPlugin(false);
@@ -367,8 +366,9 @@ public class GameCMD implements BasicCommand {
      * @param player the player executing the "start" command
      */
     private void handleArgsLength1StartExecution(Player player) {
+        DmUtil util = DmUtil.getInstance();
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
-        minigame.playSoundAtLocation(player.getEyeLocation(), 0.5F, Sound.ENTITY_ENDER_EYE_DEATH);
+        util.playSoundAtLocation(player.getEyeLocation(), 0.5F, Sound.ENTITY_ENDER_EYE_DEATH);
         player.resetTitle();
         player.sendActionBar(Component.text(tf.getTranslation(player, "startingMinigame"))
                 .color(NamedTextColor.GOLD)
@@ -455,7 +455,7 @@ public class GameCMD implements BasicCommand {
      * @param arg2 the third argument provided, representing the difficulty level
      * @param arg1 the second argument provided, representing the player to edit
      */
-    private void handleArgsLength3DifficultyExecution(Player player, String arg2, String arg1) {
+    private void handleArgsLength3DifficultyExecution(Player player, String arg1, String arg2) {
         if(arg2 != null) {
             int i;
             try{
@@ -529,16 +529,20 @@ public class GameCMD implements BasicCommand {
     @Override
     public @NotNull Collection<String> suggest(@NotNull CommandSourceStack commandSourceStack, @NotNull String[] args) {
         Collection<String> suggestions = new ArrayList<>();
+        if(commandSourceStack == null || args == null) return suggestions;
+        Player player = (Player) commandSourceStack.getSender();
+        if(player == null) return suggestions;
+
         if (args.length == 0) {
             suggestions.add("difficulty");
             suggestions.add("lowerDifficulty");
             return suggestions;
         }
-        else if (args.length == 2) {
-            if(args[1].equalsIgnoreCase("difficulty")) {
+        else if (args.length == 2 && player.isOp()) {
+            if("difficulty".equalsIgnoreCase(args[0])) {
                 for (UUID uuid : HandlePlayers.getKnownPlayers().keySet()) {
-                    Player player = Bukkit.getPlayer(uuid);
-                    if(player != null) suggestions.add(player.getName());
+                    Player playerToSuggest = Bukkit.getPlayer(uuid);
+                    if(playerToSuggest != null) suggestions.add(playerToSuggest.getName());
                 }
                 return suggestions;
             }
