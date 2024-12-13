@@ -2,11 +2,13 @@ package de.j.deathMinigames.settings;
 
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
+import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -15,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import de.j.deathMinigames.main.Config;
 import de.j.deathMinigames.listeners.InventoryListener;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.profile.PlayerProfile;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -50,7 +53,8 @@ public class GUI implements InventoryHolder {
 
             ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
             SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
-            skullMeta.setOwningPlayer(playerData.getPlayer());
+            skullMeta.setOwnerProfile(Bukkit.createProfile(playerData.getUUID()));
+            Main.getMainLogger().info("Skull has owner: " + skullMeta.hasOwner());
             skullMeta.displayName(Component.text(playerData.getName()));
             head.setItemMeta(skullMeta);
 
