@@ -1,18 +1,15 @@
 package de.j.deathMinigames.listeners;
 
-import de.j.deathMinigames.database.PlayerDataDatabase;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.deathMinigames.main.PlayerMinigameStatus;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import de.j.deathMinigames.main.Config;
 
 public class JoinListener implements Listener {
 
@@ -37,12 +34,6 @@ public class JoinListener implements Listener {
         TranslationFactory tf = new TranslationFactory();
         HandlePlayers handlePlayers = HandlePlayers.getInstance();
 
-        if(player.isOp() && Config.getInstance().checkWaitingListLocation() == null) {
-            player.sendMessage(Component.text(tf.getTranslation(player, "waitingListPositionNotSetUp")).color(NamedTextColor.RED)
-                    .append(Component.text(tf.getTranslation(player, "yes")).color(NamedTextColor.GREEN).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/game setWaitingListPosition")))
-                    .append(Component.text(" / ").color(NamedTextColor.GOLD))
-                    .append(Component.text(tf.getTranslation(player, "no")).color(NamedTextColor.RED).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/game decidedNotToSetPosition"))));
-        }
         if(!handlePlayers.checkIfPlayerIsKnown(player.getUniqueId())) {
             handlePlayers.addNewPlayer(player);
             player.sendMessage(Component.text(tf.getTranslation(player,"addedToPlayerList")).color(NamedTextColor.GOLD)

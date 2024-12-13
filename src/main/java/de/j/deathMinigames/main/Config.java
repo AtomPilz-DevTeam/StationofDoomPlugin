@@ -4,6 +4,7 @@ import de.j.deathMinigames.database.PlayerDataDatabase;
 import org.bukkit.Location;
 
 import de.j.stationofdoom.main.Main;
+import org.bukkit.World;
 
 import java.util.*;
 
@@ -50,16 +51,6 @@ public class Config {
      * from the configuration file to the plugin's internal state.
      */
     public void initializeConfig() {
-        try {
-            if (!Main.getPlugin().getConfig().contains("KnownPlayers")) {
-                Main.getPlugin().getConfig().set("KnownPlayers", new ArrayList<>());
-                Main.getPlugin().saveConfig();
-                Main.getMainLogger().info("Created KnownPlayers");
-            }
-        }
-        catch (Exception e) {
-            Main.getMainLogger().warning("Could not load / create knownplayers!");
-        }
         cloneConfigToPlugin();
     }
 
@@ -110,8 +101,15 @@ public class Config {
         else {
             setTimeToDecideWhenRespawning(10);
         }
+    }
+
+    public void cloneWaitingListLocationToPlugin(World world) {
         if(Main.getPlugin().getConfig().contains("WaitingListPosition")) {
-            setWaitingListPosition(Main.getPlugin().getConfig().getLocation("WaitingListPosition"));
+            int x = Main.getPlugin().getConfig().getInt("WaitingListPosition.x");
+            int y = Main.getPlugin().getConfig().getInt("WaitingListPosition.y");
+            int z = Main.getPlugin().getConfig().getInt("WaitingListPosition.z");
+            configWaitingListPosition = new Location(world, x, y, z);
+            Main.getMainLogger().info("set WaitingListPosition from config to: " + configWaitingListPosition.getBlockX() + ", " + configWaitingListPosition.getBlockY() + ", " + configWaitingListPosition.getBlockZ());
         }
     }
 
@@ -193,8 +191,11 @@ public class Config {
      */
     public synchronized void setWaitingListPosition(Location location) {
         configWaitingListPosition = location;
-        Main.getPlugin().getConfig().set("WaitingListPosition", location);
+        Main.getPlugin().getConfig().set("WaitingListPosition.x", location.getBlockX());
+        Main.getPlugin().getConfig().set("WaitingListPosition.y", location.getBlockY());
+        Main.getPlugin().getConfig().set("WaitingListPosition.z", location.getBlockZ());
         Main.getPlugin().saveConfig();
+        Main.getMainLogger().info("set WaitingListPosition to: " + configWaitingListPosition);
     }
 
     /**
@@ -273,7 +274,7 @@ public class Config {
         }
         else {
             Main.getMainLogger().warning("configWaitingListPosition is not setup");
+            return null;
         }
-        return null;
     }
 }
