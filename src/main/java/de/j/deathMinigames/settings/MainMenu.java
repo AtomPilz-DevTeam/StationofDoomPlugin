@@ -178,7 +178,7 @@ public class MainMenu implements InventoryHolder {
         else {
             getSetUp().addClickableItemStack("Parcour length", Material.LADDER, 1, 1);
         }
-        if(waitingListPosition!=null) {
+        if(waitingListPosition != null) {
             ArrayList<String> lore = new ArrayList<>();
             lore.add("Current position:");
             lore.add(String.format("X: %d", waitingListPosition.getBlockX()));
