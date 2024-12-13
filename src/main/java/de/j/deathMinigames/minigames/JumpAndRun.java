@@ -1,5 +1,6 @@
 package de.j.deathMinigames.minigames;
 
+import de.j.deathMinigames.dmUtil.DmUtil;
 import de.j.deathMinigames.listeners.DeathListener;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
@@ -237,6 +238,7 @@ public class JumpAndRun {
         Minigame mg = new Minigame();
         Config config = Config.getInstance();
         Player playerInArena = DeathListener.getPlayerInArena();
+        DmUtil util = DmUtil.getInstance();
 
         int heightToLose = config.checkParkourStartHeight() - 2;
 
@@ -273,7 +275,7 @@ public class JumpAndRun {
                         // check if it is the last block, if true place a gold block
                         if(_y == heightToWin && !goldPlaced) {
                             nextBlock.getBlock().setType(Material.GOLD_BLOCK);
-                            mg.playSoundAtLocation(nextBlock, 2F, Sound.BLOCK_AMETHYST_BLOCK_HIT);
+                            util.playSoundAtLocation(nextBlock, 2F, Sound.BLOCK_AMETHYST_BLOCK_HIT);
                             mg.spawnParticles(playerInArena, nextBlock, Particle.GLOW);
                             blocksToDelete.add(nextBlock.getBlock());
                             goldPlaced = true;
@@ -281,7 +283,7 @@ public class JumpAndRun {
                         }
                         else {
                             nextBlock.getBlock().setType(Material.GREEN_WOOL);
-                            mg.playSoundAtLocation(nextBlock, 2F, Sound.BLOCK_AMETHYST_BLOCK_HIT);
+                            util.playSoundAtLocation(nextBlock, 2F, Sound.BLOCK_AMETHYST_BLOCK_HIT);
                             mg.spawnParticles(playerInArena, nextBlock, Particle.GLOW);
                             woolPlaced = true;
                             blocksToDelete.add(nextBlock.getBlock());

@@ -22,7 +22,7 @@ public class HandlePlayers {
      */
     public synchronized static HandlePlayers getInstance() {
         if(instance == null){
-            synchronized (Config.class){
+            synchronized (HandlePlayers.class){
                 if (instance == null){
                     instance = new HandlePlayers();
                 }
