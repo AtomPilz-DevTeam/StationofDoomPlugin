@@ -11,12 +11,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class InitWaitingListLocationOnJoin implements Listener {
-    private InitWaitingListLocationOnJoin instance;
+    private static volatile InitWaitingListLocationOnJoin instance;
     private static boolean init = false;
 
     public InitWaitingListLocationOnJoin() {}
 
-    public InitWaitingListLocationOnJoin getInstance() {
+    public static InitWaitingListLocationOnJoin getInstance() {
         if(instance == null){
             synchronized (InitWaitingListLocationOnJoin.class){
                 if (instance == null){

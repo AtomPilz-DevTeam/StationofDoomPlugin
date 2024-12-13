@@ -160,16 +160,20 @@ public class Minigame {
         Inventory inventory = Bukkit.createInventory(null, 54, Component.text(tf.getTranslation(player, "winInv")).color(NamedTextColor.GOLD));
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         if(playerData == null) throw new NullPointerException("playerData is null!");
-        Inventory lastDeahtInventory = playerData.getLastDeathInventory();
-        if(lastDeahtInventory.isEmpty()) {
+        Inventory lastDeathInventory = playerData.getLastDeathInventory();
+        if(lastDeathInventory.isEmpty()) {
             throw new NullPointerException("playerDeathInventory is empty");
         }
-        inventory.setContents(lastDeahtInventory.getContents());
+        try {
+            inventory.setContents(lastDeathInventory.getContents());
 
-        tpPlayerToRespawnLocation(player);
-        playerData.setStatus(PlayerMinigameStatus.alive);
-        player.openInventory(inventory);
-        util.playSoundAtLocation(player.getLocation(), 1F, Sound.ITEM_TOTEM_USE);
+            tpPlayerToRespawnLocation(player);
+            playerData.setStatus(PlayerMinigameStatus.alive);
+            player.openInventory(inventory);
+            util.playSoundAtLocation(player.getLocation(), 1F, Sound.ITEM_TOTEM_USE);
+        } catch (Exception e) {
+            Main.getMainLogger().warning("Failed to show inventory to " + player.getName() + e.getMessage());
+        }
     }
 
     public void playSoundToPlayer(Player player, Float volume, Sound sound) {
