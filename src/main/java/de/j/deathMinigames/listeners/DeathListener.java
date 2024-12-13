@@ -20,28 +20,6 @@ import org.bukkit.inventory.Inventory;
 import java.util.*;
 
 public class DeathListener implements Listener {
-    /** List of players waiting to join a minigame */
-    public static ArrayList<Player> waitingListMinigame = new ArrayList<>();
-    /** Current player in the arena, null if arena is empty */
-    public volatile static Player playerInArena;
-    /**
-     * Get the current player in the arena, or null if the arena is empty.
-     *
-     * @return the current player in the arena, or null if the arena is empty
-     */
-    public synchronized static Player getPlayerInArena() {
-        return playerInArena;
-    }
-
-    /**
-     * Set the current player in the arena.
-     *
-     * @param playerInArena the new player in the arena, or null to clear the arena
-     */
-    public synchronized static void setPlayerInArena(Player playerInArena) {
-        DeathListener.playerInArena = playerInArena;
-    }
-
     /**
      * Called when a player dies.
      * <p>

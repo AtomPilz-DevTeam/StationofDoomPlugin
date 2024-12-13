@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static de.j.deathMinigames.listeners.DeathListener.*;
+import static de.j.deathMinigames.main.HandlePlayers.waitingListMinigame;
 
 public class JumpAndRun {
     private static volatile JumpAndRun jumpAndRun;
@@ -87,9 +88,9 @@ public class JumpAndRun {
         // get the player int the arena from the waiting list
         Player player = waitingListMinigame.getFirst();
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
-        DeathListener.setPlayerInArena(player);
+        HandlePlayers.setPlayerInArena(player);
         playerData.setStatus(PlayerMinigameStatus.inMinigame);
-        Player playerInArena = DeathListener.getPlayerInArena();
+        Player playerInArena = HandlePlayers.playerInArena;
 
         playerInArena.sendTitle("JumpNRun", "");
 
@@ -140,6 +141,7 @@ public class JumpAndRun {
      */
     private boolean checkIfPlayerWon(Player player) {
         Minigame mg = new Minigame();
+        Player playerInArena = HandlePlayers.playerInArena;
         if (checkIfOnGold(player)) {
             mg.sendWinMessage(player);
             mg.showInv(player);
@@ -180,7 +182,7 @@ public class JumpAndRun {
             blocksToDelete.clear();
             Location loc = new Location(player.getWorld(), 93, 74, 81);
             player.getWorld().setType(loc, Material.AIR);
-            playerInArena = null;
+            HandlePlayers.playerInArena = null;
             return true;
         }
         else {
@@ -237,7 +239,7 @@ public class JumpAndRun {
     private void parkourGenerator(Location firstBLock, int heightToWin) {
         Minigame mg = new Minigame();
         Config config = Config.getInstance();
-        Player playerInArena = DeathListener.getPlayerInArena();
+        Player playerInArena = HandlePlayers.playerInArena;
         DmUtil util = DmUtil.getInstance();
 
         int heightToLose = config.checkParkourStartHeight() - 2;
@@ -310,6 +312,7 @@ public class JumpAndRun {
         int maxX = 0;
         int maxZ = 0;
         int maxDifficulty = 0;
+        Player playerInArena = HandlePlayers.playerInArena;
         PlayerData playerInArenaData = HandlePlayers.getKnownPlayers().get(playerInArena.getUniqueId());
         switch(playerInArenaData.getDifficulty()) {
             case 0:
