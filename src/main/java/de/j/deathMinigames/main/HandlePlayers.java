@@ -1,7 +1,6 @@
 package de.j.deathMinigames.main;
 
 import de.j.deathMinigames.database.PlayerDataDatabase;
-import de.j.deathMinigames.listeners.DeathListener;
 import de.j.stationofdoom.main.Main;
 import org.bukkit.entity.Player;
 

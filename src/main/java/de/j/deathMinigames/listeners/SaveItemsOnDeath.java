@@ -9,17 +9,17 @@ import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.Inventory;
 
 import java.util.*;
 
-public class DeathListener implements Listener {
+public class SaveItemsOnDeath implements Listener {
     /**
      * Called when a player dies.
      * <p>
@@ -35,9 +35,10 @@ public class DeathListener implements Listener {
      */
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
+        event.setKeepInventory(true);
+        event.getDrops().clear();
         TranslationFactory tf = new TranslationFactory();
         DmUtil util = DmUtil.getInstance();
-
         if(event == null || event.getPlayer() == null ) {
             Main.getMainLogger().warning("Event or player in onDeath is null!");
             return;

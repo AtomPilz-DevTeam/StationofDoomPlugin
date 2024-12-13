@@ -43,6 +43,7 @@ A minecraft paper survival plugin for private servers
   
   **How it works:**
   - Upon death, players get a chance to recover their items by completing a parkour challenge
+    - the experience will still be dropped to balance the plugin
   - Successfully completing the challenge returns all items to the player
   - Failing the challenge drops items at the death location
 
