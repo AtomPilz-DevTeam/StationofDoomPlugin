@@ -2,7 +2,6 @@ package de.j.deathMinigames.minigames;
 
 import de.j.deathMinigames.dmUtil.DmUtil;
 import de.j.deathMinigames.main.*;
-import de.j.deathMinigames.listeners.DeathListener;
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
@@ -12,7 +11,6 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import static de.j.deathMinigames.listeners.DeathListener.*;
 import static de.j.deathMinigames.main.HandlePlayers.waitingListMinigame;
 
 public class Minigame {

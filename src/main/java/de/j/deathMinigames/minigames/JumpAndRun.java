@@ -1,7 +1,6 @@
 package de.j.deathMinigames.minigames;
 
 import de.j.deathMinigames.dmUtil.DmUtil;
-import de.j.deathMinigames.listeners.DeathListener;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.deathMinigames.main.PlayerMinigameStatus;
@@ -19,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static de.j.deathMinigames.listeners.DeathListener.*;
 import static de.j.deathMinigames.main.HandlePlayers.waitingListMinigame;
 
 public class JumpAndRun {

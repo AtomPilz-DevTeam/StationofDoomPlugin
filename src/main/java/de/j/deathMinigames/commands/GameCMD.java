@@ -1,9 +1,7 @@
 package de.j.deathMinigames.commands;
 
 import de.j.deathMinigames.dmUtil.DmUtil;
-import de.j.deathMinigames.listeners.DeathListener;
 import de.j.deathMinigames.main.*;
-import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -26,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
-import static de.j.deathMinigames.listeners.DeathListener.*;
 import static de.j.deathMinigames.main.HandlePlayers.waitingListMinigame;
 
 public class GameCMD implements BasicCommand {
