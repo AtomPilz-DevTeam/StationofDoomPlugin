@@ -33,7 +33,9 @@ public class Difficulty {
      * @param player the player whose difficulty should be increased
      */
     public void higherDifficulty(Player player) {
+        if(player == null) throw new NullPointerException("player is null!");
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        if(playerData == null) throw new NullPointerException("playerData is null!");
         TranslationFactory tf = new TranslationFactory();
 
         int currentDifficulty = playerData.getDifficulty();
@@ -51,7 +53,10 @@ public class Difficulty {
      * @param player the player whose difficulty should be decreased
      */
     public void lowerDifficulty(Player player) {
+        if(player == null) throw new NullPointerException("player is null!");
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        if(playerData == null) throw new NullPointerException("playerData is null!");
+
         int currentDifficulty = playerData.getDifficulty();
         playerData.setDifficulty(currentDifficulty - 1);
     }

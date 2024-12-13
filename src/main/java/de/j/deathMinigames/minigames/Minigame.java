@@ -21,14 +21,14 @@ public class Minigame {
      * @param player    the player who is starting a random minigame
      */
     public void minigameStart(Player player) {
+        if(player == null) throw new NullPointerException("player is null");
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        if(playerData == null) throw new NullPointerException("playerData is null!");
         JumpAndRun jumpAndRun = JumpAndRun.getInstance();
         Introduction introduction = new Introduction();
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
         Player playerInArena = HandlePlayers.getPlayerInArena();
-        if(player == null) throw new NullPointerException("player is null");
-        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
-        if(playerData == null) throw new NullPointerException("playerData is null!");
 
         if(!playerData.getIntroduction()) {
             introduction.introStart(player);
