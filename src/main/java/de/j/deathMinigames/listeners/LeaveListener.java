@@ -3,6 +3,7 @@ package de.j.deathMinigames.listeners;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.deathMinigames.main.PlayerMinigameStatus;
+import de.j.deathMinigames.minigames.ParkourTimer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,5 +24,6 @@ public class LeaveListener implements Listener {
         Player player = event.getPlayer();
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         playerData.setStatus(PlayerMinigameStatus.offline);
+        ParkourTimer.getInstance().checkIfPlayerLeft(player);
     }
 }
