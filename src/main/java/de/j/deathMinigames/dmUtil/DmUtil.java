@@ -65,6 +65,6 @@ public class DmUtil {
      * @param sound     the sound to play
      */
     public void playSoundAtLocation(Location location, Float volume, Sound sound) {
-        location.getWorld().playSound(location, sound, volume, 1F);
+        location.getWorld().playSound(location, sound, volume, 1f);
     }
 }

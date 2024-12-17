@@ -5,6 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.UUID;
 
 public class PlayerData {
@@ -69,10 +71,7 @@ public class PlayerData {
     }
 
     public synchronized float getBestParkourTime() {
-        if(bestParkourTime == 1000) {
-            Main.getMainLogger().warning("Tried getting bestParkourTime of " + this.name + " but player has not won once!");
-        }
-        return bestParkourTime;
+        return new BigDecimal(bestParkourTime).setScale(2, RoundingMode.HALF_UP).floatValue();
     }
 
     public synchronized void setBestParkourTime(float bestParkourTime) {
