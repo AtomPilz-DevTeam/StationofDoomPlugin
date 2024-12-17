@@ -4,13 +4,13 @@ import de.j.stationofdoom.main.Main;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
-
+import org.bukkit.scheduler.BukkitRunnable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.concurrent.TimeUnit;
 
 public class ParkourTimer {
-    private static ParkourTimer instance;
+    private volatile static ParkourTimer instance;
+    private static BukkitRunnable runnable;
 
     private ParkourTimer() {}
 
@@ -37,20 +37,29 @@ public class ParkourTimer {
     }
 
     public static void startTimer(Player player) {
+        if(runnable != null) return;
         Main.getMainLogger().info("Started timer");
         timer(player);
     }
 
     public static void stopTimer() {
-        Main.getMainLogger().info("Stopped timer");
-        Main.getAsyncScheduler().cancelTasks(Main.getPlugin());
+        runnable.cancel();
+        if(runnable.isCancelled()) {
+            Main.getMainLogger().info("Stopped timer");
+        }
+        else {
+            Main.getMainLogger().warning("Failed to stop timer!");
+        }
     }
 
     private static void timer(Player player) {
-        Main.getAsyncScheduler().runAtFixedRate(Main.getPlugin(), scheduledTask -> {
-        timer = timer + 0.1f;
-        showTimerToPlayerAsTitle(player);
-        }, 0, 100, TimeUnit.MILLISECONDS);
+        runnable = new BukkitRunnable() {
+            public void run() {
+                timer = timer + 0.1f;
+                showTimerToPlayerAsTitle(player);
+            }
+        };
+        runnable.runTaskTimerAsynchronously(Main.getPlugin(), 0, 2);
     }
 
     public static void showTimerToPlayerAsTitle(Player player) {
