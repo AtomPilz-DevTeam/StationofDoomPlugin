@@ -2,6 +2,7 @@ package de.j.deathMinigames.commands;
 
 import de.j.deathMinigames.dmUtil.DmUtil;
 import de.j.deathMinigames.main.*;
+import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;

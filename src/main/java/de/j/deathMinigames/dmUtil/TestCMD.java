@@ -38,5 +38,6 @@ public class TestCMD implements BasicCommand {
     public void execute(@NotNull CommandSourceStack stack, @NotNull String[] args) {
         Player player = (Player) stack.getSender();
         player.sendMessage("test");
+
     }
 }

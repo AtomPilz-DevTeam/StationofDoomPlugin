@@ -68,22 +68,14 @@ public class PlayerData {
         this.decisionTimer = decisionTimer;
     }
 
-    public boolean getHasWonParkourAtleastOnce() {
-        return hasWonParkourAtleastOnce;
-    }
-
-    public void setHasWonParkourAtleastOnce(boolean hasWonParkourAtleastOnce) {
-        this.hasWonParkourAtleastOnce = hasWonParkourAtleastOnce;
-    }
-
-    public synchronized int getBestParkourTime() {
-        if(bestParkourTime == -1 && !getHasWonParkourAtleastOnce()) {
+    public synchronized float getBestParkourTime() {
+        if(bestParkourTime == 1000) {
             Main.getMainLogger().warning("Tried getting bestParkourTime of " + this.name + " but player has not won once!");
         }
         return bestParkourTime;
     }
 
-    public synchronized void setBestParkourTime(int bestParkourTime) {
+    public synchronized void setBestParkourTime(float bestParkourTime) {
         this.bestParkourTime = bestParkourTime;
     }
 
@@ -121,8 +113,7 @@ public class PlayerData {
     private volatile boolean usesPlugin; // in database
     private volatile int difficulty; // in database
     private volatile int decisionTimer;
-    private volatile boolean hasWonParkourAtleastOnce; // in database
-    private volatile int bestParkourTime; // in database
+    private volatile float bestParkourTime; // in database
 
     public PlayerData(Player player) {
         Config config = Config.getInstance();
@@ -132,14 +123,13 @@ public class PlayerData {
         this.status = PlayerMinigameStatus.alive;
         this.lastDeathInventory = Bukkit.createInventory(null, 9*6);
         this.decisionTimer = config.checkTimeToDecideWhenRespawning();
-        this.hasWonParkourAtleastOnce = false;
-        this.bestParkourTime = -1;
+        this.bestParkourTime = 1000f;
         this.difficulty = 0;
         this.introduction = false;
         this.usesPlugin = true;
     }
 
-    public PlayerData(String name, String uuid, boolean introduction, boolean usesPlugin, int difficulty, boolean hasWonParkourAtleastOnce, int bestParkourTime) {
+    public PlayerData(String name, String uuid, boolean introduction, boolean usesPlugin, int difficulty, float bestParkourTime) {
         Config config = Config.getInstance();
         this.name = name;
         this.uuid = UUID.fromString(uuid);
@@ -147,7 +137,6 @@ public class PlayerData {
         this.status = PlayerMinigameStatus.alive;
         this.lastDeathInventory = Bukkit.createInventory(null, 9*6);
         this.decisionTimer = config.checkTimeToDecideWhenRespawning();
-        this.hasWonParkourAtleastOnce = hasWonParkourAtleastOnce;
         this.bestParkourTime = bestParkourTime;
         this.difficulty = difficulty;
         this.introduction = introduction;
