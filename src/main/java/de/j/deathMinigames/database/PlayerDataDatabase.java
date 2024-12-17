@@ -48,7 +48,7 @@ public class PlayerDataDatabase {
      * parkour time.
      */
     public void createTable() {
-        Query.query("CREATE TABLE IF NOT EXISTS playerData (name VARCHAR(255), UUID VARCHAR(255), introduction BOOLEAN, usesPlugin BOOLEAN, difficulty INT, hasWonParkourAtleastOnce BOOLEAN, bestParkourTime INT);")
+        Query.query("CREATE TABLE IF NOT EXISTS playerData (name VARCHAR(255), UUID VARCHAR(255), introduction BOOLEAN, usesPlugin BOOLEAN, difficulty INT, bestParkourTime FLOAT);")
                 .single()
                 .insert();
     }
@@ -71,8 +71,7 @@ public class PlayerDataDatabase {
                         row.getBoolean("introduction"),
                         row.getBoolean("usesPlugin"),
                         row.getInt("difficulty"),
-                        row.getBoolean("hasWonParkourAtleastOnce"),
-                        row.getInt("bestParkourTime")))
+                        row.getFloat("bestParkourTime")))
                 .all();
     }
 
@@ -90,12 +89,12 @@ public class PlayerDataDatabase {
         int updatedPlayers = 0;
         for (PlayerData playerData : playerDatas) {
             if(checkIfPlayerIsInDatabase(playerData)) {
-                Query.query("UPDATE playerData SET name = :name, introduction = :introduction, usesPlugin = :usesPlugin, difficulty = :difficulty, hasWonParkourAtleastOnce = :hasWonParkourAtleastOnce, bestParkourTime = :bestParkourTime WHERE uuid = :uuid;")
-                        .single(Call.of().bind("name", playerData.getName())
+                Query.query("UPDATE playerData SET name = :name, introduction = :introduction, usesPlugin = :usesPlugin, difficulty = :difficulty, bestParkourTime = :bestParkourTime WHERE uuid = :uuid;")
+                        .single(Call.of()
+                                .bind("name", playerData.getName())
                                 .bind("introduction", playerData.getIntroduction())
                                 .bind("usesPlugin", playerData.getUsesPlugin())
                                 .bind("difficulty", playerData.getDifficulty())
-                                .bind("hasWonParkourAtleastOnce", playerData.getHasWonParkourAtleastOnce())
                                 .bind("bestParkourTime", playerData.getBestParkourTime())
                                 .bind("uuid", playerData.getUUID(), UUIDAdapter.AS_STRING))
                         .update();
@@ -118,13 +117,13 @@ public class PlayerDataDatabase {
      * @param playerData The player data to add to the database.
      */
     public void addPlayerToDatabase(PlayerData playerData) {
-        Query.query("INSERT INTO playerData (name, UUID, introduction, usesPlugin, difficulty, hasWonParkourAtleastOnce, bestParkourTime) VALUES (:name, :uuid, :introduction, :usesPlugin, :difficulty, :hasWonParkourAtleastOnce, :bestParkourTime);")
-                .single(Call.of().bind("name", playerData.getName())
+        Query.query("INSERT INTO playerData (name, UUID, introduction, usesPlugin, difficulty, bestParkourTime) VALUES (:name, :uuid, :introduction, :usesPlugin, :difficulty, :bestParkourTime);")
+                .single(Call.of()
+                        .bind("name", playerData.getName())
                         .bind("uuid", playerData.getUUID(), UUIDAdapter.AS_STRING)
                         .bind("introduction", playerData.getIntroduction())
                         .bind("usesPlugin", playerData.getUsesPlugin())
                         .bind("difficulty", playerData.getDifficulty())
-                        .bind("hasWonParkourAtleastOnce", playerData.getHasWonParkourAtleastOnce())
                         .bind("bestParkourTime", playerData.getBestParkourTime()))
                 .insert();
     }

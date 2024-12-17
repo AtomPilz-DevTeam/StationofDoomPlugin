@@ -1,6 +1,7 @@
 package de.j.stationofdoom.main;
 
 import de.j.deathMinigames.commands.GameCMD;
+import de.j.deathMinigames.commands.LeaderboardCMD;
 import de.j.deathMinigames.dmUtil.TestCMD;
 import de.j.deathMinigames.main.Config;
 import de.j.deathMinigames.listeners.SaveItemsOnDeath;
@@ -92,6 +93,7 @@ public final class Main extends JavaPlugin {
             COMMANDS.register("sit", new PlayerSitListener());
             COMMANDS.register("game", "game related commands", new GameCMD());
             COMMANDS.register("test", "testing", new TestCMD());
+            COMMANDS.register("leaderboard", "showing the leaderboard of the minigame", new LeaderboardCMD());
         });
 
         PluginManager pluginManager = Bukkit.getPluginManager();

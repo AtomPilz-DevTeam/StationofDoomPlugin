@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class HandlePlayers {
@@ -120,5 +121,21 @@ public class HandlePlayers {
     public static void copyAllPlayerDataIntoDatabase() {
         PlayerDataDatabase playerDataDatabase = PlayerDataDatabase.getInstance();
         playerDataDatabase.updatePlayerDataDatabase(knownPlayers.values());
+    }
+
+    public List<PlayerData> getLeaderBoard() {
+        List<PlayerData> leaderboard = new ArrayList<>();
+        for (PlayerData playerData : knownPlayers.values()) {
+            if(playerData.getBestParkourTime() == 1000f) continue;
+            leaderboard.add(playerData);
+        }
+        leaderboard.sort((o1, o2) -> (int) ((o2.getBestParkourTime() * 1000) - (o1.getBestParkourTime() * 1000)));
+        return leaderboard;
+    }
+
+    public void resetLeaderboardAndTimesOfPlayers() {
+        for (PlayerData playerData : knownPlayers.values()) {
+            playerData.setBestParkourTime(1000f);
+        }
     }
 }

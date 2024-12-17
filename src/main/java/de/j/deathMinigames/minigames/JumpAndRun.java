@@ -97,6 +97,7 @@ public class JumpAndRun {
         Location firstBlockPlayerTPLocation = new Location(playerInArena.getWorld(), spawnLocation.getBlockX() + 0.5, config.checkParkourStartHeight() + 1, spawnLocation.getBlockZ() + 0.5);
         playerInArena.teleport(firstBlockPlayerTPLocation);
         mg.sendStartMessage(playerInArena, tf.getTranslation(playerInArena, "introParkour"));
+        ParkourTimer.startTimer(player);
 
         int heightToWin = config.checkParkourStartHeight() + config.checkParkourLength();
 
@@ -139,10 +140,17 @@ public class JumpAndRun {
      */
     private boolean checkIfPlayerWon(Player player) {
         Minigame mg = new Minigame();
-        Player playerInArena = HandlePlayers.playerInArena;
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         if (checkIfOnGold(player)) {
             mg.sendWinMessage(player);
             mg.showInv(player);
+            ParkourTimer.stopTimer();
+            float timer = ParkourTimer.getTimer();
+            if(playerData.getBestParkourTime() == 1000) {
+                playerData.setBestParkourTime(timer);
+            }
+            if(timer < playerData.getBestParkourTime()) playerData.setBestParkourTime(timer);
+            ParkourTimer.resetTimer();
             woolPlaced = false;
             goldPlaced = false;
             for (Block block : blocksToDelete) {
@@ -151,7 +159,7 @@ public class JumpAndRun {
             blocksToDelete.clear();
             Location loc = new Location(player.getWorld(), 93, 74, 81);
             player.getWorld().setType(loc, Material.AIR);
-            playerInArena = null;
+            HandlePlayers.playerInArena = null;
             return true;
         }
         else {
@@ -168,6 +176,8 @@ public class JumpAndRun {
     private boolean checkIfPlayerLost(Player player, int heightToLose) {
         Minigame mg = new Minigame();
         if (player.getLocation().getBlockY() <= heightToLose) {
+            ParkourTimer.stopTimer();
+            ParkourTimer.resetTimer();
             mg.sendLoseMessage(player);
             mg.dropInvAndClearData(player);
             mg.tpPlayerToRespawnLocation(player);
