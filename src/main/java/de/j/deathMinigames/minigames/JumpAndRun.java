@@ -5,6 +5,8 @@ import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.deathMinigames.main.PlayerMinigameStatus;
 import de.j.stationofdoom.util.translations.TranslationFactory;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -13,6 +15,8 @@ import de.j.deathMinigames.main.Config;
 import de.j.stationofdoom.main.Main;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -140,6 +144,7 @@ public class JumpAndRun {
      */
     private boolean checkIfPlayerWon(Player player) {
         Minigame mg = new Minigame();
+        TranslationFactory tf = new TranslationFactory();
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         if (checkIfOnGold(player)) {
             mg.sendWinMessage(player);
@@ -149,7 +154,12 @@ public class JumpAndRun {
             if(playerData.getBestParkourTime() == 1000) {
                 playerData.setBestParkourTime(timer);
             }
-            if(timer < playerData.getBestParkourTime()) playerData.setBestParkourTime(timer);
+            if(timer < playerData.getBestParkourTime()) {
+                float timerDifference = playerData.getBestParkourTime() - timer;
+                player.sendMessage(Component.text(tf.getTranslation(player, "newRecord", new BigDecimal(timerDifference).setScale(2, RoundingMode.HALF_UP).floatValue())).color(NamedTextColor.GREEN));
+                DmUtil.getInstance().playSoundAtLocation(player.getLocation(), 0.8f, Sound.ENTITY_PLAYER_LEVELUP);
+                playerData.setBestParkourTime(timer);
+            }
             ParkourTimer.resetTimer();
             woolPlaced = false;
             goldPlaced = false;
