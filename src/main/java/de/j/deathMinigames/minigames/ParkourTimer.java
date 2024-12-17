@@ -11,6 +11,7 @@ import java.math.RoundingMode;
 public class ParkourTimer {
     private volatile static ParkourTimer instance;
     private static BukkitRunnable runnable;
+    private static Player player;
 
     private ParkourTimer() {}
 
@@ -37,6 +38,11 @@ public class ParkourTimer {
     }
 
     public static void startTimer(Player player) {
+        if(player == null) {
+            Main.getMainLogger().warning("Player is null! Timer not started!");
+            return;
+        }
+        ParkourTimer.player = player;
         if(runnable != null) return;
         Main.getMainLogger().info("Started timer");
         timer(player);
@@ -53,6 +59,7 @@ public class ParkourTimer {
     }
 
     private static void timer(Player player) {
+        ParkourTimer.player = player;
         runnable = new BukkitRunnable() {
             public void run() {
                 timer = timer + 0.1f;
@@ -64,5 +71,11 @@ public class ParkourTimer {
 
     public static void showTimerToPlayerAsTitle(Player player) {
         player.sendActionBar(Component.text("Time: " + getTimer()).color(NamedTextColor.GOLD));
+    }
+
+    public void checkIfPlayerLeft(Player player) {
+        if(player == ParkourTimer.player) {
+            ParkourTimer.stopTimer();
+        }
     }
 }

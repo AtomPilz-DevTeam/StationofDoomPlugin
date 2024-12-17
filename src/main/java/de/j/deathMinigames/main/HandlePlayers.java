@@ -4,10 +4,7 @@ import de.j.deathMinigames.database.PlayerDataDatabase;
 import de.j.stationofdoom.main.Main;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class HandlePlayers {
     private volatile static HandlePlayers instance;
@@ -129,7 +126,8 @@ public class HandlePlayers {
             if(playerData.getBestParkourTime() == 1000f) continue;
             leaderboard.add(playerData);
         }
-        leaderboard.sort((o1, o2) -> (int) ((o2.getBestParkourTime() * 1000) - (o1.getBestParkourTime() * 1000)));
+        //leaderboard.sort((o1, o2) -> (int) ((o2.getBestParkourTime() * 1000) - (o1.getBestParkourTime() * 1000)));
+        leaderboard.sort(Comparator.comparing(PlayerData::getBestParkourTime));
         return leaderboard;
     }
 
