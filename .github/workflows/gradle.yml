@@ -12,13 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Set up JDK 21
-        uses: actions/setup-java@v4.5.0
+        uses: actions/setup-java@v4.6.0
         with:
           java-version: 21
           distribution: 'adopt'
           cache: gradle
       - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@v4.2.1
+        uses: gradle/actions/wrapper-validation@v4.2.2
       - name: Build with Gradle
         run: ./gradlew build --warning-mode all
 
@@ -42,19 +42,19 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Set up JDK 21
-        uses: actions/setup-java@v4.5.0
+        uses: actions/setup-java@v4.6.0
         with:
           java-version: 21
           distribution: 'adopt'
           cache: gradle
       - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@v4.2.1
+        uses: gradle/actions/wrapper-validation@v4.2.2
       - name: Set version env variable
         run: |
           echo "runnumber=${{ github.run_number }}" >> $GITHUB_ENV
       - run: ./gradlew jar
       - name: Upload artifact
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@v4.5.0
         with:
           name: StationofdoomPlugin
           path: build/libs
@@ -66,13 +66,13 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Set up JDK 21
-        uses: actions/setup-java@v4.5.0
+        uses: actions/setup-java@v4.6.0
         with:
           java-version: 21
           distribution: 'adopt'
           cache: gradle
       - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@v4.2.1
+        uses: gradle/actions/wrapper-validation@v4.2.2
       - name: Set env variables
         run: |
           echo "REPOSILITE_USER=${{ secrets.REPOSILITE_USER }}" >> $GITHUB_ENV
@@ -120,13 +120,13 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Set up JDK 21
-        uses: actions/setup-java@v4.5.0
+        uses: actions/setup-java@v4.6.0
         with:
           java-version: 21
           distribution: 'adopt'
           cache: gradle
       - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@v4.2.1
+        uses: gradle/actions/wrapper-validation@v4.2.2
       - name: Set env variables
         run: |
           echo "runnumber=${{ github.run_number }}" >> $GITHUB_ENV
