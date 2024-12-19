@@ -11,9 +11,7 @@ public class HandlePlayers {
     private static final HashMap<UUID, PlayerData> knownPlayers = new HashMap<>();
 
     /** List of players waiting to join a minigame */
-    public static ArrayList<Player> waitingListMinigame = new ArrayList<>();
-    /** Current player in the arena, null if arena is empty */
-    public volatile static Player playerInArena;
+    public volatile static ArrayList<Player> waitingListMinigame = new ArrayList<>();
 
     /**
      * Returns the single instance of this class.
@@ -46,24 +44,6 @@ public class HandlePlayers {
      */
     public static HashMap<UUID, PlayerData> getKnownPlayers() {
         return knownPlayers;
-    }
-
-    /**
-     * Get the current player in the arena, or null if the arena is empty.
-     *
-     * @return the current player in the arena, or null if the arena is empty
-     */
-    public synchronized static Player getPlayerInArena() {
-        return playerInArena;
-    }
-
-    /**
-     * Set the current player in the arena.
-     *
-     * @param playerInArena the new player in the arena, or null to clear the arena
-     */
-    public synchronized static void setPlayerInArena(Player playerInArena) {
-        HandlePlayers.playerInArena = playerInArena;
     }
 
     /**

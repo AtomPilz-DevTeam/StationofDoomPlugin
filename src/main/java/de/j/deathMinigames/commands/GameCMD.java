@@ -30,7 +30,7 @@ import static de.j.deathMinigames.main.HandlePlayers.waitingListMinigame;
 public class GameCMD implements BasicCommand {
 
     private final Difficulty difficulty = Difficulty.getInstance();
-    private final Minigame minigame = new Minigame();
+    private final Minigame minigame = Minigame.getInstance();
     private final Introduction introduction = new Introduction();
     private final MainMenu mainMenu = new MainMenu();
     private final Config config = Config.getInstance();
@@ -145,7 +145,7 @@ public class GameCMD implements BasicCommand {
     }
 
     private void handleDecisionCMDsWhenRespawning(PlayerData playerData, Player player, String arg0) {
-        if (!playerData.getLastDeathInventory().isEmpty() && !waitingListMinigame.contains(player) && HandlePlayers.getPlayerInArena() != player) {
+        if (!playerData.getLastDeathInventory().isEmpty() && playerData.getStatus() != PlayerMinigameStatus.inMinigame && playerData.getStatus() != PlayerMinigameStatus.inWaitingList) {
             switch (arg0.toLowerCase()) {
                 case "start":
                     handleArgsLength1StartExecution(player);
@@ -301,7 +301,7 @@ public class GameCMD implements BasicCommand {
         if (!playerData.getIntroduction()) {
             playerData.setIntroduction(true);
             playerData.setUsesPlugin(true);
-            new Minigame().minigameStart(player);
+            Minigame.getInstance().minigameStart(player);
             player.sendMessage(Component.text(tf.getTranslation(player, "playerDecided")).color(NamedTextColor.GOLD));
         }
         else {
@@ -373,12 +373,8 @@ public class GameCMD implements BasicCommand {
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         util.playSoundAtLocation(player.getEyeLocation(), 0.5F, Sound.ENTITY_ENDER_EYE_DEATH);
         player.resetTitle();
-        player.sendActionBar(Component.text(tf.getTranslation(player, "startingMinigame"))
-                .color(NamedTextColor.GOLD)
-                .decoration(TextDecoration.ITALIC, true));
-        player.playSound(player.getEyeLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5F, 1.0F);
         playerData.setStatus(PlayerMinigameStatus.alive);
-        new Minigame().minigameStart(player);
+        Minigame.getInstance().minigameStart(player);
     }
 
     /**
