@@ -28,6 +28,7 @@ public class Minigame {
         }
         return instance;
     }
+
     /**
      * starts a parkour minigame
      * @param playerToStart    the player who is starting a random minigame
@@ -212,6 +213,7 @@ public class Minigame {
             throw new IllegalArgumentException("Location must have a valid world!");
         }
         player.teleport(locationOfBox);
+        WaitingListPositionTimer.getInstance().run(player);
     }
 
     public void outPutWaitingListInConsole() {
