@@ -31,6 +31,7 @@ public class JumpAndRun {
 
     private JumpAndRun() {}
 
+    private boolean running = false;
     private ArrayList<Block> blocksToDelete = new ArrayList<Block> ();
     private boolean woolPlaced = false;
     private boolean goldPlaced = false;
@@ -72,6 +73,10 @@ public class JumpAndRun {
         return task;
     }
 
+    public boolean getRunning() {
+        return running;
+    }
+
     /**
      * Starts the JumpAndRun minigame. This method is not thread-safe.
      * <p>
@@ -80,19 +85,18 @@ public class JumpAndRun {
      * It will also start a new BukkitRunnable that will generate the parkour.
      * <p>
      * The method will also add the first block to the list of blocks to delete.
-     * @see #parkourGenerator(Location, int)
+     * @see #parkourGenerator(Location, int, Player)
      */
     public void start() {
-        Minigame mg = new Minigame();
+        Minigame mg = Minigame.getInstance();
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
 
         // get the player int the arena from the waiting list
-        Player player = waitingListMinigame.getFirst();
-        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
-        HandlePlayers.setPlayerInArena(player);
+        Player playerInArena = waitingListMinigame.getFirst();
+        running = true;
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(playerInArena.getUniqueId());
         playerData.setStatus(PlayerMinigameStatus.inMinigame);
-        Player playerInArena = HandlePlayers.playerInArena;
 
         playerInArena.sendTitle("JumpNRun", "");
 
@@ -101,7 +105,7 @@ public class JumpAndRun {
         Location firstBlockPlayerTPLocation = new Location(playerInArena.getWorld(), spawnLocation.getBlockX() + 0.5, config.checkParkourStartHeight() + 1, spawnLocation.getBlockZ() + 0.5);
         playerInArena.teleport(firstBlockPlayerTPLocation);
         mg.sendStartMessage(playerInArena, tf.getTranslation(playerInArena, "introParkour"));
-        ParkourTimer.startTimer(player);
+        ParkourTimer.startTimer(playerInArena);
 
         int heightToWin = config.checkParkourStartHeight() + config.checkParkourLength();
 
@@ -112,7 +116,7 @@ public class JumpAndRun {
         blocksToDelete.add(firstBlock.getBlock());
 
         // check synchronously if the player looses or wins, false run the generator of the parkour
-        parkourGenerator(firstBlock, heightToWin);
+        parkourGenerator(firstBlock, heightToWin, playerInArena);
     }
 
     /**
@@ -143,7 +147,7 @@ public class JumpAndRun {
      * @return              true if he reaches that height or higher, false if he does not reach that height
      */
     private boolean checkIfPlayerWon(Player player) {
-        Minigame mg = new Minigame();
+        Minigame mg = Minigame.getInstance();
         TranslationFactory tf = new TranslationFactory();
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         if (checkIfOnGold(player)) {
@@ -169,7 +173,6 @@ public class JumpAndRun {
             blocksToDelete.clear();
             Location loc = new Location(player.getWorld(), 93, 74, 81);
             player.getWorld().setType(loc, Material.AIR);
-            HandlePlayers.playerInArena = null;
             return true;
         }
         else {
@@ -184,7 +187,7 @@ public class JumpAndRun {
      * @return              true if he lost, false if he did not lose
      */
     private boolean checkIfPlayerLost(Player player, int heightToLose) {
-        Minigame mg = new Minigame();
+        Minigame mg = Minigame.getInstance();
         if (player.getLocation().getBlockY() <= heightToLose) {
             ParkourTimer.stopTimer();
             ParkourTimer.resetTimer();
@@ -200,7 +203,6 @@ public class JumpAndRun {
             blocksToDelete.clear();
             Location loc = new Location(player.getWorld(), 93, 74, 81);
             player.getWorld().setType(loc, Material.AIR);
-            HandlePlayers.playerInArena = null;
             return true;
         }
         else {
@@ -254,10 +256,9 @@ public class JumpAndRun {
      * @param firstBLock    the location of the first block, base the next blocks on
      * @param heightToWin   at which height to check if the player won
      */
-    private void parkourGenerator(Location firstBLock, int heightToWin) {
-        Minigame mg = new Minigame();
+    private void parkourGenerator(Location firstBLock, int heightToWin, Player playerInArena) {
+        Minigame mg = Minigame.getInstance();
         Config config = Config.getInstance();
-        Player playerInArena = HandlePlayers.playerInArena;
         DmUtil util = DmUtil.getInstance();
 
         int heightToLose = config.checkParkourStartHeight() - 2;
@@ -266,13 +267,22 @@ public class JumpAndRun {
         BukkitRunnable runnable = new BukkitRunnable() {
             public void run() {
                 if(checkIfPlayerWon(playerInArena) || checkIfPlayerLost(playerInArena, heightToLose)) {
-                    if(!mg.checkIfWaitinglistIsEmpty()) {
-                        new Minigame().minigameStart(waitingListMinigame.getFirst());
+                    Main.getMainLogger().info("Removed " + waitingListMinigame.getFirst().getName() + " from waiting list");
+                    waitingListMinigame.removeFirst();
+                    running = false;
+                    mg.outPutWaitingListInConsole();
+                    if(!waitingListMinigame.isEmpty()) {
+                        Main.getMainLogger().info("WaitingList is not empty");
+                        Main.getMainLogger().info("Started new minigame with: " + waitingListMinigame.getFirst().getName());
+                        Minigame.getInstance().minigameStart(waitingListMinigame.getFirst());
+                    }
+                    else {
+                        Main.getMainLogger().info("WaitingList is empty");
                     }
                     cancel();
                 }
                 else {
-                    List<Integer> values = setValuesBasedOnDifficulty();
+                    List<Integer> values = setValuesBasedOnDifficulty(playerInArena);
                     int minX = values.getFirst();
                     int minZ = values.get(1);
                     int maxX = values.get(2);
@@ -324,13 +334,12 @@ public class JumpAndRun {
      * based on the difficulty of the player in the arena.
      * @return A list of 5 integers: min x, min z, max x, max z, and max difficulty
      */
-    private List<Integer> setValuesBasedOnDifficulty() {
+    private List<Integer> setValuesBasedOnDifficulty(Player playerInArena) {
         int minX = 0;
         int minZ = 0;
         int maxX = 0;
         int maxZ = 0;
         int maxDifficulty = 0;
-        Player playerInArena = HandlePlayers.playerInArena;
         PlayerData playerInArenaData = HandlePlayers.getKnownPlayers().get(playerInArena.getUniqueId());
         switch(playerInArenaData.getDifficulty()) {
             case 0:

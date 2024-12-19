@@ -43,19 +43,18 @@ public class ParkourTimer {
             return;
         }
         ParkourTimer.player = player;
-        if(runnable != null) return;
+        if(runnable != null) {
+            Main.getMainLogger().warning("Runnable is not null! Timer not started!");
+            return;
+        }
         Main.getMainLogger().info("Started timer");
         timer(player);
     }
 
     public static void stopTimer() {
+        if (runnable == null) return;
         runnable.cancel();
-        if(runnable.isCancelled()) {
-            Main.getMainLogger().info("Stopped timer");
-        }
-        else {
-            Main.getMainLogger().warning("Failed to stop timer!");
-        }
+        runnable = null;
     }
 
     private static void timer(Player player) {

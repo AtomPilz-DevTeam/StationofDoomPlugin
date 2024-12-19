@@ -14,46 +14,61 @@ import org.bukkit.inventory.Inventory;
 import static de.j.deathMinigames.main.HandlePlayers.waitingListMinigame;
 
 public class Minigame {
+    private static Minigame instance;
+
+    private Minigame() {}
+
+    public static Minigame getInstance() {
+        if(instance == null) {
+            synchronized (Minigame.class) {
+                if(instance == null) {
+                    instance = new Minigame();
+                }
+            }
+        }
+        return instance;
+    }
     /**
      * starts a parkour minigame
-     * @param player    the player who is starting a random minigame
+     * @param playerToStart    the player who is starting a random minigame
      */
-    public void minigameStart(Player player) {
-        if(player == null) throw new NullPointerException("player is null");
-        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+    public void minigameStart(Player playerToStart) {
+        if(playerToStart == null) throw new NullPointerException("player is null");
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(playerToStart.getUniqueId());
         if(playerData == null) throw new NullPointerException("playerData is null!");
         JumpAndRun jumpAndRun = JumpAndRun.getInstance();
         Introduction introduction = new Introduction();
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
-        Player playerInArena = HandlePlayers.getPlayerInArena();
 
         if(!playerData.getIntroduction()) {
-            introduction.introStart(player);
+            introduction.introStart(playerToStart);
             return;
         }
         else if(!playerData.getUsesPlugin()) {
             return;
         }
-        waitingListMinigame.addLast(player);
-        if(playerInArena == null) {
+        if(!waitingListMinigame.contains(playerToStart)) {
+            waitingListMinigame.addLast(playerToStart);
+        }
+        Main.getMainLogger().info("Added player to WaitingList: " + playerToStart.getName());
+        Minigame.getInstance().outPutWaitingListInConsole();
+        if(!JumpAndRun.getInstance().getRunning()) {
+            Main.getMainLogger().info("Started new minigame with: " + playerToStart.getName() + " because Parkour is not running");
             playerData.setStatus(PlayerMinigameStatus.inMinigame);
             jumpAndRun.start();
         }
         else {
-            if(!player.getUniqueId().equals(playerInArena.getUniqueId())) {
-                return;
-            }
             playerData.setStatus(PlayerMinigameStatus.inWaitingList);
-            player.sendMessage(Component.text(tf.getTranslation(player, "arenaIsFull")).color(NamedTextColor.GOLD));
+            playerToStart.sendMessage(Component.text(tf.getTranslation(playerToStart, "arenaIsFull")).color(NamedTextColor.GOLD));
             Location locationBox = config.checkWaitingListLocation();
             if(locationBox != null) {
-                teleportPlayerInBox(player, locationBox);
+                teleportPlayerInBox(playerToStart, locationBox);
             }
             else {
                 Main.getMainLogger().warning("WaitingListPosition is not set in the config!");
-                teleportPlayerInBox(player, player.getRespawnLocation());
-                player.sendMessage(tf.getTranslation(player, "waitingListPositionNotSet"));
+                teleportPlayerInBox(playerToStart, playerToStart.getRespawnLocation());
+                playerToStart.sendMessage(tf.getTranslation(playerToStart, "waitingListPositionNotSet"));
             }
         }
     }
@@ -73,7 +88,6 @@ public class Minigame {
 
         assert !lastDeathInventory.isEmpty() : "lastDeathInventory is empty!";
 
-        waitingListMinigame.remove(player);
         playerData.setStatus(PlayerMinigameStatus.inMinigame);
     }
 
@@ -203,10 +217,7 @@ public class Minigame {
         player.teleport(locationOfBox);
     }
 
-    public boolean checkIfWaitinglistIsEmpty() {
-        if(waitingListMinigame == null) {
-            throw new NullPointerException("WaitingList is null!");
-        }
-        return waitingListMinigame.isEmpty();
+    public void outPutWaitingListInConsole() {
+        Main.getMainLogger().info("WaitingList: " + waitingListMinigame.toString());
     }
 }
