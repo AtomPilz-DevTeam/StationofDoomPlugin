@@ -122,12 +122,9 @@ public class Minigame {
         if(player == null) throw new NullPointerException("player is null");
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         if(playerData == null) throw new NullPointerException("playerData is null!");
-        playerData.setStatus(PlayerMinigameStatus.alive);
         Location deathLocation = playerData.getLastDeathLocation();
         if(deathLocation == null) throw new NullPointerException("deathLocation is null!");
         util.dropInv(player, deathLocation);
-
-        tpPlayerToRespawnLocation(player);
     }
 
     public void tpPlayerToRespawnLocation(Player player) {
