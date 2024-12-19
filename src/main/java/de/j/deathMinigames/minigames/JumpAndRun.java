@@ -165,14 +165,7 @@ public class JumpAndRun {
                 playerData.setBestParkourTime(timer);
             }
             ParkourTimer.resetTimer();
-            woolPlaced = false;
-            goldPlaced = false;
-            for (Block block : blocksToDelete) {
-                player.getWorld().setType(block.getLocation(), Material.AIR);
-            }
-            blocksToDelete.clear();
-            Location loc = new Location(player.getWorld(), 93, 74, 81);
-            player.getWorld().setType(loc, Material.AIR);
+            clearBlocks(player);
             return true;
         }
         else {
@@ -195,14 +188,7 @@ public class JumpAndRun {
             mg.dropInvAndClearData(player);
             mg.tpPlayerToRespawnLocation(player);
             mg.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
-            woolPlaced = false;
-            goldPlaced = false;
-            for (Block block : blocksToDelete) {
-                player.getWorld().setType(block.getLocation(), Material.AIR);
-            }
-            blocksToDelete.clear();
-            Location loc = new Location(player.getWorld(), 93, 74, 81);
-            player.getWorld().setType(loc, Material.AIR);
+            clearBlocks(player);
             return true;
         }
         else {
@@ -266,7 +252,7 @@ public class JumpAndRun {
         Location nextBlock = firstBLock;
         BukkitRunnable runnable = new BukkitRunnable() {
             public void run() {
-                if(checkIfPlayerWon(playerInArena) || checkIfPlayerLost(playerInArena, heightToLose)) {
+                if(checkIfPlayerWon(playerInArena) || checkIfPlayerLost(playerInArena, heightToLose) || checkIfPlayerLeft(playerInArena)) {
                     Main.getMainLogger().info("Removed " + waitingListMinigame.getFirst().getName() + " from waiting list");
                     waitingListMinigame.removeFirst();
                     running = false;
@@ -493,5 +479,31 @@ public class JumpAndRun {
                 break;
         }
         return _z;
+    }
+
+    public boolean checkIfPlayerLeft(Player playerInArena) {
+        Minigame mg = Minigame.getInstance();
+        if(playerInArena.isOnline()) {
+           return false;
+        }
+        running = false;
+        ParkourTimer.stopTimer();
+        ParkourTimer.resetTimer();
+        mg.dropInvAndClearData(playerInArena);
+        mg.tpPlayerToRespawnLocation(playerInArena);
+        clearBlocks(playerInArena);
+        Main.getMainLogger().info("Player " + playerInArena.getName() + "left the parkour!");
+        HandlePlayers.getKnownPlayers().get(playerInArena.getUniqueId()).setLeftWhileInParkour(true);
+        Main.getMainLogger().info(waitingListMinigame.toString());
+        return true;
+    }
+
+    private void clearBlocks(Player playerInArena) {
+        woolPlaced = false;
+        goldPlaced = false;
+        for (Block block : blocksToDelete) {
+            playerInArena.getWorld().setType(block.getLocation(), Material.AIR);
+        }
+        blocksToDelete.clear();
     }
 }

@@ -3,6 +3,8 @@ package de.j.deathMinigames.listeners;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.deathMinigames.main.PlayerMinigameStatus;
+import de.j.deathMinigames.minigames.Minigame;
+import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -30,7 +32,6 @@ public class JoinListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         RespawnListener respawnListener = new RespawnListener();
         Player player = event.getPlayer();
-        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         TranslationFactory tf = new TranslationFactory();
         HandlePlayers handlePlayers = HandlePlayers.getInstance();
 
@@ -39,11 +40,19 @@ public class JoinListener implements Listener {
             player.sendMessage(Component.text(tf.getTranslation(player,"addedToPlayerList")).color(NamedTextColor.GOLD)
                     .append(Component.text(HandlePlayers.getKnownPlayers().get(player.getUniqueId()).getDifficulty()).color(NamedTextColor.RED)));
         }
-        else if(playerData.getStatus().equals(PlayerMinigameStatus.deciding)) {
+        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        if(playerData.getStatus().equals(PlayerMinigameStatus.deciding)) {
             respawnListener.handleTimerWhilePlayerDecides(player);
         }
-        else {
-            playerData.setStatus(PlayerMinigameStatus.alive);
+        playerData.setStatus(PlayerMinigameStatus.alive);
+        if(playerData.getLeftWhileInParkour()) {
+            player.sendMessage(Component.text(tf.getTranslation(player,"leftWhileInParkour")).color(NamedTextColor.GOLD));
+            playerData.setLeftWhileInParkour(false);
+            Minigame.getInstance().tpPlayerToRespawnLocation(player);
+        } else if (playerData.getLeftWhileDeciding()) {
+            playerData.setLeftWhileDeciding(false);
+            player.sendMessage(Component.text(tf.getTranslation(player,"leftWhileDeciding")).color(NamedTextColor.GOLD));
         }
+        Main.getMainLogger().info("Player " + player.getName() + " did not leave while in parkour");
     }
 }

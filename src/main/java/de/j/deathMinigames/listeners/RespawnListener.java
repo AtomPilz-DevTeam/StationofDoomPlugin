@@ -4,6 +4,7 @@ import de.j.deathMinigames.dmUtil.DmUtil;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.deathMinigames.main.PlayerMinigameStatus;
+import de.j.deathMinigames.minigames.Minigame;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -91,7 +92,7 @@ public class RespawnListener implements Listener {
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(uuidPlayer);
         BukkitRunnable runnable = new BukkitRunnable() {
             public void run() {
-                if(handlePlayerOffline(playerData)) return;
+                if(handlePlayerOffline(player, playerData)) return;
                 if(handlePlayerNotDeciding(playerData)) return;
                 int decisionTimer = playerData.getDecisionTimer();
                 switch (decisionTimer) {
@@ -115,9 +116,10 @@ public class RespawnListener implements Listener {
         task = runnable.runTaskTimer(Main.getPlugin(), 0, 20);
     }
 
-    private boolean handlePlayerOffline(PlayerData playerData) {
-        if(playerData.getStatus().equals(PlayerMinigameStatus.offline)) {
-            // timer and decision stays the same if player is login out during timer, so when he is logging in again it can continue
+    private boolean handlePlayerOffline(Player player, PlayerData playerData) {
+        if(!player.isOnline()) {
+            playerData.setLeftWhileDeciding(true);
+            Minigame.getInstance().dropInvAndClearData(player);
             Main.getMainLogger().info("Player" + playerData.getName() + "is offline and timerWhilePlayerDecides is stopped");
             getTask().cancel();
             return true;

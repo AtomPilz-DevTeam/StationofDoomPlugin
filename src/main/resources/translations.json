@@ -78,7 +78,9 @@
       "invalidArgument": "Ungültiges Argument",
       "leaderboardReset": "Bestenliste wurde zurückgesetzt",
       "leaderboardEmpty": "Es hat noch niemand gewonnen.",
-      "newRecord": "Du hast deine alte Rekordzeit um %ss verbessert!"
+      "newRecord": "Du hast deine alte Rekordzeit um %ss verbessert!",
+      "leftWhileInParkour": "Du hast den Parkour verlassen, deswegen wurden deine Items an deiner Todesstelle gedropped.",
+      "leftWhileDeciding": "Du hast den Server verlassen während du entscheiden solltest ob du deine Items retten willst, deswegen wurden deine Items an deiner Todesstelle gedropped."
     }
   ],
   "en-US": [
@@ -160,7 +162,9 @@
       "invalidArgument": "Invalid Argument",
       "leaderboardReset": "Leaderboard was reset",
       "leaderboardEmpty": "No one has won yet.",
-      "newRecord": "You beat your old record by %ss!"
+      "newRecord": "You beat your old record by %ss!",
+      "leftWhileInParkour": "You left the parkour, so your items got dropped at your point of death.",
+      "leftWhileDeciding": "You left while deciding, so your items got dropped at your point of death."
     }
   ]
 }
