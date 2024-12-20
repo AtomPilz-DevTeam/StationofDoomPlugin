@@ -92,6 +92,10 @@ public class JumpAndRun {
         Config config = Config.getInstance();
         TranslationFactory tf = new TranslationFactory();
 
+        if(waitingListMinigame.isEmpty()) {
+            Main.getMainLogger().warning("No player in the waiting list!");
+            return;
+        }
         // get the player int the arena from the waiting list
         Player playerInArena = waitingListMinigame.getFirst();
         running = true;
