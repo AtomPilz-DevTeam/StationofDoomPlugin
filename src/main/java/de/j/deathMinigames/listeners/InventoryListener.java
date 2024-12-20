@@ -172,14 +172,16 @@ public class InventoryListener implements Listener {
             case "UsesPlugin":
                 for(int i = 0; i < HandlePlayers.getKnownPlayers().size(); i++) {
                     Material material;
-                    PlayerData playerData = HandlePlayers.getKnownPlayers().get(getIndexAssociatedWithPlayerInKnownPlayersList(i).getUniqueId());
+                    Player currentPlayer = getIndexAssociatedWithPlayerInKnownPlayersList(i);
+                    if(currentPlayer == null) continue;
+                    PlayerData playerData = HandlePlayers.getKnownPlayers().get(currentPlayer.getUniqueId());
                     if(playerData.getUsesPlugin()) {
                         material = Material.GREEN_CONCRETE_POWDER;
                     }
                     else {
                         material = Material.RED_CONCRETE_POWDER;
                     }
-                    MainMenu.getUsesPlugin().addClickableItemStack(getIndexAssociatedWithPlayerInKnownPlayersList(i).getName(), material, 1, i);
+                    MainMenu.getUsesPlugin().addClickableItemStack(currentPlayer.getName(), material, 1, i);
                 }
                 break;
             case "Difficulty - Settings":

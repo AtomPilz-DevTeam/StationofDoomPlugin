@@ -14,7 +14,7 @@ import org.bukkit.inventory.Inventory;
 import static de.j.deathMinigames.main.HandlePlayers.waitingListMinigame;
 
 public class Minigame {
-    private static Minigame instance;
+    private static volatile Minigame instance;
 
     private Minigame() {}
 
@@ -152,6 +152,7 @@ public class Minigame {
             throw new NullPointerException("player is null");
         }
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        if(playerData == null) throw new NullPointerException("playerData is null!");
         player.sendMessage(Component.text(tf.getTranslation(player, "winMessage")).color(NamedTextColor.GOLD));
         if(playerData.getDifficulty() < 10) {
             difficulty.higherDifficulty(player);

@@ -100,13 +100,21 @@ public class HandlePlayers {
         playerDataDatabase.updatePlayerDataDatabase(knownPlayers.values());
     }
 
+    /**
+     * Returns a sorted list of players who have completed the parkour.
+     * Players are sorted by their best parkour time in ascending order.
+     * Players with the default time are excluded from the leaderboard.
+     *
+     * @return Sorted list of players with valid parkour times
+     */
     public List<PlayerData> getLeaderBoard() {
+        float defaultTime = 1000f;
         List<PlayerData> leaderboard = new ArrayList<>();
         for (PlayerData playerData : knownPlayers.values()) {
-            if(playerData.getBestParkourTime() == 1000f) continue;
+            if(playerData.getBestParkourTime() == defaultTime) continue;
             leaderboard.add(playerData);
         }
-        //leaderboard.sort((o1, o2) -> (int) ((o2.getBestParkourTime() * 1000) - (o1.getBestParkourTime() * 1000)));
+        // Sort the leaderboard by best parkour time
         leaderboard.sort(Comparator.comparing(PlayerData::getBestParkourTime));
         return leaderboard;
     }
