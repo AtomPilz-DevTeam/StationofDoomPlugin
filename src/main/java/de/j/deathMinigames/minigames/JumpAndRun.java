@@ -258,7 +258,7 @@ public class JumpAndRun {
             public void run() {
                 if(checkIfPlayerWon(playerInArena) || checkIfPlayerLost(playerInArena, heightToLose) || checkIfPlayerLeft(playerInArena)) {
                     Main.getMainLogger().info("Removed " + waitingListMinigame.getFirst().getName() + " from waiting list");
-                    waitingListMinigame.removeFirst();
+                    waitingListMinigame.remove(playerInArena);
                     running = false;
                     mg.outPutWaitingListInConsole();
                     if(!waitingListMinigame.isEmpty()) {
@@ -497,7 +497,7 @@ public class JumpAndRun {
         mg.tpPlayerToRespawnLocation(playerInArena);
         clearBlocks(playerInArena);
         Main.getMainLogger().info("Player " + playerInArena.getName() + "left the parkour!");
-        HandlePlayers.getKnownPlayers().get(playerInArena.getUniqueId()).setLeftWhileInParkour(true);
+        HandlePlayers.getKnownPlayers().get(playerInArena.getUniqueId()).setLeftWhileProcessing(true);
         Main.getMainLogger().info(waitingListMinigame.toString());
         return true;
     }

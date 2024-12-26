@@ -1,7 +1,11 @@
 package de.j.deathMinigames.main;
 
 import de.j.deathMinigames.database.PlayerDataDatabase;
+import de.j.deathMinigames.minigames.Minigame;
 import de.j.stationofdoom.main.Main;
+import de.j.stationofdoom.util.translations.TranslationFactory;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -123,5 +127,28 @@ public class HandlePlayers {
         for (PlayerData playerData : knownPlayers.values()) {
             playerData.setBestParkourTime(1000f);
         }
+    }
+
+    public void checkIfPlayerLeftWhileInWaitingList(Player player) {
+        Main.getMainLogger().info("Checking if player " + player.getName() + " left while in waiting list");
+        if(waitingListMinigame.contains(player)) {
+            Main.getMainLogger().info("Player " + player.getName() + " left while in waiting list");
+            getKnownPlayers().get(player.getUniqueId()).setLeftWhileProcessing(true);
+            waitingListMinigame.remove(player);
+            Minigame.getInstance().dropInvAndClearData(player);
+            return;
+        }
+        Main.getMainLogger().info("Player " + player.getName() + " did not leave while in waiting list");
+    }
+
+    public void handlePlayerLeftWhileProcessing(Player player) {
+        PlayerData playerData = getKnownPlayers().get(player.getUniqueId());
+        if(playerData.getLeftWhileProcessing()) {
+            Minigame.getInstance().tpPlayerToRespawnLocation(player);
+            Main.getMainLogger().info("Player " + player.getName() + " left while in parkour");
+            playerData.setLeftWhileProcessing(false);
+            return;
+        }
+        Main.getMainLogger().info("Player " + player.getName() + " did not leave while in parkour");
     }
 }

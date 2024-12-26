@@ -24,6 +24,7 @@ public class LeaveListener implements Listener {
         Player player = event.getPlayer();
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         playerData.setStatus(PlayerMinigameStatus.offline);
-        ParkourTimer.getInstance().checkIfPlayerLeft(player);
+        ParkourTimer.getInstance().checkIfPlayerLeft(player, playerData);
+        HandlePlayers.getInstance().checkIfPlayerLeftWhileInWaitingList(player);
     }
 }

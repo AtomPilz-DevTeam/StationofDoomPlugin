@@ -102,22 +102,6 @@ public class PlayerData {
         this.usesPlugin = usesPlugin;
     }
 
-    public boolean getLeftWhileInParkour() {
-        return leftWhileInParkour;
-    }
-
-    public void setLeftWhileInParkour(boolean leftWhileInParkour) {
-        this.leftWhileInParkour = leftWhileInParkour;
-    }
-
-    public boolean getLeftWhileDeciding() {
-        return leftWhileDeciding;
-    }
-
-    public void setLeftWhileDeciding(boolean leftWhileDeciding) {
-        this.leftWhileDeciding = leftWhileDeciding;
-    }
-
     private volatile String name; // in database
     private volatile UUID uuid; // in database
     private final Player player;
@@ -129,9 +113,16 @@ public class PlayerData {
     private volatile int difficulty; // in database
     private volatile int decisionTimer;
     private volatile float bestParkourTime; // in database
-    private volatile boolean leftWhileInParkour;
 
-    private volatile boolean leftWhileDeciding;
+    public boolean getLeftWhileProcessing() {
+        return leftWhileProcessing;
+    }
+
+    public void setLeftWhileProcessing(boolean leftWhileProcessing) {
+        this.leftWhileProcessing = leftWhileProcessing;
+    }
+
+    private volatile boolean leftWhileProcessing;
 
     public PlayerData(Player player) {
         Config config = Config.getInstance();
@@ -145,8 +136,7 @@ public class PlayerData {
         this.difficulty = 0;
         this.introduction = false;
         this.usesPlugin = true;
-        this.leftWhileInParkour = false;
-        this.leftWhileDeciding = false;
+        this.leftWhileProcessing = false;
     }
 
     public PlayerData(String name, String uuid, boolean introduction, boolean usesPlugin, int difficulty, float bestParkourTime) {
@@ -161,8 +151,7 @@ public class PlayerData {
         this.difficulty = difficulty;
         this.introduction = introduction;
         this.usesPlugin = usesPlugin;
-        this.leftWhileInParkour = false;
-        this.leftWhileDeciding = false;
+        this.leftWhileProcessing = false;
     }
 
     /**

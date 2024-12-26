@@ -1,5 +1,6 @@
 package de.j.deathMinigames.minigames;
 
+import de.j.deathMinigames.main.PlayerData;
 import de.j.stationofdoom.main.Main;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -72,9 +73,10 @@ public class ParkourTimer {
         player.sendActionBar(Component.text("Time: " + getTimer()).color(NamedTextColor.GOLD));
     }
 
-    public void checkIfPlayerLeft(Player player) {
+    public void checkIfPlayerLeft(Player player, PlayerData playerData) {
         if(player == ParkourTimer.player) {
             ParkourTimer.stopTimer();
+            playerData.setLeftWhileProcessing(true);
         }
     }
 }

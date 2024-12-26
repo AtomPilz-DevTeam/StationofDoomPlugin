@@ -109,7 +109,6 @@ public class RespawnListener implements Listener {
                                 MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "decideTime", decisionTimer)).content()), times);
                         player.showTitle(title);
                         playerData.setDecisionTimer(decisionTimer - 1);
-                        return;
                 }
             }
         };
@@ -118,7 +117,7 @@ public class RespawnListener implements Listener {
 
     private boolean handlePlayerOffline(Player player, PlayerData playerData) {
         if(!player.isOnline()) {
-            playerData.setLeftWhileDeciding(true);
+            playerData.setLeftWhileProcessing(true);
             Minigame.getInstance().dropInvAndClearData(player);
             Main.getMainLogger().info("Player" + playerData.getName() + "is offline and timerWhilePlayerDecides is stopped");
             getTask().cancel();
@@ -139,7 +138,7 @@ public class RespawnListener implements Listener {
     private void handleTimer0(PlayerData playerData, Player player, DmUtil util, TranslationFactory tf) {
         if(playerData == null) throw new NullPointerException("playerData is null!");
         if(playerData.getLastDeathLocation() == null) {
-            Main.getMainLogger().warning("Deathlocation of player is null and timer is stopped!");
+            Main.getMainLogger().warning("DeathLocation of player is null and timer is stopped!");
             getTask().cancel();
             return;
         }
