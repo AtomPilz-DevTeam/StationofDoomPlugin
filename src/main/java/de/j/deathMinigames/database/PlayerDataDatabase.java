@@ -3,6 +3,7 @@ package de.j.deathMinigames.database;
 import de.chojo.sadu.queries.api.call.Call;
 import de.chojo.sadu.queries.api.query.Query;
 import de.chojo.sadu.queries.call.adapter.UUIDAdapter;
+import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.stationofdoom.main.Main;
 import org.bukkit.Bukkit;
@@ -48,6 +49,7 @@ public class PlayerDataDatabase {
      * parkour time.
      */
     public void createTable() {
+        if(!Database.getInstance().isConnected) return;
         Query.query("CREATE TABLE IF NOT EXISTS playerData (name VARCHAR(255), UUID VARCHAR(255), introduction BOOLEAN, usesPlugin BOOLEAN, difficulty INT, bestParkourTime FLOAT);")
                 .single()
                 .insert();
@@ -64,6 +66,7 @@ public class PlayerDataDatabase {
      * @return A list of PlayerData objects representing all players in the database.
      */
     public List<PlayerData> getAllPlayerDatas() {
+        if(!Database.getInstance().isConnected) return new ArrayList<>();
         return Query.query("SELECT * FROM playerdata;")
                 .single()
                 .map(row -> new PlayerData(row.getString("name"),
@@ -87,6 +90,7 @@ public class PlayerDataDatabase {
     public void updatePlayerDataDatabase(Collection<PlayerData> playerDatas) {
         int newlyAddedPlayers = 0;
         int updatedPlayers = 0;
+        if(!Database.getInstance().isConnected) return;
         for (PlayerData playerData : playerDatas) {
             if(checkIfPlayerIsInDatabase(playerData)) {
                 Query.query("UPDATE playerData SET name = :name, introduction = :introduction, usesPlugin = :usesPlugin, difficulty = :difficulty, bestParkourTime = :bestParkourTime WHERE uuid = :uuid;")
@@ -117,6 +121,7 @@ public class PlayerDataDatabase {
      * @param playerData The player data to add to the database.
      */
     public void addPlayerToDatabase(PlayerData playerData) {
+        if(!Database.getInstance().isConnected) return;
         Query.query("INSERT INTO playerData (name, UUID, introduction, usesPlugin, difficulty, bestParkourTime) VALUES (:name, :uuid, :introduction, :usesPlugin, :difficulty, :bestParkourTime);")
                 .single(Call.of()
                         .bind("name", playerData.getName())
@@ -138,6 +143,7 @@ public class PlayerDataDatabase {
      * @return true if the player is in the database, false otherwise.
      */
     public boolean checkIfPlayerIsInDatabase(PlayerData playerDataPlayerToCheck) {
+        if(!Database.getInstance().isConnected) return HandlePlayers.getKnownPlayers().containsKey(playerDataPlayerToCheck.getUUID()); // does not return false or true to prevent unpredictable behavior
         List<PlayerData> playerDatas =  getAllPlayerDatas();
         boolean isInDatabase = false;
         if(playerDatas.isEmpty()) return false;

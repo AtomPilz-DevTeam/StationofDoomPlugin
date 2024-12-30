@@ -6,20 +6,26 @@ import de.chojo.sadu.mapper.RowMapperRegistry;
 import de.chojo.sadu.postgresql.databases.PostgreSql;
 import de.chojo.sadu.postgresql.mapper.PostgresqlMapper;
 import de.chojo.sadu.queries.api.configuration.QueryConfiguration;
+import de.j.deathMinigames.main.Config;
 import de.j.stationofdoom.main.Main;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
 
+import java.awt.print.Paper;
+import java.io.File;
 import java.util.HashMap;
 
 public class Database {
     private static Database instance;
     private HikariDataSource dataSource;
-    private int port = 9667; // 9667
-    private String host = "localhost"; // localhost
-    private String database = "stationofdoom"; // stationofdoom
-    private String user = "mc"; // mc
-    private String password = "65465"; // 65465
-    private String applicationName = "StationOfDoom"; // StationOfDoom
-    private String schema = "public"; // default
+    private int port; // 9667
+    private String host; //localhost
+    private String database; // stationofdoom
+    private String user; // mc
+    private String password; // 65465
+    private String applicationName; // StationOfDoom
+    private String schema; // public
+    public volatile boolean isConnected = false;
 
     private Database() {}
 
@@ -52,22 +58,34 @@ public class Database {
      * This method should be called once when the plugin is enabled.
      */
     public void initDatabase(){
-        dataSource = DataSourceCreator.create(PostgreSql.get()).configure(config -> config.host("localhost")
-                .port(port)
-                .database(database)
-                .user(user)
-                .password(password)
-                .currentSchema(schema)
-                .applicationName(applicationName)
-        )
-                .create()
-                .withMaximumPoolSize(3)
-                .withMinimumIdle(1)
-                .build();
+        if(checkIfConnectionInfoIsEmpty()) {
+            Main.getMainLogger().info("Database connection information is not completely entered, running without one");
+            return;
+        }
+        setConnectionInfo();
+        try {
+            dataSource = DataSourceCreator.create(PostgreSql.get()).configure(config -> config.host(host)
+                            .port(port)
+                            .database(database)
+                            .user(user)
+                            .password(password)
+                            .currentSchema(schema)
+                            .applicationName(applicationName)
+                    )
+                    .create()
+                    .withMaximumPoolSize(3)
+                    .withMinimumIdle(1)
+                    .build();
 
-        configureDefaultQuery();
-        PlayerDataDatabase.getInstance().createTable();
-        Main.getMainLogger().info("Database initialized");
+            Main.getMainLogger().info("Database connected");
+            isConnected = true;
+            configureDefaultQuery();
+            PlayerDataDatabase.getInstance().createTable();
+            Main.getMainLogger().info("Database initialized");
+        }
+        catch(Exception e) {
+            Main.getMainLogger().info("No database found, running without one");
+        }
     }
 
     /**
@@ -88,61 +106,26 @@ public class Database {
         QueryConfiguration.setDefault(config);
     }
 
-    /**
-     * Sets the connection information for the database.
-     *
-     * This method updates the connection parameters including the host, port,
-     * database name, user credentials, application name, and schema.
-     * The provided information will be used to configure the database connection.
-     *
-     * @param host           The hostname of the database server.
-     * @param port           The port number on which the database server is listening.
-     * @param database       The name of the database.
-     * @param user           The username for database authentication.
-     * @param password       The password for database authentication.
-     * @param applicationName The name of the application using the database.
-     * @param schema         The database schema to be used.
-     */
-    public void setConnectionInfo(String host, int port, String database, String user, String password, String applicationName, String schema) {
-        this.applicationName = applicationName;
-        this.schema = schema;
-        this.host = host;
-        this.port = port;
-        this.database = database;
-        this.user = user;
-        this.password = password;
+    private boolean checkIfConnectionInfoIsEmpty() {
+        return Config.getInstance().getDatabaseConfig().containsValue("default");
     }
 
-    /**
-     * Closes the database connection.
-     */
-    public void closeConnection() {
-        dataSource.close();
-    }
-
-    /**
-     * Returns a HashMap containing all connection information.
-     * The keys in the map are as follows:
-     * <ul>
-     * <li>host: the hostname of the database server</li>
-     * <li>port: the port number on which the database server is listening</li>
-     * <li>database: the name of the database</li>
-     * <li>user: the username for database authentication</li>
-     * <li>password: the password for database authentication</li>
-     * <li>applicationName: the name of the application using the database</li>
-     * <li>schema: the database schema to be used</li>
-     * </ul>
-     * @return a HashMap containing all connection information.
-     */
-    public HashMap<String, Object> getConnectionInfo() {
-        HashMap<String, Object> info = new HashMap<>();
-        info.put("host", host);
-        info.put("port", port);
-        info.put("database", database);
-        info.put("user", user);
-        info.put("password", password);
-        info.put("applicationName", applicationName);
-        info.put("schema", schema);
-        return info;
+    private void setConnectionInfo() {
+        HashMap<String, String> connectionInfo = Config.getInstance().getDatabaseConfig();
+        port = Integer.parseInt(connectionInfo.get("port"));
+        Main.getMainLogger().info("Port set to " + port);
+        host = connectionInfo.get("host");
+        Main.getMainLogger().info("Host set to " + host);
+        database = connectionInfo.get("database");
+        Main.getMainLogger().info("Database set to " + database);
+        user = connectionInfo.get("user");
+        Main.getMainLogger().info("User set to " + user);
+        password = connectionInfo.get("password");
+        Main.getMainLogger().info("Password set to " + password);
+        applicationName = connectionInfo.get("applicationName");
+        Main.getMainLogger().info("Application name set to " + applicationName);
+        schema = connectionInfo.get("schema");
+        Main.getMainLogger().info("Schema set to " + schema);
+        Main.getMainLogger().info("Database connection information set");
     }
 }

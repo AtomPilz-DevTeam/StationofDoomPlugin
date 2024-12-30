@@ -60,27 +60,30 @@ A minecraft paper survival plugin for private servers
   - Use `/game settings` to configure parkour parameters
   - See "In game settings menu" section for details
   </details>
-
 - <details>
   <summary>In game settings menu</summary>
   
   This plugin features an in game settings menu to every operator of the server. It can be reached through the command `/game settings`. In the settings many important values can be changed to fix problems or set up the plugin.<br>
-  <br>
-- **Menus inside the settings:** <br>
-<br>
-  - **setUp**: hosts all settings to set up the plugin before a playthrough <br>
-    - **parkourStartHeight**: Starting height for parkour generation (Default: `100`) <br>
-    - **parkourLength**: Length of the parkour course (Default: `10`) <br>
-    - **costToLowerTheDifficulty**: Diamond cost to reduce difficulty (Default: `6`) <br>
-    - **timeToDecideWhenRespawning**: Time limit for minigame decision in seconds (Default: `10`) <br>
-<br>
-  - **introduction**: Manage player introduction status
-    - Players start with 'false' and receive a brief introduction on first death<br>
-<br>
-  - **difficulty**: Manage individual player parkour difficulty
-    - **difficultyPlayerSettings**: Configure difficulty level per player<br>
-<br>
-  - **usesPlugin**: Toggle whether players can access the parkour minigame
+  - **Menus inside the settings:** <br>
+    - **setUp**: hosts all settings to set up the plugin before a playthrough <br>
+      - **parkourStartHeight**: Starting height for parkour generation (Default: `100`) <br>
+      - **parkourLength**: Length of the parkour course (Default: `10`) <br>
+      - **costToLowerTheDifficulty**: Diamond cost to reduce difficulty (Default: `6`) <br>
+      - **timeToDecideWhenRespawning**: Time limit for minigame decision in seconds (Default: `10`) <br>
+    - **introduction**: Manage player introduction status
+      - Players start with 'false' and receive a brief introduction on first death<br>
+    - **difficulty**: Manage individual player parkour difficulty
+      - **difficultyPlayerSettings**: Configure difficulty level per player<br>
+    - **usesPlugin**: Toggle whether players can access the parkour minigame
+  </details>
+- <details> 
+  <summary>Database Connection</summary>
+  
+  - Usage of the plugin is possible with or without a PostgreSQL database, without a database all stats and info created by the plugin are only saved until the next server restart.
+  - **Connecting a database**
+    1. Start the server and plugin once
+    2. Enter your database-parameters into the `config.yml` file from this plugin
+    3. finished
   </details>
 
 **Support and Project Discussion:**

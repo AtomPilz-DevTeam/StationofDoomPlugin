@@ -5,6 +5,8 @@ import org.bukkit.Location;
 
 import de.j.stationofdoom.main.Main;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.*;
 
@@ -71,35 +73,47 @@ public class Config {
      * </ul>
      */
     public void cloneConfigToPlugin() {
-        if(Main.getPlugin().getConfig().contains("SetUp")) {
-            setSetUp(Main.getPlugin().getConfig().getBoolean("SetUp"));
+        FileConfiguration config = Main.getPlugin().getConfig();
+        if(config.contains("SetUp")) {
+            setSetUp(config.getBoolean("SetUp"));
         }
         else {
             setSetUp(false);
         }
-        if(Main.getPlugin().getConfig().contains("ParkourStartHeight")) {
-            setParkourStartHeight(Main.getPlugin().getConfig().getInt("ParkourStartHeight"));
+        if(config.contains("ParkourStartHeight")) {
+            setParkourStartHeight(config.getInt("ParkourStartHeight"));
         }
         else {
             setParkourStartHeight(100);
         }
-        if(Main.getPlugin().getConfig().contains("ParkourLength")) {
-            setParkourLength(Main.getPlugin().getConfig().getInt("ParkourLength"));
+        if(config.contains("ParkourLength")) {
+            setParkourLength(config.getInt("ParkourLength"));
         }
         else {
             setParkourLength(10);
         }
-        if(Main.getPlugin().getConfig().contains("CostToLowerTheDifficulty")) {
-            setCostToLowerTheDifficulty(Main.getPlugin().getConfig().getInt("CostToLowerTheDifficulty"));
+        if(config.contains("CostToLowerTheDifficulty")) {
+            setCostToLowerTheDifficulty(config.getInt("CostToLowerTheDifficulty"));
         }
         else {
             setCostToLowerTheDifficulty(6);
         }
-        if(Main.getPlugin().getConfig().contains("TimeToDecideWhenRespawning")) {
-            setTimeToDecideWhenRespawning(Main.getPlugin().getConfig().getInt("TimeToDecideWhenRespawning"));
+        if(config.contains("TimeToDecideWhenRespawning")) {
+            setTimeToDecideWhenRespawning(config.getInt("TimeToDecideWhenRespawning"));
         }
         else {
             setTimeToDecideWhenRespawning(10);
+        }
+        // Database
+        if(!config.contains("Database")) {
+            config.set("Database.host", "default");
+            config.set("Database.port", "default");
+            config.set("Database.user", "default");
+            config.set("Database.database", "default");
+            config.set("Database.password", "default");
+            config.set("Database.applicationName", "default");
+            config.set("Database.schema", "default");
+            Main.getPlugin().saveConfig();
         }
     }
 
@@ -284,5 +298,18 @@ public class Config {
             Main.getMainLogger().warning("configWaitingListPosition is not setup");
             return null;
         }
+    }
+
+    public HashMap<String, String> getDatabaseConfig() {
+        HashMap<String, String> databaseConnectionInfo = new HashMap<>();
+        FileConfiguration config = Main.getPlugin().getConfig();
+        databaseConnectionInfo.put("host", config.getString("Database.host"));
+        databaseConnectionInfo.put("port", config.getString("Database.port"));
+        databaseConnectionInfo.put("database", config.getString("Database.database"));
+        databaseConnectionInfo.put("user", config.getString("Database.user"));
+        databaseConnectionInfo.put("password", config.getString("Database.password"));
+        databaseConnectionInfo.put("applicationName", config.getString("Database.applicationName"));
+        databaseConnectionInfo.put("schema", config.getString("Database.schema"));
+        return databaseConnectionInfo;
     }
 }
