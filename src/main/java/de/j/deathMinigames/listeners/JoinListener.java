@@ -3,8 +3,6 @@ package de.j.deathMinigames.listeners;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.deathMinigames.main.PlayerMinigameStatus;
-import de.j.deathMinigames.minigames.Minigame;
-import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -41,10 +39,10 @@ public class JoinListener implements Listener {
                     .append(Component.text(HandlePlayers.getKnownPlayers().get(player.getUniqueId()).getDifficulty()).color(NamedTextColor.RED)));
         }
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
-        if(playerData.getStatus().equals(PlayerMinigameStatus.deciding)) {
+        if(playerData.getStatus().equals(PlayerMinigameStatus.DECIDING)) {
             respawnListener.handleTimerWhilePlayerDecides(player);
         }
-        playerData.setStatus(PlayerMinigameStatus.alive);
+        playerData.setStatus(PlayerMinigameStatus.ALIVE);
         handlePlayers.handlePlayerLeftWhileProcessing(player);
     }
 }

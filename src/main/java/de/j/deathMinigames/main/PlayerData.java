@@ -129,7 +129,7 @@ public class PlayerData {
         this.name = player.getName();
         this.uuid = player.getUniqueId();
         this.player = player;
-        this.status = PlayerMinigameStatus.alive;
+        this.status = PlayerMinigameStatus.ALIVE;
         this.lastDeathInventory = Bukkit.createInventory(null, 9*6);
         this.decisionTimer = config.checkTimeToDecideWhenRespawning();
         this.bestParkourTime = 1000f;
@@ -144,7 +144,7 @@ public class PlayerData {
         this.name = name;
         this.uuid = UUID.fromString(uuid);
         this.player = Bukkit.getPlayer(uuid);
-        this.status = PlayerMinigameStatus.alive;
+        this.status = PlayerMinigameStatus.ALIVE;
         this.lastDeathInventory = Bukkit.createInventory(null, 9*6);
         this.decisionTimer = config.checkTimeToDecideWhenRespawning();
         this.bestParkourTime = bestParkourTime;
@@ -181,7 +181,7 @@ public class PlayerData {
      * reset these for the next time the player respawns or after completing a decision process.
      */
     public void resetDecisionTimerAndStatus(){
-        this.status = PlayerMinigameStatus.alive;
+        this.status = PlayerMinigameStatus.ALIVE;
         setDecisionTimerDefault();
     }
 }

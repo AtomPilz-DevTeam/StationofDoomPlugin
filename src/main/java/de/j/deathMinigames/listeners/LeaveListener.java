@@ -15,7 +15,7 @@ public class LeaveListener implements Listener {
      * Listens for the event when a player leaves the server.
      * <p>
      * When a player leaves the server, this method is called and the player's
-     * status is set to {@link PlayerMinigameStatus#offline}.
+     * status is set to {@link PlayerMinigameStatus#OFFLINE}.
      *
      * @param event the event that was triggered
      */
@@ -23,7 +23,7 @@ public class LeaveListener implements Listener {
     public void onLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
-        playerData.setStatus(PlayerMinigameStatus.offline);
+        playerData.setStatus(PlayerMinigameStatus.OFFLINE);
         ParkourTimer.getInstance().checkIfPlayerLeft(player, playerData);
         HandlePlayers.getInstance().checkIfPlayerLeftWhileInWaitingList(player);
     }

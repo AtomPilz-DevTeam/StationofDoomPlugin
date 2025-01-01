@@ -43,7 +43,7 @@ public class RespawnListener implements Listener {
             return;
         }
         player.getInventory().clear();
-        playerData.setStatus(PlayerMinigameStatus.alive);
+        playerData.setStatus(PlayerMinigameStatus.ALIVE);
         if(!playerData.getUsesPlugin()) {
             return;
         }
@@ -51,7 +51,7 @@ public class RespawnListener implements Listener {
             playerData.setDecisionTimerDefault();
         }
         if (!playerData.getLastDeathInventory().isEmpty()) {
-            playerData.setStatus(PlayerMinigameStatus.deciding);
+            playerData.setStatus(PlayerMinigameStatus.DECIDING);
             handleTimerWhilePlayerDecides(player);
         }
     }
@@ -126,7 +126,7 @@ public class RespawnListener implements Listener {
     }
 
     private boolean handlePlayerNotDeciding(PlayerData playerData) {
-        if(!playerData.getStatus().equals(PlayerMinigameStatus.deciding)) {
+        if(!playerData.getStatus().equals(PlayerMinigameStatus.DECIDING)) {
             playerData.resetDecisionTimerAndStatus();
             getTask().cancel();
             return true;

@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.Inventory;
 
 import java.util.*;
@@ -46,7 +45,7 @@ public class SaveItemsOnDeath implements Listener {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(uuid);
-        playerData.setStatus(PlayerMinigameStatus.dead);
+        playerData.setStatus(PlayerMinigameStatus.DEAD);
         if(player.getInventory() == null) {
             Main.getMainLogger().warning("Player inventory is null!");
             return;

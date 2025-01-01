@@ -2,7 +2,7 @@ package de.j.deathMinigames.listeners;
 
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
-import de.j.deathMinigames.settings.InventoryMenus;
+import de.j.deathMinigames.settings.MainMenu.InventoryMenus;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -265,8 +265,10 @@ public class InventoryListener implements Listener {
         }
         else if (slot <= knownPlayers.size()) {
             playerClicked = getIndexAssociatedWithPlayerInKnownPlayersList(slot);
+            if(playerClicked == null) {
+                player.sendMessage(Component.text(new TranslationFactory().getTranslation(player, "somethingWentWrong")).color(NamedTextColor.RED));
+            }
             PlayerData playerClickedData = knownPlayers.get(playerClicked.getUniqueId());
-            assert playerClicked != null : "playerClicked is null";
             if(playerClickedData.getIntroduction()) {
                 minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
                 playerClickedData.setIntroduction(false);
@@ -295,8 +297,8 @@ public class InventoryListener implements Listener {
         }
         else if (slot <= knownPlayers.size()) {
             playerClicked = getIndexAssociatedWithPlayerInKnownPlayersList(slot);
+            if(playerClicked == null) player.sendMessage(Component.text(new TranslationFactory().getTranslation(player, "somethingWentWrong")).color(NamedTextColor.RED));
             PlayerData playerClickedData = knownPlayers.get(playerClicked.getUniqueId());
-            assert playerClicked != null : "playerClicked is null";
             if(playerClickedData.getUsesPlugin()) {
                 minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
                 playerClickedData.setUsesPlugin(false);
@@ -322,7 +324,7 @@ public class InventoryListener implements Listener {
             mainMenu.showPlayerSettings(player);
         } else if (slot <= HandlePlayers.getKnownPlayers().size()) {
             playerClicked = getIndexAssociatedWithPlayerInKnownPlayersList(slot);
-            assert playerClicked != null : "playerClicked is null";
+            player.sendMessage(Component.text(new TranslationFactory().getTranslation(player, "somethingWentWrong")).color(NamedTextColor.RED));
             Main.getMainLogger().info(playerClicked.getName());
             reloadInventory(InventoryMenus.DIFFICULTY_SETTINGS, slot, mainMenu);
             MainMenu.getDifficultyPlayerSettings().addBackButton(player);

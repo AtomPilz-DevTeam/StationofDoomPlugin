@@ -56,11 +56,11 @@ public class Minigame {
         Minigame.getInstance().outPutWaitingListInConsole();
         if(!JumpAndRun.getInstance().getRunning()) {
             Main.getMainLogger().info("Started new minigame with: " + playerToStart.getName() + " because Parkour is not running");
-            playerData.setStatus(PlayerMinigameStatus.inMinigame);
+            playerData.setStatus(PlayerMinigameStatus.IN_MINIGAME);
             jumpAndRun.start();
         }
         else {
-            playerData.setStatus(PlayerMinigameStatus.inWaitingList);
+            playerData.setStatus(PlayerMinigameStatus.IN_WAITING_LIST);
             playerToStart.sendMessage(Component.text(tf.getTranslation(playerToStart, "arenaIsFull")).color(NamedTextColor.GOLD));
             Location locationBox = config.checkWaitingListLocation();
             if(locationBox != null) {
@@ -89,7 +89,7 @@ public class Minigame {
 
         assert !lastDeathInventory.isEmpty() : "lastDeathInventory is empty!";
 
-        playerData.setStatus(PlayerMinigameStatus.inMinigame);
+        playerData.setStatus(PlayerMinigameStatus.IN_MINIGAME);
     }
 
     /**
@@ -105,7 +105,7 @@ public class Minigame {
 
         assert deathLocation != null : "lastDeathInventory is null";
 
-        playerData.setStatus(PlayerMinigameStatus.alive);
+        playerData.setStatus(PlayerMinigameStatus.ALIVE);
         if(playerData.getUsesPlugin()) {
             player.sendMessage(MiniMessage.miniMessage().deserialize(Component.text(tf.getTranslation(player, "loseMessage", "X: " + deathLocation.getBlockX() +
                     " " + "Y: " + deathLocation.getBlockY() +
@@ -179,7 +179,7 @@ public class Minigame {
             inventory.setContents(lastDeathInventory.getContents());
 
             tpPlayerToRespawnLocation(player);
-            playerData.setStatus(PlayerMinigameStatus.alive);
+            playerData.setStatus(PlayerMinigameStatus.ALIVE);
             player.openInventory(inventory);
             util.playSoundAtLocation(player.getLocation(), 1F, Sound.ITEM_TOTEM_USE);
         } catch (Exception e) {

@@ -98,9 +98,10 @@ public class JumpAndRun {
         }
         // get the player int the arena from the waiting list
         Player playerInArena = waitingListMinigame.getFirst();
-        running = true;
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(playerInArena.getUniqueId());
-        playerData.setStatus(PlayerMinigameStatus.inMinigame);
+        if(playerData == null) return;
+        playerData.setStatus(PlayerMinigameStatus.IN_MINIGAME);
+        running = true;
 
         playerInArena.sendTitle("JumpNRun", "");
 
@@ -157,8 +158,8 @@ public class JumpAndRun {
         if (checkIfOnGold(player)) {
             mg.sendWinMessage(player);
             mg.showInv(player);
-            ParkourTimer.stopTimer();
             float timer = ParkourTimer.getTimer();
+            ParkourTimer.stopTimer();
             if(playerData.getBestParkourTime() == 1000) {
                 playerData.setBestParkourTime(timer);
             }

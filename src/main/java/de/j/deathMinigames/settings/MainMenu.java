@@ -15,6 +15,19 @@ import java.util.ArrayList;
 public class MainMenu implements InventoryHolder {
     private final Inventory inventory;
 
+    public enum InventoryMenus {
+        INTRODUCTION,
+        DIFFICULTY,
+        USES_PLUGIN,
+        DIFFICULTY_SETTINGS,
+        SETTINGS,
+        SETUP,
+        PARKOUR_START_HEIGHT,
+        PARKOUR_LENGTH,
+        COST_TO_LOWER_THE_DIFFICULTY,
+        TIME_TO_DECIDE_WHEN_RESPAWNING
+    }
+
     public MainMenu() {
         this.inventory = Bukkit.createInventory(this, 9, "Settings");
     }
