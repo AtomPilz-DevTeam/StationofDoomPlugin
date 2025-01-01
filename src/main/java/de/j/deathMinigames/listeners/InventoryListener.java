@@ -2,7 +2,7 @@ package de.j.deathMinigames.listeners;
 
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
-import de.j.deathMinigames.settings.MainMenu.InventoryMenus;
+import de.j.deathMinigames.settings.InventoryMenus;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -155,31 +155,46 @@ public class InventoryListener implements Listener {
      * @param mainMenu the main menu to get the inventory from
      */
     public void reloadInventory(InventoryMenus inventory, MainMenu mainMenu) {
-        PlayerData playerData;
         switch (inventory) {
             case InventoryMenus.INTRODUCTION:
                 HashMap<UUID, PlayerData> knownPlayers = HandlePlayers.getKnownPlayers();
                 for(int i = 0; i < knownPlayers.size(); i++) {
+                    Material material;
                     Player currentPlayer = getIndexAssociatedWithPlayerInKnownPlayersList(i);
-                    if(currentPlayer == null) continue;
-                    playerData = knownPlayers.get(currentPlayer.getUniqueId());
-                    MainMenu.getIntroduction().addClickableItemStack(currentPlayer.getName(), getMaterialBasedOnBoolean(playerData.getIntroduction()), 1, i);
+                    PlayerData currentPlayerData = knownPlayers.get(currentPlayer.getUniqueId());
+                    if(currentPlayer == null) {
+                        continue;
+                    }
+                    if(currentPlayerData.getIntroduction()) {
+                        material = Material.GREEN_CONCRETE_POWDER;
+                    }
+                    else {
+                        material = Material.RED_CONCRETE_POWDER;
+                    }
+                    MainMenu.getIntroduction().addClickableItemStack(currentPlayer.getName(), material, 1, i);
                 }
                 break;
             case InventoryMenus.USES_PLUGIN:
                 for(int i = 0; i < HandlePlayers.getKnownPlayers().size(); i++) {
+                    Material material;
                     Player currentPlayer = getIndexAssociatedWithPlayerInKnownPlayersList(i);
                     if(currentPlayer == null) continue;
-                    playerData = HandlePlayers.getKnownPlayers().get(currentPlayer.getUniqueId());
-                    MainMenu.getUsesPlugin().addClickableItemStack(currentPlayer.getName(), getMaterialBasedOnBoolean(playerData.getUsesPlugin()), 1, i);
+                    PlayerData playerData = HandlePlayers.getKnownPlayers().get(currentPlayer.getUniqueId());
+                    if(playerData.getUsesPlugin()) {
+                        material = Material.GREEN_CONCRETE_POWDER;
+                    }
+                    else {
+                        material = Material.RED_CONCRETE_POWDER;
+                    }
+                    MainMenu.getUsesPlugin().addClickableItemStack(currentPlayer.getName(), material, 1, i);
                 }
                 break;
             case InventoryMenus.DIFFICULTY:
                 MainMenu.getDifficulty().addPlayerHeads(HandlePlayers.getKnownPlayers());
                 break;
             case InventoryMenus.DIFFICULTY_SETTINGS:
-                playerData = HandlePlayers.getKnownPlayers().get(playerClicked.getUniqueId());
-                int difficulty = playerData.getDifficulty();
+                PlayerData playerClickedData = HandlePlayers.getKnownPlayers().get(playerClicked.getUniqueId());
+                int difficulty = playerClickedData.getDifficulty();
                 mainMenu.difficultySettingsSetInventoryContents(difficulty);
                 break;
             case InventoryMenus.SETUP:
@@ -200,14 +215,6 @@ public class InventoryListener implements Listener {
         }
     }
 
-    private Material getMaterialBasedOnBoolean(boolean bool) {
-        if(bool) {
-            return Material.GREEN_CONCRETE_POWDER;
-        }
-        else {
-            return Material.RED_CONCRETE_POWDER;
-        }
-    }
 
 /**
  * Handles the main menu GUI interaction when a player clicks on an inventory slot.
@@ -265,10 +272,8 @@ public class InventoryListener implements Listener {
         }
         else if (slot <= knownPlayers.size()) {
             playerClicked = getIndexAssociatedWithPlayerInKnownPlayersList(slot);
-            if(playerClicked == null) {
-                player.sendMessage(Component.text(new TranslationFactory().getTranslation(player, "somethingWentWrong")).color(NamedTextColor.RED));
-            }
             PlayerData playerClickedData = knownPlayers.get(playerClicked.getUniqueId());
+            assert playerClicked != null : "playerClicked is null";
             if(playerClickedData.getIntroduction()) {
                 minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
                 playerClickedData.setIntroduction(false);
@@ -297,8 +302,8 @@ public class InventoryListener implements Listener {
         }
         else if (slot <= knownPlayers.size()) {
             playerClicked = getIndexAssociatedWithPlayerInKnownPlayersList(slot);
-            if(playerClicked == null) player.sendMessage(Component.text(new TranslationFactory().getTranslation(player, "somethingWentWrong")).color(NamedTextColor.RED));
             PlayerData playerClickedData = knownPlayers.get(playerClicked.getUniqueId());
+            assert playerClicked != null : "playerClicked is null";
             if(playerClickedData.getUsesPlugin()) {
                 minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
                 playerClickedData.setUsesPlugin(false);
@@ -324,7 +329,7 @@ public class InventoryListener implements Listener {
             mainMenu.showPlayerSettings(player);
         } else if (slot <= HandlePlayers.getKnownPlayers().size()) {
             playerClicked = getIndexAssociatedWithPlayerInKnownPlayersList(slot);
-            player.sendMessage(Component.text(new TranslationFactory().getTranslation(player, "somethingWentWrong")).color(NamedTextColor.RED));
+            assert playerClicked != null : "playerClicked is null";
             Main.getMainLogger().info(playerClicked.getName());
             reloadInventory(InventoryMenus.DIFFICULTY_SETTINGS, slot, mainMenu);
             MainMenu.getDifficultyPlayerSettings().addBackButton(player);

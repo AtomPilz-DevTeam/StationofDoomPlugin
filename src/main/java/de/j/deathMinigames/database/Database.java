@@ -8,19 +8,23 @@ import de.chojo.sadu.postgresql.mapper.PostgresqlMapper;
 import de.chojo.sadu.queries.api.configuration.QueryConfiguration;
 import de.j.deathMinigames.main.Config;
 import de.j.stationofdoom.main.Main;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
 
+import java.awt.print.Paper;
+import java.io.File;
 import java.util.HashMap;
 
 public class Database {
     private static Database instance;
     private HikariDataSource dataSource;
-    private int port;
-    private String host;
-    private String database;
-    private String user;
-    private String password;
-    private String applicationName;
-    private String schema;
+    private int port; // 9667
+    private String host; //localhost
+    private String database; // stationofdoom
+    private String user; // mc
+    private String password; // 65465
+    private String applicationName; // StationOfDoom
+    private String schema; // public
     public volatile boolean isConnected = false;
 
     private Database() {}
@@ -54,7 +58,7 @@ public class Database {
      * This method should be called once when the plugin is enabled.
      */
     public void initDatabase(){
-        if(checkIfConnectionInfoIsNotEntered()) {
+        if(checkIfConnectionInfoIsEmpty()) {
             Main.getMainLogger().info("Database connection information is not completely entered, running without one");
             return;
         }
@@ -102,16 +106,12 @@ public class Database {
         QueryConfiguration.setDefault(config);
     }
 
-    private boolean checkIfConnectionInfoIsNotEntered() {
+    private boolean checkIfConnectionInfoIsEmpty() {
         return Config.getInstance().getDatabaseConfig().containsValue("default");
     }
 
     private void setConnectionInfo() {
         HashMap<String, String> connectionInfo = Config.getInstance().getDatabaseConfig();
-        if(!validateConnectionInfo(connectionInfo)) {
-            Main.getMainLogger().warning("Invalid database connection information, running without one");
-            return;
-        }
         port = Integer.parseInt(connectionInfo.get("port"));
         host = connectionInfo.get("host");
         database = connectionInfo.get("database");
@@ -119,23 +119,5 @@ public class Database {
         password = connectionInfo.get("password");
         applicationName = connectionInfo.get("applicationName");
         schema = connectionInfo.get("schema");
-    }
-
-    private boolean validateConnectionInfo(HashMap<String, String> connectionInfo) {
-        if (connectionInfo == null) {
-            return false;
-        }
-        String[] required = {"port", "host", "database", "user", "password", "applicationName", "schema"};
-        for (String key : required) {
-            if (!connectionInfo.containsKey(key) || connectionInfo.get(key) == null) {
-                return false;
-            }
-        }
-        try {
-            Integer.parseInt(connectionInfo.get("port"));
-        } catch (NumberFormatException e) {
-            return false;
-        }
-        return true;
     }
 }

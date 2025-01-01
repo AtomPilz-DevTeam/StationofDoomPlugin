@@ -2,11 +2,13 @@ package de.j.deathMinigames.commands;
 
 import de.j.deathMinigames.dmUtil.DmUtil;
 import de.j.deathMinigames.main.*;
+import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -33,20 +35,6 @@ public class GameCMD implements BasicCommand {
     private final MainMenu mainMenu = new MainMenu();
     private final Config config = Config.getInstance();
     private final TranslationFactory tf = new TranslationFactory();
-
-    public enum ArgsLength1 {
-        SETTINGS,
-        LOWERDIFFICULTY,
-        INTROPLAYERDECIDESTOUSEFEATURES,
-        INTROPLAYERDECIDESTONOTUSEFEATURES,
-        SETNOTINTRODUCED,
-        DIFFICULTY,
-        SETWAITINGLISTPOSITION,
-        DECIDEDNOTTOSETPOSITION,
-        STATUS,
-        START,
-        IGNORE
-    }
 
     /**
      * {@inheritDoc}
@@ -78,7 +66,7 @@ public class GameCMD implements BasicCommand {
         if(player == null) throw new NullPointerException("player is null!");
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         if(playerData == null) throw new NullPointerException("playerData is null!");
-        String arg0 = args.length > 0 ? args[0].toLowerCase() : "";
+        String arg0 = args[0].toLowerCase();
         String arg1 = null;
         if(args.length > 1) {
             arg1 = args[1].toLowerCase();
@@ -99,9 +87,6 @@ public class GameCMD implements BasicCommand {
                 break;
             case 3:
                 handleArgsLength3Execution(player, arg0, arg1, arg2);
-                break;
-            default:
-                player.sendMessage(Component.text(tf.getTranslation(player, "cmdUsage")).color(NamedTextColor.RED));
                 break;
         }
     }
@@ -178,7 +163,7 @@ public class GameCMD implements BasicCommand {
     }
 
     private void handleDecisionCMDsWhenRespawning(PlayerData playerData, Player player, ArgsLength1 arg0) {
-        if (!playerData.getLastDeathInventory().isEmpty() && playerData.getStatus() != PlayerMinigameStatus.IN_MINIGAME && playerData.getStatus() != PlayerMinigameStatus.IN_WAITING_LIST) {
+        if (!playerData.getLastDeathInventory().isEmpty() && playerData.getStatus() != PlayerMinigameStatus.inMinigame && playerData.getStatus() != PlayerMinigameStatus.inWaitingList) {
             switch (arg0) {
                 case ArgsLength1.START:
                     handleArgsLength1StartExecution(player);
@@ -378,7 +363,7 @@ public class GameCMD implements BasicCommand {
             playerData.setIntroduction(true);
             playerData.setUsesPlugin(false);
             Location lastDeathLocation = playerData.getLastDeathLocation();
-            if(lastDeathLocation == null) lastDeathLocation = player.getLastDeathLocation();
+            if(lastDeathLocation == null) throw new NullPointerException("lastDeathLocation is null!");
             util.dropInv(player, lastDeathLocation);
             minigame.sendLoseMessage(player);
             introduction.teleportPlayerToRespawnLocation(player);
@@ -422,7 +407,7 @@ public class GameCMD implements BasicCommand {
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         util.playSoundAtLocation(player.getEyeLocation(), 0.5F, Sound.ENTITY_ENDER_EYE_DEATH);
         player.resetTitle();
-        playerData.setStatus(PlayerMinigameStatus.ALIVE);
+        playerData.setStatus(PlayerMinigameStatus.alive);
         Minigame.getInstance().minigameStart(player);
     }
 
@@ -442,7 +427,7 @@ public class GameCMD implements BasicCommand {
         Location deathLocation = playerData.getLastDeathLocation();
 
         minigame.playSoundToPlayer(player, 0.5F, Sound.ENTITY_ITEM_BREAK);
-        playerData.setStatus(PlayerMinigameStatus.ALIVE);
+        playerData.setStatus(PlayerMinigameStatus.alive);
         player.resetTitle();
         if (!waitingListMinigame.contains(player) && !lastDeathInventory.isEmpty()) {
             player.sendMessage(Component.text(tf.getTranslation(player, "droppingInvAt")).color(NamedTextColor.GOLD)
@@ -476,7 +461,6 @@ public class GameCMD implements BasicCommand {
             int i;
             try {
                 i = Integer.parseInt(arg1);
-                if(i < 0 || i > 10) player.sendMessage(Component.text(tf.getTranslation(player, "invalidDifficulty")).color(NamedTextColor.RED));
             } catch (NumberFormatException e) {
                 player.sendMessage(Component.text(tf.getTranslation(player, "youHaveToEnterANumber")).color(NamedTextColor.RED));
                 return;
