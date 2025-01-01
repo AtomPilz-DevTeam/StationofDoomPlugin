@@ -78,7 +78,8 @@
       "invalidArgument": "Ungültiges Argument",
       "leaderboardReset": "Bestenliste wurde zurückgesetzt",
       "leaderboardEmpty": "Es hat noch niemand gewonnen.",
-      "newRecord": "Du hast deine alte Rekordzeit um %ss verbessert!"
+      "newRecord": "Du hast deine alte Rekordzeit um %ss verbessert!",
+      "cmdUsageLength1": "Dein Command hat nicht geklappt, versuche /game <dein Command>"
     }
   ],
   "en-US": [
@@ -160,7 +161,8 @@
       "invalidArgument": "Invalid Argument",
       "leaderboardReset": "Leaderboard was reset",
       "leaderboardEmpty": "No one has won yet.",
-      "newRecord": "You beat your old record by %ss!"
+      "newRecord": "You beat your old record by %ss!",
+      "cmdUsageLength1": "Your command did not work, try /game <your command>"
     }
   ]
 }

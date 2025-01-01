@@ -46,7 +46,7 @@ public class GUI implements InventoryHolder {
         }
     }
 
-    private void addPlayerHeads(HashMap<UUID, PlayerData> knownPlayers) {
+    public void addPlayerHeads(HashMap<UUID, PlayerData> knownPlayers) {
         int maxSlots = inventory.getSize() - 1;
         List<UUID> playerKeys = new ArrayList<>(knownPlayers.keySet());
         for(int i = 0; i < knownPlayers.size(); i++) {

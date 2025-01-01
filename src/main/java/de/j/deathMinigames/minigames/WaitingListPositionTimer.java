@@ -27,21 +27,21 @@ public class WaitingListPositionTimer {
     public void run(Player player) {
         BukkitRunnable runnable = new BukkitRunnable() {
             public void run() {
-                try {
-                    if(waitingListMinigame.isEmpty()) cancel();
+            try {
+                if(waitingListMinigame.isEmpty()) cancel();
 
-                if(waitingListMinigame.size() >= 2 && waitingListMinigame.contains(player)) {
-                    int index = waitingListMinigame.indexOf(player);
-                    player.sendActionBar(Component.text("Position: " + (index + 1)).color(NamedTextColor.GOLD));
-                }
-                else {
-                    cancel();
-                }
-                } catch (Exception e) {
-                    Main.getMainLogger().severe("Failed to show waiting list position to " + player.getName() + e.getMessage());
-                    Main.getMainLogger().severe(e.getMessage());
-                    cancel();
-                }
+            if(waitingListMinigame.size() >= 2 && waitingListMinigame.contains(player)) {
+                int index = waitingListMinigame.indexOf(player);
+                player.sendActionBar(Component.text("Position: " + (index + 1)).color(NamedTextColor.GOLD));
+            }
+            else {
+                cancel();
+            }
+            } catch (Exception e) {
+                Main.getMainLogger().severe("Failed to show waiting list position to " + player.getName() + e.getMessage());
+                Main.getMainLogger().severe(e.getMessage());
+                cancel();
+            }
             }
         };
         runnable.runTaskTimer(Main.getPlugin(), 10, 20);

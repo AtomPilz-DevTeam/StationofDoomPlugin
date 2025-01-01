@@ -303,13 +303,22 @@ public class Config {
     public HashMap<String, String> getDatabaseConfig() {
         HashMap<String, String> databaseConnectionInfo = new HashMap<>();
         FileConfiguration config = Main.getPlugin().getConfig();
-        databaseConnectionInfo.put("host", config.getString("Database.host"));
+        String[] requiredFields = {"host", "port", "database", "user", "password", "applicationName", "schema"};
+        for (String field : requiredFields) {
+            String value = config.getString("Database." + field);
+            if (value == null || value.equals("default")) {
+                Main.getMainLogger().warning("Database." + field + " is not configured properly");
+            }
+            databaseConnectionInfo.put(field, value);
+        }
+        /*databaseConnectionInfo.put("host", config.getString("Database.host"));
         databaseConnectionInfo.put("port", config.getString("Database.port"));
         databaseConnectionInfo.put("database", config.getString("Database.database"));
         databaseConnectionInfo.put("user", config.getString("Database.user"));
         databaseConnectionInfo.put("password", config.getString("Database.password"));
         databaseConnectionInfo.put("applicationName", config.getString("Database.applicationName"));
         databaseConnectionInfo.put("schema", config.getString("Database.schema"));
+         */
         return databaseConnectionInfo;
     }
 }

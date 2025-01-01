@@ -113,19 +113,11 @@ public class Database {
     private void setConnectionInfo() {
         HashMap<String, String> connectionInfo = Config.getInstance().getDatabaseConfig();
         port = Integer.parseInt(connectionInfo.get("port"));
-        Main.getMainLogger().info("Port set to " + port);
         host = connectionInfo.get("host");
-        Main.getMainLogger().info("Host set to " + host);
         database = connectionInfo.get("database");
-        Main.getMainLogger().info("Database set to " + database);
         user = connectionInfo.get("user");
-        Main.getMainLogger().info("User set to " + user);
         password = connectionInfo.get("password");
-        Main.getMainLogger().info("Password set to " + password);
         applicationName = connectionInfo.get("applicationName");
-        Main.getMainLogger().info("Application name set to " + applicationName);
         schema = connectionInfo.get("schema");
-        Main.getMainLogger().info("Schema set to " + schema);
-        Main.getMainLogger().info("Database connection information set");
     }
 }

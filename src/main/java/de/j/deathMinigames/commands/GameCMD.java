@@ -66,20 +66,28 @@ public class GameCMD implements BasicCommand {
         if(player == null) throw new NullPointerException("player is null!");
         PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
         if(playerData == null) throw new NullPointerException("playerData is null!");
-        if (args.length == 1) {
-            String arg0 = args[0].toLowerCase();
-            handleArgsLength1Execution(playerData, player, arg0);
+        String arg0 = args[0].toLowerCase();
+        String arg1 = null;
+        if(args.length > 1) {
+            arg1 = args[1].toLowerCase();
         }
-        else if (args.length == 2) {
-            String arg0 = args[0].toLowerCase();
-            String arg1 = args[1].toLowerCase();
-            handleArgsLength2Execution(playerData, player, arg0, arg1);
+        String arg2 = null;
+        if(args.length > 2) {
+            arg2 = args[2].toLowerCase();
         }
-        else if (args.length == 3) {
-            String arg0 = args[0].toLowerCase();
-            String arg1 = args[1].toLowerCase();
-            String arg2 = args[2].toLowerCase();
-            handleArgsLength3Execution(player, arg0, arg1, arg2);
+        switch (args.length) {
+            case 0:
+                player.sendMessage(Component.text(tf.getTranslation(player, "cmdUsage")).color(NamedTextColor.RED));
+                break;
+            case 1:
+                handleArgsLength1Execution(playerData, player, arg0);
+                break;
+            case 2:
+                handleArgsLength2Execution(playerData, player, arg0, arg1);
+                break;
+            case 3:
+                handleArgsLength3Execution(player, arg0, arg1, arg2);
+                break;
         }
     }
 
@@ -111,51 +119,61 @@ public class GameCMD implements BasicCommand {
      * @param arg0 the argument provided
      */
     private void handleArgsLength1Execution(PlayerData playerData, Player player, String arg0) {
-        switch (arg0.toLowerCase()) {
-            case "settings":
+        ArgsLength1 arg0AsEnumType = null;
+        try {
+            arg0AsEnumType = ArgsLength1.valueOf(arg0.toUpperCase());
+        }
+        catch (IllegalArgumentException e) {
+            player.sendMessage(Component.text(tf.getTranslation(player, "cmdUsageLength1")).color(NamedTextColor.RED));
+        }
+        if(arg0AsEnumType == null) return;
+        switch (arg0AsEnumType) {
+            case ArgsLength1.SETTINGS:
                 handleArgsLength1SettingsExecution(player);
                 break;
-            case "lowerdifficulty":
+            case ArgsLength1.LOWERDIFFICULTY:
                 handleArgsLength1LowerDifficultyExecution(playerData, player);
                 break;
-            case "introplayerdecidestousefeatures":
+            case ArgsLength1.INTROPLAYERDECIDESTOUSEFEATURES:
                 handleArgsLength1IntroPlayerDecidesToUseFeaturesExecution(playerData, player);
                 break;
-            case "introplayerdecidestonotusefeatures":
+            case ArgsLength1.INTROPLAYERDECIDESTONOTUSEFEATURES:
                 handleArgsLength1IntroPlayerDecidesToNotUseFeaturesExecution(playerData, player);
                 break;
-            case "setnotintroduced":
+            case ArgsLength1.SETNOTINTRODUCED:
                 playerData.setIntroduction(false);
                 break;
-            case "difficulty":
+            case ArgsLength1.DIFFICULTY:
                 player.sendMessage(Component.text(tf.getTranslation(player, "diffAt")).color(NamedTextColor.GOLD)
                         .append(Component.text(playerData.getDifficulty()).color(NamedTextColor.RED)));
                 break;
-            case "setwaitinglistposition":
+            case ArgsLength1.SETWAITINGLISTPOSITION:
                 handleArgsLength1SetWaitingListPositionExecution(player);
                 break;
-            case "decidednottosetposition":
+            case ArgsLength1.DECIDEDNOTTOSETPOSITION:
                 player.sendMessage(Component.text(tf.getTranslation(player, "decidedNotToSetPosition")).color(NamedTextColor.RED));
                 break;
-            case "status":
+            case ArgsLength1.STATUS:
                 player.sendMessage("Status: " + playerData.getStatus().toString());
                 break;
+            default:
+                handleDecisionCMDsWhenRespawning(playerData, player, arg0AsEnumType);
+                break;
         }
-        handleDecisionCMDsWhenRespawning(playerData, player, arg0);
     }
 
-    private void handleDecisionCMDsWhenRespawning(PlayerData playerData, Player player, String arg0) {
+    private void handleDecisionCMDsWhenRespawning(PlayerData playerData, Player player, ArgsLength1 arg0) {
         if (!playerData.getLastDeathInventory().isEmpty() && playerData.getStatus() != PlayerMinigameStatus.inMinigame && playerData.getStatus() != PlayerMinigameStatus.inWaitingList) {
-            switch (arg0.toLowerCase()) {
-                case "start":
+            switch (arg0) {
+                case ArgsLength1.START:
                     handleArgsLength1StartExecution(player);
                     break;
-                case "ignore":
+                case ArgsLength1.IGNORE:
                     handleArgsLength1IgnoreExecution(player);
                     break;
                 default:
                     if(!playerData.getIntroduction()) {
-                        player.sendMessage(Component.text("Usage: /game <start/ignore/difficulty>").color(NamedTextColor.RED));
+                        player.sendMessage(Component.text(tf.getTranslation(player, "cmdUsageLength1")).color(NamedTextColor.RED));
                     }
                     break;
             }
@@ -181,15 +199,23 @@ public class GameCMD implements BasicCommand {
      * @param arg1 the second argument provided
      */
     private void handleArgsLength2Execution(PlayerData playerData, Player player, String arg0, String arg1) {
+        ArgsLength1 arg0AsEnumType = null;
+        try {
+            arg0AsEnumType = ArgsLength1.valueOf(arg0.toUpperCase());
+        }
+        catch (IllegalArgumentException e) {
+            player.sendMessage(Component.text(tf.getTranslation(player, "cmdUsageLength1")).color(NamedTextColor.RED));
+        }
+        if(arg0AsEnumType == null) return;
         if(player.isOp()) {
-            switch (arg0) {
-                case "difficulty":
+            switch (arg0AsEnumType) {
+                case ArgsLength1.DIFFICULTY:
                     handleArgsLength2DifficultyExecution(playerData, player, arg1);
                     break;
-                case "introPlayerDecidesToUseFeatures":
+                case ArgsLength1.INTROPLAYERDECIDESTOUSEFEATURES:
                     playerData.setUsesPlugin(true);
                     break;
-                case "introPlayerDecidesToNotUseFeatures":
+                case ArgsLength1.INTROPLAYERDECIDESTONOTUSEFEATURES:
                     playerData.setUsesPlugin(false);
                     break;
             }
@@ -220,15 +246,23 @@ public class GameCMD implements BasicCommand {
      * @param arg2 the third argument provided
      */
     private void handleArgsLength3Execution(Player player, String arg0, String arg1, String arg2) {
+        ArgsLength1 arg0AsEnumType = null;
+        try {
+            arg0AsEnumType = ArgsLength1.valueOf(arg0.toUpperCase());
+        }
+        catch (IllegalArgumentException e) {
+            player.sendMessage(Component.text(tf.getTranslation(player, "cmdUsageLength1")).color(NamedTextColor.RED));
+        }
+        if(arg0AsEnumType == null) return;
         if(player.isOp()) {
-            switch (arg0) {
-                case "difficulty":
+            switch (arg0AsEnumType) {
+                case ArgsLength1.DIFFICULTY:
                     handleArgsLength3DifficultyExecution(player, arg1, arg2);
                     break;
-                case "introPlayerDecidesToUseFeatures":
+                case ArgsLength1.INTROPLAYERDECIDESTOUSEFEATURES:
                     handleArgsLength3IntroPlayerDecidesToUseFeaturesExecution(player, arg1);
                     break;
-                case "introPlayerDecidesToNotUseFeatures":
+                case ArgsLength1.INTROPLAYERDECIDESTONOTUSEFEATURES:
                     handleArgsLength3introPlayerDecidesToNotUseFeaturesExecution(player, arg1);
                     break;
             }
@@ -242,7 +276,7 @@ public class GameCMD implements BasicCommand {
      * Handles the execution of commands with one argument, "settings".
      *
      * <p>If the player is an operator, it will open the settings menu for the player.
-     * If the player is not an operator, an message will be sent to the player, that he is not an operator and therefore is not allowed to open the settings menu.
+     * If the player is not an operator, a   message will be sent to the player, that he is not an operator and therefore is not allowed to open the settings menu.
      *
      * @param player the player executing the command
      */

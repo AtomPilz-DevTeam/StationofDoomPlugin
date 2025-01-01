@@ -24,6 +24,7 @@ import java.util.UUID;
 
 public class RespawnListener implements Listener {
     private volatile BukkitTask task;
+    private TranslationFactory tf = new TranslationFactory();
 
     /**
      * Called when a player respawns.
@@ -63,7 +64,6 @@ public class RespawnListener implements Listener {
      * @param player the player who should decide whether to play a minigame
      */
     public void handleTimerWhilePlayerDecides(Player player) {
-        TranslationFactory tf = new TranslationFactory();
         player.sendMessage(Component.text(tf.getTranslation(player, "decision")).color(NamedTextColor.GOLD));
         player.sendMessage(Component.text(tf.getTranslation(player, "playMinigame")).clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND, "/game start")).color(NamedTextColor.GREEN)
                 .append(Component.text(" / ").color(NamedTextColor.GOLD))
@@ -82,7 +82,6 @@ public class RespawnListener implements Listener {
      * @param player the player who is deciding to play a minigame or not
      */
     private void timerWhilePlayerDecides(Player player) {
-        TranslationFactory tf = new TranslationFactory();
         DmUtil util = DmUtil.getInstance();
         if(!util.validatePlayerAndPlayerData(player)) {
             Main.getMainLogger().warning("Player is null or playerData is null!");

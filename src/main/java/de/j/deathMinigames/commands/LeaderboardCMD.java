@@ -54,6 +54,7 @@ public class LeaderboardCMD implements BasicCommand {
             player.sendMessage(tf.getTranslation(player, "leaderboard"));
             player.sendMessage("------------------");
             for (int i = 0; i < leaderboard.size(); i++) {
+                if(i >= 10) break;
                 PlayerData playerData = leaderboard.get(i);
                 player.sendMessage(Component.text(i + 1 + ". " + playerData.getName() + " - " + playerData.getBestParkourTime() + "s"));
             }
