@@ -52,10 +52,7 @@ public class Minigame {
         if(!waitingListMinigame.contains(playerToStart)) {
             waitingListMinigame.addLast(playerToStart);
         }
-        Main.getMainLogger().info("Added player to WaitingList: " + playerToStart.getName());
-        Minigame.getInstance().outPutWaitingListInConsole();
         if(!JumpAndRun.getInstance().getRunning()) {
-            Main.getMainLogger().info("Started new minigame with: " + playerToStart.getName() + " because Parkour is not running");
             playerData.setStatus(PlayerMinigameStatus.IN_MINIGAME);
             jumpAndRun.start();
         }
@@ -215,9 +212,5 @@ public class Minigame {
         }
         player.teleport(locationOfBox);
         WaitingListPositionTimer.getInstance().run(player);
-    }
-
-    public void outPutWaitingListInConsole() {
-        Main.getMainLogger().info("WaitingList: " + waitingListMinigame.toString());
     }
 }

@@ -89,7 +89,7 @@ public class HandlePlayers {
             return;
         }
         knownPlayers.put(playerUUID, playerData);
-        Main.getMainLogger().info("Added new player " + playerData.getName() + " " + playerData.getIntroduction());
+        Main.getMainLogger().info("Added new player " + playerData.getName());
     }
 
 
@@ -130,25 +130,19 @@ public class HandlePlayers {
     }
 
     public void checkIfPlayerLeftWhileInWaitingList(Player player) {
-        Main.getMainLogger().info("Checking if player " + player.getName() + " left while in waiting list");
         if(waitingListMinigame.contains(player)) {
             Main.getMainLogger().info("Player " + player.getName() + " left while in waiting list");
             getKnownPlayers().get(player.getUniqueId()).setLeftWhileProcessing(true);
             waitingListMinigame.remove(player);
             Minigame.getInstance().dropInvAndClearData(player);
-            return;
         }
-        Main.getMainLogger().info("Player " + player.getName() + " did not leave while in waiting list");
     }
 
     public void handlePlayerLeftWhileProcessing(Player player) {
         PlayerData playerData = getKnownPlayers().get(player.getUniqueId());
         if(playerData.getLeftWhileProcessing()) {
             Minigame.getInstance().tpPlayerToRespawnLocation(player);
-            Main.getMainLogger().info("Player " + player.getName() + " left while in parkour");
             playerData.setLeftWhileProcessing(false);
-            return;
         }
-        Main.getMainLogger().info("Player " + player.getName() + " did not leave while in parkour");
     }
 }

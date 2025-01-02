@@ -112,7 +112,7 @@ public class Config {
             config.set("Database.database", "default");
             config.set("Database.password", "default");
             config.set("Database.applicationName", "default");
-            config.set("Database.schema", "default");
+            config.set("Database.schema", "public");
             Main.getPlugin().saveConfig();
         }
     }
@@ -311,14 +311,6 @@ public class Config {
             }
             databaseConnectionInfo.put(field, value);
         }
-        /*databaseConnectionInfo.put("host", config.getString("Database.host"));
-        databaseConnectionInfo.put("port", config.getString("Database.port"));
-        databaseConnectionInfo.put("database", config.getString("Database.database"));
-        databaseConnectionInfo.put("user", config.getString("Database.user"));
-        databaseConnectionInfo.put("password", config.getString("Database.password"));
-        databaseConnectionInfo.put("applicationName", config.getString("Database.applicationName"));
-        databaseConnectionInfo.put("schema", config.getString("Database.schema"));
-         */
         return databaseConnectionInfo;
     }
 }

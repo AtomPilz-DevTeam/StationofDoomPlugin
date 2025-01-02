@@ -261,14 +261,9 @@ public class JumpAndRun {
                     Main.getMainLogger().info("Removed " + waitingListMinigame.getFirst().getName() + " from waiting list");
                     waitingListMinigame.remove(playerInArena);
                     running = false;
-                    mg.outPutWaitingListInConsole();
                     if(!waitingListMinigame.isEmpty()) {
-                        Main.getMainLogger().info("WaitingList is not empty");
                         Main.getMainLogger().info("Started new minigame with: " + waitingListMinigame.getFirst().getName());
                         Minigame.getInstance().minigameStart(waitingListMinigame.getFirst());
-                    }
-                    else {
-                        Main.getMainLogger().info("WaitingList is empty");
                     }
                     cancel();
                 }

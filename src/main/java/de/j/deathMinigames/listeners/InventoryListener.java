@@ -41,7 +41,6 @@ public class InventoryListener implements Listener {
         UUID ID;
         int slot = event.getSlot();
         if(slot < 0) {
-            Main.getMainLogger().info("Slot is smaller or is 0: " + slot);
             return;
         }
         Player player = (Player) event.getWhoClicked();
@@ -115,7 +114,7 @@ public class InventoryListener implements Listener {
             throw new IllegalStateException("No player selected");
         }
         switch (inventory) {
-            case InventoryMenus.INTRODUCTION:
+            case INTRODUCTION:
                 if(playerClickedData.getIntroduction()) {
                     MainMenu.getIntroduction().addClickableItemStack(playerClicked.getName(), Material.GREEN_CONCRETE_POWDER, 1, slot);
                 }
@@ -123,7 +122,7 @@ public class InventoryListener implements Listener {
                     MainMenu.getIntroduction().addClickableItemStack(playerClicked.getName(), Material.RED_CONCRETE_POWDER, 1, slot);
                 }
                 break;
-            case InventoryMenus.USES_PLUGIN:
+            case USES_PLUGIN:
                 if(playerClickedData.getUsesPlugin()) {
                     MainMenu.getUsesPlugin().addClickableItemStack(playerClicked.getName(), Material.GREEN_CONCRETE_POWDER, 1, slot);
                 }
@@ -131,11 +130,11 @@ public class InventoryListener implements Listener {
                     MainMenu.getUsesPlugin().addClickableItemStack(playerClicked.getName(), Material.RED_CONCRETE_POWDER, 1, slot);
                 }
                 break;
-            case InventoryMenus.DIFFICULTY_SETTINGS:
+            case DIFFICULTY_SETTINGS:
                 int difficulty = playerClickedData.getDifficulty();
                 mainMenu.difficultySettingsSetInventoryContents(difficulty);
                 break;
-            case InventoryMenus.SETTINGS:
+            case SETTINGS:
                 if(config.checkSetUp()) {
                     mainMenu.addClickableItemStack("SetUp", Material.GREEN_CONCRETE, 1, 0);
                 }
@@ -157,7 +156,7 @@ public class InventoryListener implements Listener {
     public void reloadInventory(InventoryMenus inventory, MainMenu mainMenu) {
         PlayerData playerData;
         switch (inventory) {
-            case InventoryMenus.INTRODUCTION:
+            case INTRODUCTION:
                 HashMap<UUID, PlayerData> knownPlayers = HandlePlayers.getKnownPlayers();
                 for(int i = 0; i < knownPlayers.size(); i++) {
                     Player currentPlayer = getIndexAssociatedWithPlayerInKnownPlayersList(i);
@@ -166,7 +165,7 @@ public class InventoryListener implements Listener {
                     MainMenu.getIntroduction().addClickableItemStack(currentPlayer.getName(), getMaterialBasedOnBoolean(playerData.getIntroduction()), 1, i);
                 }
                 break;
-            case InventoryMenus.USES_PLUGIN:
+            case USES_PLUGIN:
                 for(int i = 0; i < HandlePlayers.getKnownPlayers().size(); i++) {
                     Player currentPlayer = getIndexAssociatedWithPlayerInKnownPlayersList(i);
                     if(currentPlayer == null) continue;
@@ -174,27 +173,27 @@ public class InventoryListener implements Listener {
                     MainMenu.getUsesPlugin().addClickableItemStack(currentPlayer.getName(), getMaterialBasedOnBoolean(playerData.getUsesPlugin()), 1, i);
                 }
                 break;
-            case InventoryMenus.DIFFICULTY:
+            case DIFFICULTY:
                 MainMenu.getDifficulty().addPlayerHeads(HandlePlayers.getKnownPlayers());
                 break;
-            case InventoryMenus.DIFFICULTY_SETTINGS:
+            case DIFFICULTY_SETTINGS:
                 playerData = HandlePlayers.getKnownPlayers().get(playerClicked.getUniqueId());
                 int difficulty = playerData.getDifficulty();
                 mainMenu.difficultySettingsSetInventoryContents(difficulty);
                 break;
-            case InventoryMenus.SETUP:
+            case SETUP:
                 mainMenu.setUpSettingsSetInventoryContents();
                 break;
-            case InventoryMenus.PARKOUR_START_HEIGHT:
+            case PARKOUR_START_HEIGHT:
                 mainMenu.parkourStartHeightSettingsSetInventoryContents();
                 break;
-            case InventoryMenus.PARKOUR_LENGTH:
+            case PARKOUR_LENGTH:
                 mainMenu.parkourLengthSettingsSetInventoryContents();
                 break;
-            case InventoryMenus.COST_TO_LOWER_THE_DIFFICULTY:
+            case COST_TO_LOWER_THE_DIFFICULTY:
                 mainMenu.costToLowerTheDifficultySettingsSetInventoryContents();
                 break;
-            case InventoryMenus.TIME_TO_DECIDE_WHEN_RESPAWNING:
+            case TIME_TO_DECIDE_WHEN_RESPAWNING:
                 mainMenu.timeToDecideWhenRespawningSettingsSetInventoryContents();
                 break;
         }
@@ -325,7 +324,6 @@ public class InventoryListener implements Listener {
         } else if (slot <= HandlePlayers.getKnownPlayers().size()) {
             playerClicked = getIndexAssociatedWithPlayerInKnownPlayersList(slot);
             player.sendMessage(Component.text(new TranslationFactory().getTranslation(player, "somethingWentWrong")).color(NamedTextColor.RED));
-            Main.getMainLogger().info(playerClicked.getName());
             reloadInventory(InventoryMenus.DIFFICULTY_SETTINGS, slot, mainMenu);
             MainMenu.getDifficultyPlayerSettings().addBackButton(player);
             MainMenu.getDifficultyPlayerSettings().showInventory(player);

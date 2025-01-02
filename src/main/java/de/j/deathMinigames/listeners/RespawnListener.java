@@ -7,7 +7,9 @@ import de.j.deathMinigames.main.PlayerMinigameStatus;
 import de.j.deathMinigames.minigames.Minigame;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Location;
@@ -64,10 +66,10 @@ public class RespawnListener implements Listener {
      * @param player the player who should decide whether to play a minigame
      */
     public void handleTimerWhilePlayerDecides(Player player) {
-        player.sendMessage(Component.text(tf.getTranslation(player, "decision")).color(NamedTextColor.GOLD));
-        player.sendMessage(Component.text(tf.getTranslation(player, "playMinigame")).clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND, "/game start")).color(NamedTextColor.GREEN)
+        player.sendMessage(Component.text(tf.getTranslation(player, "decision")).color(NamedTextColor.GOLD)
+                .append(Component.text(tf.getTranslation(player, "playMinigame")).decorate(TextDecoration.UNDERLINED).color(NamedTextColor.GREEN).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/game start")))
                 .append(Component.text(" / ").color(NamedTextColor.GOLD))
-                .append(Component.text(tf.getTranslation(player, "ignoreMinigame")).clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND, "/game ignore")).color(NamedTextColor.RED)));
+                .append(Component.text(tf.getTranslation(player, "ignoreMinigame")).decorate(TextDecoration.UNDERLINED).color(NamedTextColor.RED).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/game ignore"))));
         timerWhilePlayerDecides(player);
     }
 

@@ -1,13 +1,10 @@
 package de.j.deathMinigames.dmUtil;
 
-import de.j.deathMinigames.database.Database;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
 
 public class TestCMD implements BasicCommand {
 
@@ -38,6 +35,5 @@ public class TestCMD implements BasicCommand {
     public void execute(@NotNull CommandSourceStack stack, @NotNull String[] args) {
         Player player = (Player) stack.getSender();
         player.sendMessage("test");
-
     }
 }

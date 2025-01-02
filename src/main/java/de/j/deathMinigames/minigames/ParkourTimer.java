@@ -34,7 +34,6 @@ public class ParkourTimer {
     }
 
     public static void resetTimer() {
-        Main.getMainLogger().info(Float.toString(timer));
         ParkourTimer.timer = 0;
     }
 
@@ -48,7 +47,6 @@ public class ParkourTimer {
             Main.getMainLogger().warning("Runnable is not null! Timer not started!");
             return;
         }
-        Main.getMainLogger().info("Started timer");
         timer(player);
     }
 
