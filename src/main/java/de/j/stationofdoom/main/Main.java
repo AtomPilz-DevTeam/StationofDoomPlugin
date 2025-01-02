@@ -1,5 +1,13 @@
 package de.j.stationofdoom.main;
 
+import de.j.deathMinigames.commands.GameCMD;
+import de.j.deathMinigames.commands.LeaderboardCMD;
+import de.j.deathMinigames.dmUtil.TestCMD;
+import de.j.deathMinigames.listeners.*;
+import de.j.deathMinigames.main.Config;
+import de.j.deathMinigames.database.Database;
+import de.j.deathMinigames.main.HandlePlayers;
+import de.j.deathMinigames.main.InitWaitingListLocationOnJoin;
 import de.j.stationofdoom.cmd.*;
 import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.FurnaceEvents;
@@ -16,6 +24,7 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
 import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
 import org.bukkit.Bukkit;
+import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -60,6 +69,13 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        Config config = Config.getInstance();
+        saveDefaultConfig();
+        config.initializeConfig();
+        Database database = Database.getInstance();
+        database.initDatabase();
+        HandlePlayers.initKnownPlayersPlayerData();
+
 
         LifecycleEventManager<Plugin> manager = getLifecycleManager();
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
@@ -72,6 +88,9 @@ public final class Main extends JavaPlugin {
             COMMANDS.register("customenchant", new GetCustomEnchantsCMD());
             COMMANDS.register("voterestart", new VoteRestartCMD());
             COMMANDS.register("sit", new PlayerSitListener());
+            COMMANDS.register("game", "game related commands", new GameCMD());
+            COMMANDS.register("test", "testing", new TestCMD());
+            COMMANDS.register("leaderboard", "showing the leaderboard of the minigame", new LeaderboardCMD());
         });
 
         PluginManager pluginManager = Bukkit.getPluginManager();
@@ -90,6 +109,12 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new FurnaceEvents(), this);
         pluginManager.registerEvents(new ChangeLanguageGUI(), this);
         pluginManager.registerEvents(new BowComboListener(), this);
+        pluginManager.registerEvents(new SaveItemsOnDeath(), this);
+        pluginManager.registerEvents(new RespawnListener(), this);
+        pluginManager.registerEvents(new JoinListener(), this);
+        pluginManager.registerEvents(new InventoryListener(), this);
+        pluginManager.registerEvents(new InitWaitingListLocationOnJoin(), this);
+        pluginManager.registerEvents(new LeaveListener(), this);
 
         //CustomEnchants.register(); -> see custom enchants class for more info
 
@@ -103,6 +128,7 @@ public final class Main extends JavaPlugin {
     public void onDisable() {
         EntityManager.removeOldEntities();
         WhoIsOnline.shutdown();
+        HandlePlayers.copyAllPlayerDataIntoDatabase();
     }
 
     public static Main getPlugin(){
@@ -129,4 +155,5 @@ public final class Main extends JavaPlugin {
     public static GlobalRegionScheduler getGlobalRegionScheduler() {
         return getPlugin().getServer().getGlobalRegionScheduler();
     }
+
 }

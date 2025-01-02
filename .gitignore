@@ -98,5 +98,10 @@ modules.xml
 .idea/misc.xml
 *.ipr
 
-run/
+.gradle/**
+.idea/**
+apps/**
+build/**
 run/**
+
+/.gitignore

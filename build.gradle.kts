@@ -10,7 +10,7 @@ plugins {
 }
 
 val minecraftVersion = "1.21.3"
-val pluginVersion: String = "1.14.4.3" + if (System.getenv("runnumber") != null) "." + System.getenv("runnumber") else ""
+val pluginVersion: String = "1.15" + if (System.getenv("runnumber") != null) "." + System.getenv("runnumber") else ""
 
 group = "com.github.atompilz-devteam"
 version = pluginVersion
@@ -24,6 +24,11 @@ dependencies {
     library("com.google.code.gson:gson:2.11.0")
     library("club.minnced:discord-webhooks:0.8.4")
     paperweight.paperDevBundle("$minecraftVersion-R0.1-SNAPSHOT")
+    library("org.postgresql:postgresql:42.7.4")
+    library("de.chojo.sadu:sadu-postgresql:2.3.0")
+    library("de.chojo.sadu:sadu-datasource:2.3.0")
+    library("de.chojo.sadu:sadu-queries:2.3.0")
+    library("com.zaxxer:HikariCP:6.2.1")
 }
 
 java {
