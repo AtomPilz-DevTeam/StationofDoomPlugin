@@ -1,14 +1,11 @@
 package de.j.deathMinigames.main;
 
-import de.j.deathMinigames.database.PlayerDataDatabase;
-import de.j.stationofdoom.listener.PlayerJoin;
 import de.j.stationofdoom.util.Tablist;
 import org.bukkit.Location;
 
 import de.j.stationofdoom.main.Main;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.*;
 
@@ -119,11 +116,11 @@ public class Config {
         }
         //Tablist
         if(config.contains("Tablist")) {
-            if(config.contains("Tablist.ServerName")) {
+            if(config.contains("Tablist.ServerName") && config.get("Tablist.ServerName") != null) {
                 Tablist.setServerName(config.getString("Tablist.ServerName"));
             }
-            if(config.contains("Tablist.HostetBy")) {
-                Tablist.setHostetBy(config.getString("Tablist.HostetBy"));
+            if(config.contains("Tablist.HostedBy") && config.get("Tablist.HostedBy") != null) {
+                Tablist.setHostedBy(config.getString("Tablist.HostedBy"));
             }
         }
     }
@@ -324,7 +321,11 @@ public class Config {
         return databaseConnectionInfo;
     }
 
-    public void setServerName(String serverName) {
+    public synchronized void setServerName(String serverName) {
+        if(serverName == null) {
+            Main.getMainLogger().warning("ServerName is null!");
+            return;
+        }
         if(!Main.getPlugin().getConfig().contains("Tablist.ServerName")) {
             Main.getPlugin().getConfig().set("Tablist.ServerName", serverName);
             Main.getPlugin().saveConfig();
@@ -345,19 +346,19 @@ public class Config {
         }
     }
 
-    public void setHostetBy(String serverName) {
-        if(!Main.getPlugin().getConfig().contains("Tablist.HostetBy") || !Main.getPlugin().getConfig().getString("Tablist.HostetBy").equals(serverName)) {
-            Main.getPlugin().getConfig().set("Tablist.HostetBy", serverName);
+    public synchronized void setHostedBy(String serverName) {
+        if(!Main.getPlugin().getConfig().contains("Tablist.HostedBy") || !Main.getPlugin().getConfig().getString("Tablist.HostedBy").equals(serverName)) {
+            Main.getPlugin().getConfig().set("Tablist.HostedBy", serverName);
             Main.getPlugin().saveConfig();
         }
     }
 
-    public String getHostetBy() {
-        if(Main.getPlugin().getConfig().contains("Tablist.HostetBy")) {
-            return Main.getPlugin().getConfig().getString("Tablist.HostetBy");
+    public String getHostedBy() {
+        if(Main.getPlugin().getConfig().contains("Tablist.HostedBy")) {
+            return Main.getPlugin().getConfig().getString("Tablist.HostedBy");
         }
         else {
-            Main.getMainLogger().warning("HostetBy not found in config!");
+            Main.getMainLogger().warning("HostedBy not found in config!");
             return null;
         }
     }
