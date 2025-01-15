@@ -68,7 +68,6 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         Config config = Config.getInstance();
-        //saveDefaultConfig();
         config.initializeConfig();
         Database database = Database.getInstance();
         database.initDatabase();
