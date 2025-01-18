@@ -133,8 +133,9 @@ public class Config {
                     customEnchantsEnum.setEnabled(bool);
                 }
                 catch (Exception e) {
-                    Main.getMainLogger().warning("Custom enchant " + customEnchantsEnum.name() + " failed");
+                    Main.getMainLogger().warning("Setting value for custom enchantment " + customEnchantsEnum.name() + " failed. Falling back to default true value.");
                     e.printStackTrace();
+                    customEnchantsEnum.setEnabled(true);
                 }
             }
         }
