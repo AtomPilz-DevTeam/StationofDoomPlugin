@@ -108,9 +108,6 @@ public class GetCustomEnchantsCMD implements BasicCommand {
                         player.sendMessage(Component.text(translations.getTranslation(player, "enchantNotEnabled")).color(NamedTextColor.RED));
                         return;
                     }
-                    else {
-                        player.sendMessage("Flight is enabled");
-                    }
                     if (args[1].equalsIgnoreCase("confirm")) {
                         Inventory inventory = player.getInventory();
                         if (inventory.contains(Material.DIAMOND)) {
