@@ -1,5 +1,6 @@
 package de.j.deathMinigames.main;
 
+import de.j.stationofdoom.enchants.CustomEnchantsEnum;
 import de.j.stationofdoom.util.Tablist;
 import org.bukkit.Location;
 
@@ -122,6 +123,28 @@ public class Config {
             if(config.contains("Tablist.HostedBy") && config.get("Tablist.HostedBy") != null) {
                 Tablist.setHostedBy(config.getString("Tablist.HostedBy"));
             }
+        }
+        //Custom Enchants
+        if(config.contains("CustomEnchants")) {
+            boolean bool;
+            for (CustomEnchantsEnum customEnchantsEnum : CustomEnchantsEnum.values() ) {
+                try {
+                    bool = config.getBoolean("CustomEnchants." + customEnchantsEnum.name());
+                    customEnchantsEnum.setEnabled(bool);
+                }
+                catch (Exception e) {
+                    Main.getMainLogger().warning("Custom enchant " + customEnchantsEnum.name() + " failed");
+                    e.printStackTrace();
+                }
+            }
+        }
+        else {
+            config.createSection("CustomEnchants");
+            for (CustomEnchantsEnum customEnchantsEnum : CustomEnchantsEnum.values() ) {
+                config.set("CustomEnchants." + customEnchantsEnum.name(), true);
+                customEnchantsEnum.setEnabled(true);
+            }
+            Main.getPlugin().saveConfig();
         }
     }
 
