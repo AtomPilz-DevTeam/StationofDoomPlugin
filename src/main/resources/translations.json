@@ -172,7 +172,7 @@
       "invalidDifficulty": "The difficulty has to be between 0 and 10",
       "anvilOutput": "Click here to accept",
       "noNameSet": "No name set",
-      "enchantNotEnabled": "This enchantment is not activated on this server."
+      "enchantNotEnabled": "This enchantment is currently not activated."
     }
   ]
 }

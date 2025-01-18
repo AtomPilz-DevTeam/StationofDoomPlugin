@@ -126,11 +126,11 @@ public class Config {
         }
         //Custom Enchants
         if(config.contains("CustomEnchants")) {
-            boolean bool;
+            boolean customEnchantBool;
             for (CustomEnchantsEnum customEnchantsEnum : CustomEnchantsEnum.values() ) {
                 try {
-                    bool = config.getBoolean("CustomEnchants." + customEnchantsEnum.name());
-                    customEnchantsEnum.setEnabled(bool);
+                    customEnchantBool = config.getBoolean("CustomEnchants." + customEnchantsEnum.name());
+                    customEnchantsEnum.setEnabled(customEnchantBool);
                 }
                 catch (Exception e) {
                     Main.getMainLogger().warning("Setting value for custom enchantment " + customEnchantsEnum.name() + " failed. Falling back to default true value.");
