@@ -29,6 +29,11 @@ public class GUI implements InventoryHolder {
     private final Inventory inventory;
     private final UUID uuid = UUID.randomUUID();
 
+    public GUI() {
+        int inventorySize = 54;
+        inventory = Bukkit.createInventory(this, inventorySize);
+    }
+
     public GUI(String title, boolean addAllPlayers, boolean addAsPlayerHeads) {
         if(title == null) {
             throw new NullPointerException("Title is null!");

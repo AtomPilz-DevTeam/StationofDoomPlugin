@@ -12,6 +12,7 @@ import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.FurnaceEvents;
 import de.j.stationofdoom.enchants.TelepathyEvents;
 import de.j.stationofdoom.listener.*;
+import de.j.stationofdoom.teams.TeamSettingsInventoryListener;
 import de.j.stationofdoom.util.EntityManager;
 import de.j.stationofdoom.util.translations.ChangeLanguageGUI;
 import de.j.stationofdoom.util.translations.LanguageChanger;
@@ -87,6 +88,7 @@ public final class Main extends JavaPlugin {
             COMMANDS.register("sit", new PlayerSitListener());
             COMMANDS.register("game", "game related commands", new GameCMD());
             COMMANDS.register("leaderboard", "showing the leaderboard of the minigame", new LeaderboardCMD());
+            COMMANDS.register("teams", "showing the team settings", new TeamSettingsCMD());
         });
 
         PluginManager pluginManager = Bukkit.getPluginManager();
@@ -112,6 +114,7 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new InitWaitingListLocationOnJoin(), this);
         pluginManager.registerEvents(new LeaveListener(), this);
         pluginManager.registerEvents(new AnvilListener(), this);
+        pluginManager.registerEvents(new TeamSettingsInventoryListener(), this);
 
         //CustomEnchants.register(); -> see custom enchants class for more info
 
