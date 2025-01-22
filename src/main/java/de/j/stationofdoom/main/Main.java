@@ -12,6 +12,7 @@ import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.FurnaceEvents;
 import de.j.stationofdoom.enchants.TelepathyEvents;
 import de.j.stationofdoom.listener.*;
+import de.j.stationofdoom.teams.TeamSettingsCMD;
 import de.j.stationofdoom.teams.TeamSettingsInventoryListener;
 import de.j.stationofdoom.util.EntityManager;
 import de.j.stationofdoom.util.translations.ChangeLanguageGUI;

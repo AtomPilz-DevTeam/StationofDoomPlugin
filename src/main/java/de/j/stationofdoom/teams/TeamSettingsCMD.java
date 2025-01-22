@@ -1,7 +1,5 @@
-package de.j.stationofdoom.cmd;
+package de.j.stationofdoom.teams;
 
-import de.j.stationofdoom.main.Main;
-import de.j.stationofdoom.teams.TeamSettingsInventoryListener;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.command.CommandSender;
@@ -9,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class TeamSettingsCMD implements BasicCommand {
+    public TeamsMainMenuGUI teamsMainMenuGUI = new TeamsMainMenuGUI();
 
     @Override
     public boolean canUse(@NotNull CommandSender sender) {
@@ -18,6 +17,6 @@ public class TeamSettingsCMD implements BasicCommand {
     @Override
     public void execute(CommandSourceStack stack, String[] args) {
         Player player = (Player) stack.getSender();
-        TeamSettingsInventoryListener.teamsMainMenu.showInventory(player);
+        teamsMainMenuGUI.showPage(1, player);
     }
 }

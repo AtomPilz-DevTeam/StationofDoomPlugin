@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class GUI implements InventoryHolder {
-    private final Inventory inventory;
-    private final UUID uuid = UUID.randomUUID();
+    protected Inventory inventory;
+    protected final UUID uuid = UUID.randomUUID();
 
     public GUI() {
         int inventorySize = 54;
@@ -123,7 +123,7 @@ public class GUI implements InventoryHolder {
         }
         itemStack.setItemMeta(itemMeta);
 
-        inventory.setItem(slotWhereToPutTheItem, itemStack);
+        this.inventory.setItem(slotWhereToPutTheItem, itemStack);
     }
 
     /**
