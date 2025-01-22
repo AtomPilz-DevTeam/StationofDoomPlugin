@@ -32,6 +32,7 @@ public class MainMenu implements InventoryHolder {
     public enum AnvilUIs {
         SET_SERVER_NAME,
         SET_HOST_NAME,
+        TEAM_RENAME,
         DEFAULT // usage when the input slot item should have no name
     }
 

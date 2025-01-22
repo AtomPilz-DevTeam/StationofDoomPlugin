@@ -88,7 +88,16 @@
       "alreadyFirstPage": "Du bist bereits auf der ersten Seite",
       "lastPage": "Zurück",
       "nextPage": "Weiter",
-      "page": "Seite"
+      "page": "Seite",
+      "leaveTeam": "Team verlassen",
+      "joinTeam": "Team beitreten",
+      "renameTeam": "Team umbenennen",
+      "deleteTeam": "Team löschen",
+      "changeColor": "Farbe ändern",
+      "lockTeamSettings": "Team Einstellungen sperren",
+      "lockedTeamSettingsLore": "Wenn die Einstellungen gesperrt sind, können diese nur die Team Operatoren bearbeiten",
+      "teamEnderChest": "Team Enderchest",
+      "teamEnderChestLore": "Klicke hier um die Team-Enderchest zu öffnen"
     }
   ],
   "en-US": [
@@ -180,7 +189,16 @@
       "alreadyFirstPage": "You are already on the first page",
       "lastPage": "Back",
       "nextPage": "Next",
-      "page": "Page"
+      "page": "Page",
+      "leaveTeam": "Leave team",
+      "joinTeam": "Join team",
+      "renameTeam": "Rename team",
+      "deleteTeam": "Delete team",
+      "changeColor": "Change color",
+      "lockTeamSettings": "Lock team settings",
+      "lockedTeamSettingsLore": "When locked, only team operators can change team settings",
+      "teamEnderChest": "Team enderchest",
+      "teamEnderChestLore": "Click here to open the team enderchest"
     }
   ]
 }

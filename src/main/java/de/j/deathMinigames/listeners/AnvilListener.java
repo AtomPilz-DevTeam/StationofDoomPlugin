@@ -3,6 +3,8 @@ package de.j.deathMinigames.listeners;
 import de.j.deathMinigames.dmUtil.DmUtil;
 import de.j.deathMinigames.settings.MainMenu;
 import de.j.stationofdoom.main.Main;
+import de.j.stationofdoom.teams.TeamSettingsGUI;
+import de.j.stationofdoom.teams.TeamsMainMenuGUI;
 import de.j.stationofdoom.util.Tablist;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
@@ -25,6 +27,7 @@ import org.bukkit.inventory.view.AnvilView;
 public class AnvilListener implements Listener {
     private String serverName;
     private String hostName;
+    private String teamName;
     private TranslationFactory tf = new TranslationFactory();
 
     @EventHandler
@@ -54,6 +57,11 @@ public class AnvilListener implements Listener {
             if(renameText == null) return;
             serverName = renameText;
         }
+        else if(TeamSettingsGUI.renameTeam.compareLocIDTo(loc)) {
+            finishAnvilInvAfterOpening(event, player);
+            if(renameText == null) return;
+            teamName = renameText;
+        }
     }
 
     @EventHandler
@@ -79,7 +87,17 @@ public class AnvilListener implements Listener {
                 DmUtil.getInstance().playSoundAtLocation(player.getLocation(), 0.5f, Sound.BLOCK_ANVIL_USE);
                 player.sendMessage(Component.text("Server name: " + serverName).color(NamedTextColor.GOLD));
             }
-
+            else if(TeamSettingsGUI.renameTeam.compareLocIDTo(loc)) {
+                event.setCancelled(true);
+                if(teamName == null) {
+                    Main.getMainLogger().info("teamName is null");
+                    return;
+                }
+                Main.getMainLogger().info("set name of team " + TeamsMainMenuGUI.getTeam(player).getName() + " to: " + teamName);
+                TeamsMainMenuGUI.getTeam(player).setName(teamName);
+                new TeamSettingsGUI(TeamsMainMenuGUI.getTeam(player)).showPage(1, player);
+                DmUtil.getInstance().playSoundAtLocation(player.getLocation(), 0.5f, Sound.BLOCK_ANVIL_USE);
+            }
         }
     }
 
@@ -93,6 +111,9 @@ public class AnvilListener implements Listener {
                 anvilInventory.clear();
             }
             else if(MainMenu.getSetServerName().compareLocIDTo(loc)) {
+                anvilInventory.clear();
+            }
+            else if(TeamSettingsGUI.renameTeam.compareLocIDTo(loc)) {
                 anvilInventory.clear();
             }
         }

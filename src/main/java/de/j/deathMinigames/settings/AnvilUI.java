@@ -1,5 +1,6 @@
 package de.j.deathMinigames.settings;
 
+import de.j.stationofdoom.teams.TeamsMainMenuGUI;
 import de.j.stationofdoom.util.Tablist;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
@@ -66,9 +67,22 @@ public class AnvilUI implements InventoryHolder {
         }
         else {
             switch (title) {
-                case SET_HOST_NAME -> inputItemName = Tablist.getHostedBy();
-                case SET_SERVER_NAME -> inputItemName = Tablist.getServerName();
-                default -> throw new IllegalArgumentException("Title: " + title + " is not supported");
+                case SET_HOST_NAME:
+                    inputItemName = Tablist.getHostedBy();
+                    break;
+                case SET_SERVER_NAME:
+                    inputItemName = Tablist.getServerName();
+                    break;
+                case TEAM_RENAME:
+                    if(TeamsMainMenuGUI.getTeam(player).getName() != null) {
+                        inputItemName = TeamsMainMenuGUI.getTeam(player).getName();
+                    }
+                    else {
+                        inputItemName = "";
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException("Title: " + title + " is not supported!");
             }
             if(inputItemName == null) {
                 inputMeta.displayName(Component.text(new TranslationFactory().getTranslation(player, "noNameSet")));
