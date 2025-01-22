@@ -6,7 +6,6 @@ import de.j.stationofdoom.util.translations.TranslationFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -22,18 +21,17 @@ public class TeamsMainMenuGUI extends GUI {
     private final int inventorySize = 54;
     private TranslationFactory tf = new TranslationFactory();
 
-    public TeamsMainMenuGUI() {
-        this.inventory = Bukkit.createInventory(this, inventorySize, "Teams - Page 1 - Default"); // TODO change name
-    }
+    public TeamsMainMenuGUI() {}
 
     public void showPage(int page, Player player) {
-        this.inventory.clear();
+        this.inventory = null;
+        this.inventory = Bukkit.createInventory(this, inventorySize, "Teams - " + tf.getTranslation(player, "page") + " " + page );
         if(TeamsMainMenuGUI.teams.isEmpty()) {
             Main.getMainLogger().info("No teams were found!");
         }
         else {
             teamQuantity = TeamsMainMenuGUI.teams.size();
-            pagesBasedOnTeamsQuantity = (int) Math.ceil(TeamsMainMenuGUI.teams.size() / maxSlotsPerPage);
+            pagesBasedOnTeamsQuantity = (int) Math.ceil(teamQuantity / maxSlotsPerPage);
             fillPage(page);
         }
         addClickableItemStack(tf.getTranslation(player, "createTeam"), Material.CRAFTING_TABLE, 1, 45);
@@ -48,16 +46,16 @@ public class TeamsMainMenuGUI extends GUI {
     }
 
     private void fillPage(int page) {
-        Main.getMainLogger().info("Adding " + teams.size() + " teams to pages");
+        Main.getMainLogger().info("Adding " + teamQuantity + " teams to pages");
         Main.getMainLogger().info("Pages quantity: " + pagesBasedOnTeamsQuantity);
         float intToStartFrom = (page * maxSlotsPerPage) - maxSlotsPerPage;
         Main.getMainLogger().info("Int to start from: " + intToStartFrom);
-        addTeamsToInventory((int) intToStartFrom, Bukkit.createInventory(this, inventorySize, "Teams - Page " + page));
+        addTeamsToInventory((int) intToStartFrom);
     }
 
-    private void addTeamsToInventory(int intToStartFrom, Inventory pageToAddTo) {
+    private void addTeamsToInventory(int intToStartFrom) {
         for(int teamsAdded = 0; teamsAdded < maxSlotsPerPage; teamsAdded++) {
-            if(teamsAdded >= TeamsMainMenuGUI.teams.size() || teamsAdded >= maxSlotsPerPage || intToStartFrom + teamsAdded >= TeamsMainMenuGUI.teams.size()) return;
+            if(teamsAdded >= teamQuantity || teamsAdded >= maxSlotsPerPage || intToStartFrom + teamsAdded >= teamQuantity) return;
             Team currentTeam = TeamsMainMenuGUI.teams.get(intToStartFrom + teamsAdded);
             Main.getMainLogger().info("Current team: " + currentTeam);
             addClickableItemStack(currentTeam.getName(), currentTeam.getColorAsConcreteBlock(), 1, teamsAdded);

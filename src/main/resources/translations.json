@@ -87,7 +87,8 @@
       "createTeam": "Erstelle eine Team",
       "alreadyFirstPage": "Du bist bereits auf der ersten Seite",
       "lastPage": "Zurück",
-      "nextPage": "Weiter"
+      "nextPage": "Weiter",
+      "page": "Seite"
     }
   ],
   "en-US": [
@@ -178,7 +179,8 @@
       "createTeam": "Create a team",
       "alreadyFirstPage": "You are already on the first page",
       "lastPage": "Back",
-      "nextPage": "Next"
+      "nextPage": "Next",
+      "page": "Page"
     }
   ]
 }
