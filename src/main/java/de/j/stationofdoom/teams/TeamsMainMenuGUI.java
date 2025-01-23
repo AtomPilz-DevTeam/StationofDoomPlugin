@@ -6,6 +6,8 @@ import de.j.stationofdoom.util.translations.TranslationFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,9 +61,27 @@ public class TeamsMainMenuGUI extends GUI {
         for(int teamsAdded = 0; teamsAdded < maxSlotsPerPage; teamsAdded++) {
             if(teamsAdded >= teamQuantity || teamsAdded >= maxSlotsPerPage || intToStartFrom + teamsAdded >= teamQuantity) return;
             Team currentTeam = TeamsMainMenuGUI.teams.get(intToStartFrom + teamsAdded);
-            addClickableItemStack(currentTeam.getName(), currentTeam.getColorAsConcreteBlock(), 1, teamsAdded);
+            ArrayList<String> lore = getMembers(currentTeam);
+            addClickableItemStack(currentTeam.getName(), currentTeam.getColorAsConcreteBlock(), 1, teamsAdded, lore);
             invSlots.put(teamsAdded, currentTeam);
         }
+    }
+
+    private ArrayList<String> getMembers(Team currentTeam) {
+        ArrayList<String> lore = new ArrayList<>();
+        if(!currentTeam.getTeamOperators().isEmpty()) {
+            lore.add("Team Operators:");
+            for (Player player : currentTeam.getTeamOperators()) {
+                lore.add("   " + player.getName());
+            }
+        }
+        if(!currentTeam.getMembers().isEmpty()) {
+            lore.add("Team Members:");
+            for (Player player : currentTeam.getMembers()) {
+                lore.add("   " + player.getName());
+            }
+        }
+        return lore;
     }
 
     public void addTeam(Player creatorOfTeam) {
@@ -83,17 +103,17 @@ public class TeamsMainMenuGUI extends GUI {
     }
 
     public static void removePlayerFromEveryTeam(Player player) {
-        List<Team> teamsToRemovePlayerFrom = new ArrayList<>();
+        List<Team> teamToRemoveOrAddPlayer = new ArrayList<>();
         for(Team team : TeamsMainMenuGUI.teams) {
             if(team == null) {
                 Main.getMainLogger().info("Team is null");
                 continue;
             }
-            if(team.getMembers().contains(player)) {
-                teamsToRemovePlayerFrom.add(team);
+            if(team.getAllPlayers().contains(player)) {
+                teamToRemoveOrAddPlayer.add(team);
             }
         }
-        for(Team team : teamsToRemovePlayerFrom) {
+        for(Team team : teamToRemoveOrAddPlayer) {
             team.removeMember(player);
         }
     }

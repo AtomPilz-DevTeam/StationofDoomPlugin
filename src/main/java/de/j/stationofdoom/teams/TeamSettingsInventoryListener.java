@@ -3,6 +3,8 @@ package de.j.stationofdoom.teams;
 import de.j.deathMinigames.settings.GUI;
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -61,15 +63,9 @@ public class TeamSettingsInventoryListener implements Listener {
                 return;
             case 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
                  26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44:
-                if (inv.getItem(slot) == null) {
-                    Main.getMainLogger().warning("No team in slot: " + slot);
-                    return;
-                }
+                if (inv.getItem(slot) == null) return;
                 Team currentTeam = teamsMainMenuGUI.getTeamBasedOnSlot(slot);
-                if (currentTeam == null) {
-                    Main.getMainLogger().warning("No team in slot: " + slot);
-                    return;
-                }
+                if (currentTeam == null) return;
                 TeamSettingsGUI teamSettingsGUI = new TeamSettingsGUI(currentTeam);
                 teamSettingsGUI.showPage(1, player);
                 break;
@@ -100,14 +96,14 @@ public class TeamSettingsInventoryListener implements Listener {
         TeamSettingsGUI teamSettingsGUI = (TeamSettingsGUI) invHolder;
         Team team = teamSettingsGUI.getTeam();
         if(slot != 45) {
-            if(!team.getMembers().contains(player)) {
-                Main.getMainLogger().info("Not a member of this team"); // TODO give player feedback
+            if(!team.getAllPlayers().contains(player)) {
+                player.sendMessage(Component.text(new TranslationFactory().getTranslation(player, "teamNotAMember")).color(NamedTextColor.RED));
                 return;
             }
         }
         if(slot >= 9 && slot <=11 || slot == 17 || slot >= 18 && slot <= 44 && inv.getItem(slot) != null) {
             if(team.getLocked() && !team.isTeamOperator(player)) {
-                Main.getMainLogger().info("This team is locked and you are not an operator of this team"); // TODO give player feedback
+                player.sendMessage(Component.text(new TranslationFactory().getTranslation(player, "teamLockedAndNotOperator")).color(NamedTextColor.RED));
                 teamSettingsGUI.showPage(currentPage, player);
                 return;
             }
@@ -125,11 +121,9 @@ public class TeamSettingsInventoryListener implements Listener {
             case 11:
                 if(team.getLocked()) {
                     team.setLocked(false);
-                    Main.getMainLogger().info("Team is now unlocked"); //TODO give player feedback
                 }
                 else {
                     team.setLocked(true);
-                    Main.getMainLogger().info("Team is now locked"); //TODO give player feedback
                 }
                 teamSettingsGUI.showPage(currentPage, player);
                 break;
@@ -142,7 +136,6 @@ public class TeamSettingsInventoryListener implements Listener {
             case 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41,
                  42, 43, 44:
                 if (inv.getItem(slot) == null) {
-                    Main.getMainLogger().warning("No player in slot: " + slot);
                     return;
                 }
                 break;

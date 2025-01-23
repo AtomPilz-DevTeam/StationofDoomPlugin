@@ -30,7 +30,12 @@ public class Team {
     }
 
     public List<Player> getMembers() {
-        return members.keySet().stream().toList();
+        List<Player> members = new ArrayList<>();
+        for (Player player : this.members.keySet()) {
+            if(isTeamOperator(player)) continue;
+            members.add(player);
+        }
+        return members;
     }
 
     public void addMember(Player player) {
