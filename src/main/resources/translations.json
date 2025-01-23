@@ -97,7 +97,8 @@
       "lockTeamSettings": "Team Einstellungen sperren",
       "lockedTeamSettingsLore": "Wenn die Einstellungen gesperrt sind, können diese nur die Team Operatoren bearbeiten",
       "teamEnderChest": "Team Enderchest",
-      "teamEnderChestLore": "Klicke hier um die Team-Enderchest zu öffnen"
+      "teamEnderChestLore": "Klicke hier um die Team-Enderchest zu öffnen",
+      "teamLockedOrNotOperator": "Die Team Einstellung sind gesperrt oder du bis kein Operator von diesem Team"
     }
   ],
   "en-US": [
@@ -198,7 +199,8 @@
       "lockTeamSettings": "Lock team settings",
       "lockedTeamSettingsLore": "When locked, only team operators can change team settings",
       "teamEnderChest": "Team enderchest",
-      "teamEnderChestLore": "Click here to open the team enderchest"
+      "teamEnderChestLore": "Click here to open the team enderchest",
+      "teamLockedOrNotOperator": "The team settings are locked or you are not an operator of this team"
     }
   ]
 }

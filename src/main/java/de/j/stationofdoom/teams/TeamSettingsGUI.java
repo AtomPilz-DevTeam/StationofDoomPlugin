@@ -5,7 +5,6 @@ import de.j.deathMinigames.settings.GUI;
 import de.j.deathMinigames.settings.MainMenu;
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
-import kotlin.ranges.ClosedRange;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -25,6 +24,7 @@ public class TeamSettingsGUI extends GUI {
     private volatile float memberQuantity;
     private final int startSlotToFill = 18;
     public static AnvilUI renameTeam = new AnvilUI(MainMenu.AnvilUIs.TEAM_RENAME);
+    public static GUI colorChanger = new GUI("Color changer", false, false);
 
     public TeamSettingsGUI(Team team) {
         this.team = team;

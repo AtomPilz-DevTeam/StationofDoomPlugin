@@ -1,6 +1,8 @@
 package de.j.stationofdoom.teams;
 
+import de.j.deathMinigames.settings.GUI;
 import de.j.stationofdoom.main.Main;
+import de.j.stationofdoom.util.translations.TranslationFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -9,13 +11,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TeamSettingsInventoryListener implements Listener {
-
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
@@ -25,6 +27,7 @@ public class TeamSettingsInventoryListener implements Listener {
             int slot = event.getSlot();
             Inventory inv = event.getClickedInventory();
             Player player = (Player) event.getWhoClicked();
+            InventoryView invView = event.getView();
             if (player == null) return;
             if (event.getClickedInventory().getItem(53) == null) return;
             int currentPage = event.getClickedInventory().getItem(53).getAmount() - 1;
@@ -33,7 +36,20 @@ public class TeamSettingsInventoryListener implements Listener {
             if (invHolder instanceof TeamsMainMenuGUI) {
                 handleTeamsMainMenuGUI(slot, inv, invHolder, player, currentPage, lastPage, nextPage);
             } else if (invHolder instanceof TeamSettingsGUI) {
-                handleTeamSettingsGUI(slot, inv, invHolder, player, currentPage, lastPage, nextPage);
+                handleTeamSettingsGUI(slot, inv, invHolder, player, currentPage, lastPage, nextPage, invView);
+            }
+        }
+        else if (invHolder instanceof GUI) {
+            GUI colorChanger = (GUI) invHolder;
+            if(colorChanger.getUUID() == TeamSettingsGUI.colorChanger.getUUID()) {
+                event.setCancelled(true);
+                int slot = event.getSlot();
+                if(slot < 0 || slot > 15) return;
+                Inventory inv = event.getClickedInventory();
+                Player player = (Player) event.getWhoClicked();
+                InventoryView invView = event.getView();
+                if (player == null) return;
+                handleColorChanger(slot, inv, invHolder, player, invView);
             }
         }
     }
@@ -80,27 +96,41 @@ public class TeamSettingsInventoryListener implements Listener {
         }
     }
 
-    private void handleTeamSettingsGUI(int slot, Inventory inv, InventoryHolder invHolder, Player player, int currentPage, int lastPage, int nextPage) {
+    private void handleTeamSettingsGUI(int slot, Inventory inv, InventoryHolder invHolder, Player player, int currentPage, int lastPage, int nextPage, InventoryView invView) {
         TeamSettingsGUI teamSettingsGUI = (TeamSettingsGUI) invHolder;
         Team team = teamSettingsGUI.getTeam();
         switch (slot) {
             case -999:
                 return;
             case 9:
-                teamSettingsGUI.renameTeam.showInventory(player);
+                if(team.getMembers().contains(player)){
+                    teamSettingsGUI.renameTeam.showInventory(player);
+                }
+                else {
+                    Main.getMainLogger().info("Not a member of this team"); // TODO give player feedback
+                }
                 break;
             case 10:
-                Inventory colorChanger = Bukkit.createInventory(invHolder, 4 * 9, "Colorchanger");
-                addColorsToColorChanger(colorChanger);
-                player.openInventory(colorChanger);
+                addColorsToColorChanger(teamSettingsGUI.colorChanger.getInventory());
+                if(team.getMembers().contains(player)){
+                    teamSettingsGUI.colorChanger.showInventory(player);
+                }
+                else {
+                    Main.getMainLogger().info("Not a member of this team"); // TODO give player feedback
+                }
                 break;
             case 11:
                 break;
             case 12:
                 break;
             case 17:
-                team.remove();
-                new TeamsMainMenuGUI().showPage(1, player);
+                if(team.getMembers().contains(player)){
+                    team.remove();
+                    new TeamsMainMenuGUI().showPage(1, player);
+                }
+                else {
+                    Main.getMainLogger().info("Not a member of this team"); // TODO give player feedback
+                }
                 break;
             case 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41,
                  42, 43, 44:
@@ -137,11 +167,27 @@ public class TeamSettingsInventoryListener implements Listener {
         }
     }
 
+    private void handleColorChanger(int slot, Inventory inv, InventoryHolder invHolder, Player player, InventoryView invView) {
+        Material clickedColor = inv.getItem(slot).getType();
+        Team teamToChangeColor = TeamsMainMenuGUI.getTeam(player);
+        if(teamToChangeColor == null) return;
+        if(teamToChangeColor.isTeamOperator(player)) {
+            Main.getMainLogger().info("Is operator");
+            teamToChangeColor.setColorAsConcreteBlock(clickedColor);
+        }
+        else {
+            player.sendMessage(new TranslationFactory().getTranslation(player, "teamLockedOrNotOperator"));
+        }
+        new TeamSettingsGUI(teamToChangeColor).showPage(1, player);
+    }
+
     private void addColorsToColorChanger(Inventory colorChanger) {
+        int count = 0;
         for (Material material : Material.values()) {
             if (material.name().contains("CONCRETE") && !material.name().contains("POWDER")) {
                 ItemStack color = new ItemStack(material);
-                colorChanger.addItem(color);
+                colorChanger.setItem(count, color);
+                count++;
             }
         }
     }

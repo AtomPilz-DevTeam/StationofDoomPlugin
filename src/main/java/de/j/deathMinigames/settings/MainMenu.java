@@ -26,7 +26,7 @@ public class MainMenu implements InventoryHolder {
         PARKOUR_START_HEIGHT,
         PARKOUR_LENGTH,
         COST_TO_LOWER_THE_DIFFICULTY,
-        TIME_TO_DECIDE_WHEN_RESPAWNING,
+        TIME_TO_DECIDE_WHEN_RESPAWNING
     }
 
     public enum AnvilUIs {
