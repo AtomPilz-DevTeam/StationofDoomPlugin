@@ -58,6 +58,10 @@ public class Team {
     }
 
     public void setLocked(boolean locked) {
+        if(getTeamOperators().isEmpty()) {
+            Main.getMainLogger().info("Team is not locked because there are no operators");
+            return;
+        }
         this.locked = locked;
     }
 
@@ -107,6 +111,10 @@ public class Team {
 
     public void removeMember(Player player) {
         if(this.members.containsKey(player)) {
+            if(getTeamOperators().contains(player) && getTeamOperators().size() == 1) {
+                setLocked(false);
+                Main.getMainLogger().info("Team " + this.name + " is now unlocked because there are no operators anymore");
+            }
             this.members.remove(player);
             Main.getMainLogger().info("Removed " + player.getName() + " from team " + this.name);
             if(this.members.isEmpty()) {

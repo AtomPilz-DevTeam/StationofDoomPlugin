@@ -99,38 +99,45 @@ public class TeamSettingsInventoryListener implements Listener {
     private void handleTeamSettingsGUI(int slot, Inventory inv, InventoryHolder invHolder, Player player, int currentPage, int lastPage, int nextPage, InventoryView invView) {
         TeamSettingsGUI teamSettingsGUI = (TeamSettingsGUI) invHolder;
         Team team = teamSettingsGUI.getTeam();
+        if(slot != 45) {
+            if(!team.getMembers().contains(player)) {
+                Main.getMainLogger().info("Not a member of this team"); // TODO give player feedback
+                return;
+            }
+        }
+        if(slot >= 9 && slot <=11 || slot == 17 || slot >= 18 && slot <= 44 && inv.getItem(slot) != null) {
+            if(team.getLocked() && !team.isTeamOperator(player)) {
+                Main.getMainLogger().info("This team is locked and you are not an operator of this team"); // TODO give player feedback
+                teamSettingsGUI.showPage(currentPage, player);
+                return;
+            }
+        }
         switch (slot) {
             case -999:
                 return;
             case 9:
-                if(team.getMembers().contains(player)){
-                    teamSettingsGUI.renameTeam.showInventory(player);
-                }
-                else {
-                    Main.getMainLogger().info("Not a member of this team"); // TODO give player feedback
-                }
+                teamSettingsGUI.renameTeam.showInventory(player);
                 break;
             case 10:
                 addColorsToColorChanger(teamSettingsGUI.colorChanger.getInventory());
-                if(team.getMembers().contains(player)){
-                    teamSettingsGUI.colorChanger.showInventory(player);
-                }
-                else {
-                    Main.getMainLogger().info("Not a member of this team"); // TODO give player feedback
-                }
+                teamSettingsGUI.colorChanger.showInventory(player);
                 break;
             case 11:
+                if(team.getLocked()) {
+                    team.setLocked(false);
+                    Main.getMainLogger().info("Team is now unlocked"); //TODO give player feedback
+                }
+                else {
+                    team.setLocked(true);
+                    Main.getMainLogger().info("Team is now locked"); //TODO give player feedback
+                }
+                teamSettingsGUI.showPage(currentPage, player);
                 break;
             case 12:
                 break;
             case 17:
-                if(team.getMembers().contains(player)){
-                    team.remove();
-                    new TeamsMainMenuGUI().showPage(1, player);
-                }
-                else {
-                    Main.getMainLogger().info("Not a member of this team"); // TODO give player feedback
-                }
+                team.remove();
+                new TeamsMainMenuGUI().showPage(1, player);
                 break;
             case 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41,
                  42, 43, 44:
@@ -171,13 +178,7 @@ public class TeamSettingsInventoryListener implements Listener {
         Material clickedColor = inv.getItem(slot).getType();
         Team teamToChangeColor = TeamsMainMenuGUI.getTeam(player);
         if(teamToChangeColor == null) return;
-        if(teamToChangeColor.isTeamOperator(player)) {
-            Main.getMainLogger().info("Is operator");
-            teamToChangeColor.setColorAsConcreteBlock(clickedColor);
-        }
-        else {
-            player.sendMessage(new TranslationFactory().getTranslation(player, "teamLockedOrNotOperator"));
-        }
+        teamToChangeColor.setColorAsConcreteBlock(clickedColor);
         new TeamSettingsGUI(teamToChangeColor).showPage(1, player);
     }
 
