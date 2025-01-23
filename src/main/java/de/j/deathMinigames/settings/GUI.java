@@ -51,6 +51,22 @@ public class GUI implements InventoryHolder {
         }
     }
 
+    public GUI(String title, boolean addAllPlayers, boolean addAsPlayerHeads, int size) {
+        if(title == null) {
+            throw new NullPointerException("Title is null!");
+        }
+        inventory = Bukkit.createInventory(this, size, title);
+        if(addAllPlayers) {
+            HashMap<UUID, PlayerData> knownPlayers = HandlePlayers.getKnownPlayers();
+            if(addAsPlayerHeads) {
+                addPlayerHeads(knownPlayers);
+            }
+            else {
+                addBooleanBased(knownPlayers, title);
+            }
+        }
+    }
+
     public void addPlayerHeads(HashMap<UUID, PlayerData> knownPlayers) {
         int maxSlots = inventory.getSize() - 1;
         List<UUID> playerKeys = new ArrayList<>(knownPlayers.keySet());

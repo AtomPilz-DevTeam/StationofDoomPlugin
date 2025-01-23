@@ -49,9 +49,8 @@ public class TeamSettingsInventoryListener implements Listener {
                 if(slot < 0 || slot > 15) return;
                 Inventory inv = event.getClickedInventory();
                 Player player = (Player) event.getWhoClicked();
-                InventoryView invView = event.getView();
                 if (player == null) return;
-                handleColorChanger(slot, inv, invHolder, player, invView);
+                handleColorChanger(slot, inv, player);
             }
         }
     }
@@ -128,6 +127,7 @@ public class TeamSettingsInventoryListener implements Listener {
                 teamSettingsGUI.showPage(currentPage, player);
                 break;
             case 12:
+                team.accessEnderChest(player);
                 break;
             case 17:
                 team.remove();
@@ -167,7 +167,7 @@ public class TeamSettingsInventoryListener implements Listener {
         }
     }
 
-    private void handleColorChanger(int slot, Inventory inv, InventoryHolder invHolder, Player player, InventoryView invView) {
+    private void handleColorChanger(int slot, Inventory inv, Player player) {
         Material clickedColor = inv.getItem(slot).getType();
         Team teamToChangeColor = TeamsMainMenuGUI.getTeam(player);
         if(teamToChangeColor == null) return;
