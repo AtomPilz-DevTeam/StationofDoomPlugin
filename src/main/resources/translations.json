@@ -99,7 +99,11 @@
       "teamEnderChest": "Team Enderchest",
       "teamEnderChestLore": "Klicke hier um die Team-Enderchest zu öffnen",
       "teamLockedAndNotOperator": "Die Team Einstellung sind gesperrt und du bis kein Operator von diesem Team",
-      "teamNotAMember": "Du bist kein Mitglied dieses Teams"
+      "teamNotAMember": "Du bist kein Mitglied dieses Teams",
+      "teamPlayerSettingsDemoteToMember": "Zu Mitglied herunterstufen",
+      "teamPlayerSettingsPromoteToOperator": "Zu Operator hochstufen",
+      "teamPlayerSettingsKickPlayer": "Spieler kicken",
+      "kickedFromTeam": "Du wurdest von %s vom Team gekickt"
     }
   ],
   "en-US": [
@@ -202,7 +206,11 @@
       "teamEnderChest": "Team enderchest",
       "teamEnderChestLore": "Click here to open the team enderchest",
       "teamLockedAndNotOperator": "The team settings are locked and you are not an operator of this team",
-      "teamNotAMember": "You are not a member of this team"
+      "teamNotAMember": "You are not a member of this team",
+      "teamPlayerSettingsDemoteToMember": "Demote to member",
+      "teamPlayerSettingsPromoteToOperator": "Promote to operator",
+      "teamPlayerSettingsKickPlayer": "Kick player",
+      "kickedFromTeam": "You got kicked from the team by %s"
     }
   ]
 }

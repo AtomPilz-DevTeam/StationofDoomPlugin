@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TeamSettingsInventoryListener implements Listener {
+    TranslationFactory tf = new TranslationFactory();
+
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
@@ -43,14 +45,17 @@ public class TeamSettingsInventoryListener implements Listener {
         }
         else if (invHolder instanceof GUI) {
             GUI colorChanger = (GUI) invHolder;
+            event.setCancelled(true);
+            int slot = event.getSlot();
+            Inventory inv = event.getClickedInventory();
+            Player player = (Player) event.getWhoClicked();
+            if (player == null) return;
             if(colorChanger.getUUID() == TeamSettingsGUI.colorChanger.getUUID()) {
-                event.setCancelled(true);
-                int slot = event.getSlot();
                 if(slot < 0 || slot > 15) return;
-                Inventory inv = event.getClickedInventory();
-                Player player = (Player) event.getWhoClicked();
-                if (player == null) return;
                 handleColorChanger(slot, inv, player);
+            }
+            if(invHolder instanceof TeamPlayerSettingsGUI) {
+                handleTeamPlayerSettingsGUI(slot, invHolder, player);
             }
         }
     }
@@ -96,13 +101,13 @@ public class TeamSettingsInventoryListener implements Listener {
         Team team = teamSettingsGUI.getTeam();
         if(slot != 45) {
             if(!team.getAllPlayers().contains(player)) {
-                player.sendMessage(Component.text(new TranslationFactory().getTranslation(player, "teamNotAMember")).color(NamedTextColor.RED));
+                player.sendMessage(Component.text(tf.getTranslation(player, "teamNotAMember")).color(NamedTextColor.RED));
                 return;
             }
         }
         if(slot >= 9 && slot <=11 || slot == 17 || slot >= 18 && slot <= 44 && inv.getItem(slot) != null) {
             if(team.getLocked() && !team.isTeamOperator(player)) {
-                player.sendMessage(Component.text(new TranslationFactory().getTranslation(player, "teamLockedAndNotOperator")).color(NamedTextColor.RED));
+                player.sendMessage(Component.text(tf.getTranslation(player, "teamLockedAndNotOperator")).color(NamedTextColor.RED));
                 teamSettingsGUI.showPage(currentPage, player);
                 return;
             }
@@ -138,6 +143,10 @@ public class TeamSettingsInventoryListener implements Listener {
                 if (inv.getItem(slot) == null) {
                     return;
                 }
+                Player playerBasedOnSlot = teamSettingsGUI.getMemberBasedOnSlot(slot);
+                if(playerBasedOnSlot == null) return;
+                Main.getMainLogger().info("Opening player settings for " + playerBasedOnSlot.getName());
+                new TeamPlayerSettingsGUI().showInventory(player, playerBasedOnSlot);
                 break;
             case 45:
                 team.handlePlayerLeaveOrJoin(player);
@@ -183,6 +192,40 @@ public class TeamSettingsInventoryListener implements Listener {
                 colorChanger.setItem(count, color);
                 count++;
             }
+        }
+    }
+
+    private void handleTeamPlayerSettingsGUI(int slot, InventoryHolder invHolder, Player player) {
+        if(slot != 9 && slot != 10 && slot != 17) return;
+        TeamPlayerSettingsGUI teamPlayerSettingsGUI = (TeamPlayerSettingsGUI) invHolder;
+        Team team = teamPlayerSettingsGUI.getTeam();
+        Player playerClickedOn = teamPlayerSettingsGUI.getPlayer();
+        if(team == null) return;
+        if(slot == 9 || slot == 10) {
+            if(!team.isTeamOperator(player) && team.getLocked()) {
+                player.sendMessage(Component.text(tf.getTranslation(player, "teamLockedAndNotOperator")).color(NamedTextColor.RED));
+                return;
+            }
+        }
+        switch (slot) {
+            case 9:
+                team.setTeamOperator(playerClickedOn, !team.isTeamOperator(playerClickedOn));
+                break;
+            case 10:
+                team.removeMember(playerClickedOn);
+                playerClickedOn.sendMessage(Component.text(tf.getTranslation(playerClickedOn, "kickedFromTeam", player.getName())).color(NamedTextColor.RED));
+                break;
+            case 17:
+                if(!team.getAllPlayers().isEmpty()) {
+                    new TeamSettingsGUI(team).showPage(1, player);
+                }
+                else {
+                    new TeamsMainMenuGUI().showPage(1, player);
+                }
+                return;
+        }
+        if(!team.getAllPlayers().isEmpty()) {
+            teamPlayerSettingsGUI.showInventory(player, playerClickedOn);
         }
     }
 }
