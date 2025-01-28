@@ -6,7 +6,6 @@ import de.j.stationofdoom.util.translations.TranslationFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +24,13 @@ public class TeamsMainMenuGUI extends GUI {
 
     public static Team getTeam(Player player) {
         for(Team team : TeamsMainMenuGUI.teams) {
+            Main.getMainLogger().info(team.getName());
+            for (Player player1 : team.getAllPlayers()) {
+                Main.getMainLogger().info(player1.getName());
+            }
+            if(team.isDeleted()) continue;
             if(team.getAllPlayers().contains(player)) {
+                Main.getMainLogger().info("Found team " + team.getName());
                 return team;
             }
         }

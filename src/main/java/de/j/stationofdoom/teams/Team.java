@@ -4,6 +4,7 @@ import de.j.stationofdoom.main.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -22,6 +23,12 @@ public class Team {
     public volatile Inventory inventory = Bukkit.createInventory(null, 27);
     private HashMap<Player, Boolean> members = new HashMap<>();
     private UUID uuid;
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    private volatile boolean deleted = false;
 
     public Team(Player player) {
         uuid = UUID.randomUUID();
@@ -162,6 +169,7 @@ public class Team {
         }
         this.members.clear();
         TeamsMainMenuGUI.teams.remove(this);
+        this.deleted = true;
         Main.getMainLogger().info("Removed team " + this.name);
     }
 

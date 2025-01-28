@@ -103,7 +103,8 @@
       "teamPlayerSettingsDemoteToMember": "Zu Mitglied herunterstufen",
       "teamPlayerSettingsPromoteToOperator": "Zu Operator hochstufen",
       "teamPlayerSettingsKickPlayer": "Spieler kicken",
-      "kickedFromTeam": "Du wurdest von %s vom Team gekickt"
+      "kickedFromTeam": "Du wurdest von %s vom Team gekickt",
+      "teamDeleted": "Das Team, %s, ist gelöscht und du kannst es nicht mehr öffnen"
     }
   ],
   "en-US": [
@@ -210,7 +211,8 @@
       "teamPlayerSettingsDemoteToMember": "Demote to member",
       "teamPlayerSettingsPromoteToOperator": "Promote to operator",
       "teamPlayerSettingsKickPlayer": "Kick player",
-      "kickedFromTeam": "You got kicked from the team by %s"
+      "kickedFromTeam": "You got kicked from the team by %s",
+      "teamDeleted": "The team, %s, is deleted and you can not open it anymore"
     }
   ]
 }

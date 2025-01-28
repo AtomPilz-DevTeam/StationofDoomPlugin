@@ -5,6 +5,8 @@ import de.j.deathMinigames.settings.GUI;
 import de.j.deathMinigames.settings.MainMenu;
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -33,6 +35,12 @@ public class TeamSettingsGUI extends GUI {
     public void showPage(int page, Player playerToShowTheInvTo) {
         this.inventory = null;
         this.inventory = Bukkit.createInventory(this, inventorySize, team.getName() +" - " + tf.getTranslation(playerToShowTheInvTo, "page") + " " + page );
+        if(this.team.isDeleted()) {
+            Main.getMainLogger().info("Team is deleted and therefore not opened");
+            playerToShowTheInvTo.sendMessage(Component.text(tf.getTranslation(playerToShowTheInvTo, "teamDeleted", team.getName())).color(NamedTextColor.RED));
+            new TeamsMainMenuGUI().showPage(1, playerToShowTheInvTo);
+            return;
+        }
         members = team.getAllPlayers();
         if(members.isEmpty()) {
             Main.getMainLogger().info("No players were found!");

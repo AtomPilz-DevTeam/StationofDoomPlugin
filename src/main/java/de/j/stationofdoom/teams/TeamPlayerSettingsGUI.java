@@ -2,6 +2,7 @@ package de.j.stationofdoom.teams;
 
 import de.j.deathMinigames.settings.GUI;
 import de.j.stationofdoom.util.translations.TranslationFactory;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -12,11 +13,15 @@ public class TeamPlayerSettingsGUI extends GUI {
     private volatile Player player;
     private volatile Team team;
 
-    public TeamPlayerSettingsGUI() {
-        super("Team player settings", false, false, 2 * 9);
+    public TeamPlayerSettingsGUI() {}
+
+    public void showInventory(Player playerToShowTheInvTo, Player playerBasedOnSlot) {
+        fillInv(playerBasedOnSlot);
+        playerToShowTheInvTo.openInventory(inventory);
     }
 
     private void fillInv(Player player) {
+        this.inventory = Bukkit.createInventory(this.inventory.getHolder(), 18, player.getName());
         this.player = player;
         this.team = TeamsMainMenuGUI.getTeam(player);
         boolean isOperator = team.getTeamOperators().contains(player);
@@ -38,11 +43,6 @@ public class TeamPlayerSettingsGUI extends GUI {
         }
         addClickableItemStack(tf.getTranslation(player, "teamPlayerSettingsKickPlayer"), Material.BARRIER, 1, 10);
         addClickableItemStack(tf.getTranslation(player, "backButton"), Material.RED_CONCRETE, 1, 17);
-    }
-
-    public void showInventory(Player playerToShowTheInvTo, Player playerBasedOnSlot) {
-        fillInv(playerBasedOnSlot);
-        playerToShowTheInvTo.openInventory(inventory);
     }
 
     public Player getPlayer() {

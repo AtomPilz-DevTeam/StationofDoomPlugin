@@ -12,6 +12,7 @@ import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.FurnaceEvents;
 import de.j.stationofdoom.enchants.TelepathyEvents;
 import de.j.stationofdoom.listener.*;
+import de.j.stationofdoom.teams.TeamInventoryReload;
 import de.j.stationofdoom.teams.TeamSettingsCMD;
 import de.j.stationofdoom.teams.TeamSettingsInventoryListener;
 import de.j.stationofdoom.util.EntityManager;
@@ -116,6 +117,7 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new LeaveListener(), this);
         pluginManager.registerEvents(new AnvilListener(), this);
         pluginManager.registerEvents(new TeamSettingsInventoryListener(), this);
+        pluginManager.registerEvents(new TeamInventoryReload(), this);
 
         //CustomEnchants.register(); -> see custom enchants class for more info
 
