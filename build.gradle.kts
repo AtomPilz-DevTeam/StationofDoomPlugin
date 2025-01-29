@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    library("com.google.code.gson:gson:2.11.0")
+    library("com.google.code.gson:gson:2.12.0")
     library("club.minnced:discord-webhooks:0.8.4")
     paperweight.paperDevBundle("$minecraftVersion-R0.1-SNAPSHOT")
     library("org.postgresql:postgresql:42.7.5")
