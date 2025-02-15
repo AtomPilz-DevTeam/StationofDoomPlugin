@@ -1,5 +1,9 @@
 package de.j.stationofdoom.teams;
 
+import de.j.deathMinigames.database.Database;
+import de.j.deathMinigames.database.TeamsDatabase;
+import de.j.deathMinigames.main.HandlePlayers;
+import de.j.deathMinigames.main.PlayerData;
 import de.j.deathMinigames.settings.GUI;
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
@@ -10,31 +14,45 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class TeamsMainMenuGUI extends GUI {
     public static volatile List<Team> teams = new ArrayList<>();
-    private HashMap<Integer, Team> invSlots = new HashMap<>(); // for checking which team settings to open based on clicked slot
+    private final HashMap<Integer, Team> invSlots = new HashMap<>(); // for checking which team settings to open based on clicked slot
     private float teamQuantity;
     private final float maxSlotsPerPage = 45;
     private int pagesBasedOnTeamsQuantity;
     private final int inventorySize = 54;
-    private TranslationFactory tf = new TranslationFactory();
+    private final TranslationFactory tf = new TranslationFactory();
 
-    public TeamsMainMenuGUI() {}
+    public TeamsMainMenuGUI() {
+        if(Database.getInstance().isConnected) {
+            teams = TeamsDatabase.getInstance().getTeams();
+            Main.getMainLogger().info("Loaded " + teams.size() + " teams");
+        }
+    }
 
-    public static Team getTeam(Player player) {
+    public static Team getTeam(PlayerData playerData) {
         for(Team team : TeamsMainMenuGUI.teams) {
             Main.getMainLogger().info(team.getName());
-            for (Player player1 : team.getAllPlayers()) {
-                Main.getMainLogger().info(player1.getName());
+            for (UUID uuid : team.getAllPlayers()) {
+                Main.getMainLogger().info(HandlePlayers.getInstance().getPlayerData(uuid).getName());
             }
             if(team.isDeleted()) continue;
-            if(team.getAllPlayers().contains(player)) {
+            if(team.isMember(playerData.getUniqueId())) {
                 Main.getMainLogger().info("Found team " + team.getName());
                 return team;
             }
         }
-        return null;
+        Main.getMainLogger().info("No team found for player " + playerData.getName());
+        return new Team();
+    }
+
+    public static boolean teamExists(UUID uuidOfTeam) {
+        for(Team team : TeamsMainMenuGUI.teams) {
+            if(team.getUuid().equals(uuidOfTeam)) return true;
+        }
+        return false;
     }
 
     public void showPage(int page, Player player) {
@@ -76,14 +94,14 @@ public class TeamsMainMenuGUI extends GUI {
         ArrayList<String> lore = new ArrayList<>();
         if(!currentTeam.getTeamOperators().isEmpty()) {
             lore.add("Team Operators:");
-            for (Player player : currentTeam.getTeamOperators()) {
-                lore.add("   " + player.getName());
+            for (PlayerData playerData : currentTeam.getTeamOperators()) {
+                lore.add("   " + playerData.getName());
             }
         }
         if(!currentTeam.getMembers().isEmpty()) {
             lore.add("Team Members:");
-            for (Player player : currentTeam.getMembers()) {
-                lore.add("   " + player.getName());
+            for (PlayerData playerData : currentTeam.getMembers()) {
+                lore.add("   " + playerData.getName());
             }
         }
         return lore;
@@ -92,6 +110,7 @@ public class TeamsMainMenuGUI extends GUI {
     public void addTeam(Player creatorOfTeam) {
         Team newTeam = new Team(creatorOfTeam);
         TeamsMainMenuGUI.teams.add(newTeam);
+        TeamsDatabase.getInstance().addTeam(newTeam);
     }
 
     public int getPagesQuantity() {
@@ -107,19 +126,19 @@ public class TeamsMainMenuGUI extends GUI {
         return teamBasedOnSlot;
     }
 
-    public static void removePlayerFromEveryTeam(Player player) {
+    public static void removePlayerFromEveryTeam(PlayerData playerData) {
         List<Team> teamToRemoveOrAddPlayer = new ArrayList<>();
         for(Team team : TeamsMainMenuGUI.teams) {
             if(team == null) {
                 Main.getMainLogger().info("Team is null");
                 continue;
             }
-            if(team.getAllPlayers().contains(player)) {
+            if(team.isMember(playerData.getUniqueId())) {
                 teamToRemoveOrAddPlayer.add(team);
             }
         }
         for(Team team : teamToRemoveOrAddPlayer) {
-            team.removeMember(player);
+            team.removeMember(playerData);
         }
     }
 }

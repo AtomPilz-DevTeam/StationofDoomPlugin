@@ -1,7 +1,10 @@
 package de.j.deathMinigames.main;
 import de.j.stationofdoom.main.Main;
+import de.j.stationofdoom.teams.Team;
+import de.j.stationofdoom.teams.TeamsMainMenuGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -18,16 +21,23 @@ public class PlayerData {
         this.name = name;
     }
 
-    public synchronized UUID getUUID() {
+    public synchronized UUID getUniqueId() {
         return uuid;
     }
 
-    public synchronized void setUUID(UUID uuid) {
+    public synchronized void setUniqueID(UUID uuid) {
         this.uuid = uuid;
     }
 
     public synchronized Player getPlayer() {
-        return player;
+        if(this.player == null) {
+            this.player = Bukkit.getPlayer(this.uuid);
+        }
+        return this.player;
+    }
+
+    public synchronized OfflinePlayer getOfflinePlayer() {
+        return Bukkit.getOfflinePlayer(this.uuid);
     }
 
     public synchronized PlayerMinigameStatus getStatus() {
@@ -60,6 +70,16 @@ public class PlayerData {
 
     public synchronized void setLastDeathLocation(Location lastDeathLocation) {
         this.lastDeathLocation = lastDeathLocation;
+    }
+
+    public synchronized Location getLocation() {
+        try {
+            return getPlayer().getLocation();
+        }
+        catch (NullPointerException e) {
+            Main.getMainLogger().warning("Tried accessing location of " + this.name + " but player is not online!");
+            return Bukkit.getOfflinePlayer(this.uuid).getLocation();
+        }
     }
 
     public synchronized int getDecisionTimer() {
@@ -102,9 +122,18 @@ public class PlayerData {
         this.usesPlugin = usesPlugin;
     }
 
+    public boolean isOnline() {
+        try {
+            return getPlayer().isConnected();
+        }
+        catch (NullPointerException e) {
+            return false;
+        }
+    }
+
     private volatile String name; // in database
     private volatile UUID uuid; // in database
-    private final Player player;
+    private volatile Player player;
     private volatile PlayerMinigameStatus status;
     private volatile Inventory lastDeathInventory = Bukkit.createInventory(null, 9*6);
     private volatile Location lastDeathLocation;
@@ -113,6 +142,24 @@ public class PlayerData {
     private volatile int difficulty; // in database
     private volatile int decisionTimer;
     private volatile float bestParkourTime; // in database
+    private volatile UUID uuidOfTeam;
+    private volatile boolean teamOperator;
+
+    public UUID getUuidOfTeam() {
+        return uuidOfTeam;
+    }
+
+    public void setUuidOfTeam(UUID uuidOfTeam) {
+        this.uuidOfTeam = uuidOfTeam;
+    }
+
+    public boolean isTeamOperator() {
+        return teamOperator;
+    }
+
+    public void setTeamOperator(boolean teamOperator) {
+        this.teamOperator = teamOperator;
+    }
 
     public boolean getLeftWhileProcessing() {
         return leftWhileProcessing;
@@ -139,7 +186,7 @@ public class PlayerData {
         this.leftWhileProcessing = false;
     }
 
-    public PlayerData(String name, String uuid, boolean introduction, boolean usesPlugin, int difficulty, float bestParkourTime) {
+    public PlayerData(String name, String uuid, boolean introduction, boolean usesPlugin, int difficulty, float bestParkourTime, String uuidOfTeam, boolean teamOperator) {
         Config config = Config.getInstance();
         this.name = name;
         this.uuid = UUID.fromString(uuid);
@@ -152,14 +199,14 @@ public class PlayerData {
         this.introduction = introduction;
         this.usesPlugin = usesPlugin;
         this.leftWhileProcessing = false;
-    }
-
-    /**
-     * Updates the player's name to the current name of the player entity.
-     * This method synchronizes the stored name with the live player's name.
-     */
-    public void updateName() {
-        this.name = player.getName();
+        if(uuidOfTeam == null || !TeamsMainMenuGUI.teamExists(UUID.fromString(uuidOfTeam))) {
+            this.uuidOfTeam = null;
+            this.teamOperator = false;
+        }
+        else {
+            this.uuidOfTeam = UUID.fromString(uuidOfTeam);
+            this.teamOperator = teamOperator;
+        }
     }
 
     /**

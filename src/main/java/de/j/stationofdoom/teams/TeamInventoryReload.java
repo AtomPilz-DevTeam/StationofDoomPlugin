@@ -10,7 +10,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class TeamInventoryReload implements Listener {
-    private static final int secondsBetweenReloads = 1;
+    private static final int secondsBetweenReloads = 3;
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {

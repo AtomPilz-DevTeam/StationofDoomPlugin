@@ -7,17 +7,12 @@ import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import de.j.deathMinigames.main.Config;
-import de.j.deathMinigames.listeners.InventoryListener;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.profile.PlayerProfile;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -76,10 +71,10 @@ public class GUI implements InventoryHolder {
                 break;
             }
             PlayerData playerData = knownPlayers.get(playerKeys.get(i));
-            if(playerData == null || playerData.getUUID() == null) continue;
+            if(playerData == null || playerData.getUniqueId() == null) continue;
             ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
             SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
-            skullMeta.setOwnerProfile(Bukkit.createProfile(playerData.getUUID()));
+            skullMeta.setOwnerProfile(Bukkit.createProfile(playerData.getUniqueId()));
             skullMeta.displayName(Component.text(playerData.getName()));
             head.setItemMeta(skullMeta);
 
@@ -87,11 +82,11 @@ public class GUI implements InventoryHolder {
         }
     }
 
-    public void addPlayerHead(Player player, int slot, List<String> lore) {
+    public void addPlayerHead(PlayerData playerData, int slot, List<String> lore) {
         ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
         SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
-        skullMeta.setOwnerProfile(Bukkit.createProfile(player.getUniqueId()));
-        skullMeta.displayName(Component.text(player.getName()));
+        skullMeta.setOwnerProfile(Bukkit.createProfile(playerData.getUniqueId()));
+        skullMeta.displayName(Component.text(playerData.getName()));
         skullMeta.setLore(lore);
         head.setItemMeta(skullMeta);
 
@@ -151,20 +146,6 @@ public class GUI implements InventoryHolder {
         itemStack.setItemMeta(itemMeta);
 
         this.inventory.setItem(slotWhereToPutTheItem, itemStack);
-    }
-
-    /**
-     * Adds contents to the inventory using an array of ItemStacks.
-     * If the array is larger than the inventory size, an exception is thrown.
-     *
-     * @param itemStackList An array of ItemStacks to be added to the inventory.
-     * @throws IllegalArgumentException if the itemS tackList size exceeds the inventory size.
-     */
-    public void addClickableContentsViaItemStackList(ItemStack[] itemStackList) {
-        if(itemStackList.length > inventory.getSize()) {
-            throw new IllegalArgumentException("The StackList is bigger then the size of the inventory!");
-        }
-        inventory.setContents(itemStackList);
     }
 
     /**

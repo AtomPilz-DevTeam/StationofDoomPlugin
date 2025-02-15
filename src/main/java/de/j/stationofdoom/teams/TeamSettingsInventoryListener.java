@@ -1,11 +1,12 @@
 package de.j.stationofdoom.teams;
 
+import de.j.deathMinigames.main.HandlePlayers;
+import de.j.deathMinigames.main.PlayerData;
 import de.j.deathMinigames.settings.GUI;
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,11 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TeamSettingsInventoryListener implements Listener {
     TranslationFactory tf = new TranslationFactory();
@@ -31,7 +28,7 @@ public class TeamSettingsInventoryListener implements Listener {
             int slot = event.getSlot();
             Inventory inv = event.getClickedInventory();
             Player player = (Player) event.getWhoClicked();
-            InventoryView invView = event.getView();
+            PlayerData playerData = HandlePlayers.getInstance().getPlayerData(player.getUniqueId());
             if (player == null) return;
             if (event.getClickedInventory().getItem(53) == null) return;
             int currentPage = event.getClickedInventory().getItem(53).getAmount() - 1;
@@ -39,8 +36,9 @@ public class TeamSettingsInventoryListener implements Listener {
             int nextPage = currentPage + 1;
             if (invHolder instanceof TeamsMainMenuGUI) {
                 handleTeamsMainMenuGUI(slot, inv, invHolder, player, currentPage, lastPage, nextPage);
-            } else if (invHolder instanceof TeamSettingsGUI) {
-                handleTeamSettingsGUI(slot, inv, invHolder, player, currentPage, lastPage, nextPage, invView);
+            }
+            else {
+                handleTeamSettingsGUI(slot, inv, invHolder, player, playerData, currentPage, lastPage, nextPage);
             }
         }
         else if (invHolder instanceof GUI) {
@@ -96,17 +94,21 @@ public class TeamSettingsInventoryListener implements Listener {
         }
     }
 
-    private void handleTeamSettingsGUI(int slot, Inventory inv, InventoryHolder invHolder, Player player, int currentPage, int lastPage, int nextPage, InventoryView invView) {
+    private void handleTeamSettingsGUI(int slot, Inventory inv, InventoryHolder invHolder, Player player, PlayerData playerData, int currentPage, int lastPage, int nextPage) {
         TeamSettingsGUI teamSettingsGUI = (TeamSettingsGUI) invHolder;
         Team team = teamSettingsGUI.getTeam();
         if(slot != 45) {
-            if(!team.getAllPlayers().contains(player)) {
+            if(player.getUniqueId() == null) {
+                Main.getMainLogger().info("Player is null in TeamSettingsInventoryListener");
+                return;
+            }
+            if(!team.isMember(player.getUniqueId())) {
                 player.sendMessage(Component.text(tf.getTranslation(player, "teamNotAMember")).color(NamedTextColor.RED));
                 return;
             }
         }
         if(slot >= 9 && slot <=11 || slot == 17 || slot >= 18 && slot <= 44 && inv.getItem(slot) != null) {
-            if(team.getLocked() && !team.isTeamOperator(player)) {
+            if(team.getLocked() && !team.isTeamOperator(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()))) {
                 player.sendMessage(Component.text(tf.getTranslation(player, "teamLockedAndNotOperator")).color(NamedTextColor.RED));
                 teamSettingsGUI.showPage(currentPage, player);
                 return;
@@ -116,19 +118,14 @@ public class TeamSettingsInventoryListener implements Listener {
             case -999:
                 return;
             case 9:
-                teamSettingsGUI.renameTeam.showInventory(player);
+                TeamSettingsGUI.renameTeam.showInventory(player);
                 break;
             case 10:
-                addColorsToColorChanger(teamSettingsGUI.colorChanger.getInventory());
-                teamSettingsGUI.colorChanger.showInventory(player);
+                addColorsToColorChanger(TeamSettingsGUI.colorChanger.getInventory());
+                TeamSettingsGUI.colorChanger.showInventory(player);
                 break;
             case 11:
-                if(team.getLocked()) {
-                    team.setLocked(false);
-                }
-                else {
-                    team.setLocked(true);
-                }
+                team.setLocked(!team.getLocked());
                 teamSettingsGUI.showPage(currentPage, player);
                 break;
             case 12:
@@ -143,13 +140,13 @@ public class TeamSettingsInventoryListener implements Listener {
                 if (inv.getItem(slot) == null) {
                     return;
                 }
-                Player playerBasedOnSlot = teamSettingsGUI.getMemberBasedOnSlot(slot);
+                PlayerData playerBasedOnSlot = teamSettingsGUI.getMemberBasedOnSlot(slot);
                 if(playerBasedOnSlot == null) return;
                 Main.getMainLogger().info("Opening player settings for " + playerBasedOnSlot.getName());
                 new TeamPlayerSettingsGUI().showInventory(player, playerBasedOnSlot);
                 break;
             case 45:
-                team.handlePlayerLeaveOrJoin(player);
+                team.handlePlayerLeaveOrJoin(playerData);
                 if(!team.getAllPlayers().isEmpty()) {
                     teamSettingsGUI.showPage(currentPage, player);
                 }
@@ -178,7 +175,7 @@ public class TeamSettingsInventoryListener implements Listener {
 
     private void handleColorChanger(int slot, Inventory inv, Player player) {
         Material clickedColor = inv.getItem(slot).getType();
-        Team teamToChangeColor = TeamsMainMenuGUI.getTeam(player);
+        Team teamToChangeColor = TeamsMainMenuGUI.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()));
         if(teamToChangeColor == null) return;
         teamToChangeColor.setColorAsConcreteBlock(clickedColor);
         new TeamSettingsGUI(teamToChangeColor).showPage(1, player);
@@ -199,21 +196,24 @@ public class TeamSettingsInventoryListener implements Listener {
         if(slot != 9 && slot != 10 && slot != 17) return;
         TeamPlayerSettingsGUI teamPlayerSettingsGUI = (TeamPlayerSettingsGUI) invHolder;
         Team team = teamPlayerSettingsGUI.getTeam();
-        Player playerClickedOn = teamPlayerSettingsGUI.getPlayer();
+        PlayerData playerData = HandlePlayers.getInstance().getPlayerData(player.getUniqueId());
+        PlayerData clickedOnPlayerData = teamPlayerSettingsGUI.getPlayerData();
         if(team == null) return;
         if(slot == 9 || slot == 10) {
-            if(!team.isTeamOperator(player) && team.getLocked()) {
+            if(!team.isTeamOperator(playerData) && team.getLocked()) {
                 player.sendMessage(Component.text(tf.getTranslation(player, "teamLockedAndNotOperator")).color(NamedTextColor.RED));
                 return;
             }
         }
         switch (slot) {
             case 9:
-                team.setTeamOperator(playerClickedOn, !team.isTeamOperator(playerClickedOn));
+                team.setTeamOperator(clickedOnPlayerData, !team.isTeamOperator(clickedOnPlayerData));
                 break;
             case 10:
-                team.removeMember(playerClickedOn);
-                playerClickedOn.sendMessage(Component.text(tf.getTranslation(playerClickedOn, "kickedFromTeam", player.getName())).color(NamedTextColor.RED));
+                team.removeMember(clickedOnPlayerData);
+                if(clickedOnPlayerData.isOnline()) {
+                    clickedOnPlayerData.getPlayer().sendMessage(Component.text(tf.getTranslation(clickedOnPlayerData.getPlayer(), "kickedFromTeam", player.getName())).color(NamedTextColor.RED));
+                }
                 break;
             case 17:
                 if(!team.getAllPlayers().isEmpty()) {
@@ -225,7 +225,7 @@ public class TeamSettingsInventoryListener implements Listener {
                 return;
         }
         if(!team.getAllPlayers().isEmpty()) {
-            teamPlayerSettingsGUI.showInventory(player, playerClickedOn);
+            teamPlayerSettingsGUI.showInventory(player, clickedOnPlayerData);
         }
     }
 }

@@ -2,6 +2,7 @@ package de.j.stationofdoom.main;
 
 import de.j.deathMinigames.commands.GameCMD;
 import de.j.deathMinigames.commands.LeaderboardCMD;
+import de.j.deathMinigames.database.TeamsDatabase;
 import de.j.deathMinigames.listeners.*;
 import de.j.deathMinigames.main.Config;
 import de.j.deathMinigames.database.Database;
@@ -132,6 +133,7 @@ public final class Main extends JavaPlugin {
         EntityManager.removeOldEntities();
         WhoIsOnline.shutdown();
         HandlePlayers.copyAllPlayerDataIntoDatabase();
+        TeamsDatabase.getInstance().updateTeamsDatabase();
     }
 
     public static Main getPlugin(){

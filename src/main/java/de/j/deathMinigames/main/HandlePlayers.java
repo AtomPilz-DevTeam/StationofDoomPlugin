@@ -1,11 +1,9 @@
 package de.j.deathMinigames.main;
 
+import de.j.deathMinigames.database.Database;
 import de.j.deathMinigames.database.PlayerDataDatabase;
 import de.j.deathMinigames.minigames.Minigame;
 import de.j.stationofdoom.main.Main;
-import de.j.stationofdoom.util.translations.TranslationFactory;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -59,7 +57,7 @@ public class HandlePlayers {
     public static void initKnownPlayersPlayerData() {
         PlayerDataDatabase playerDataDatabase = PlayerDataDatabase.getInstance();
         for(PlayerData playerData : playerDataDatabase.getAllPlayerDatas()) {
-            knownPlayers.put(playerData.getUUID(), playerData);
+            knownPlayers.put(playerData.getUniqueId(), playerData);
         }
         Main.getMainLogger().info("Loaded " + knownPlayers.size() + " known players and their data");
     }
@@ -89,6 +87,7 @@ public class HandlePlayers {
             return;
         }
         knownPlayers.put(playerUUID, playerData);
+        PlayerDataDatabase.getInstance().addPlayerToDatabase(playerData);
         Main.getMainLogger().info("Added new player " + playerData.getName());
     }
 
@@ -143,6 +142,21 @@ public class HandlePlayers {
         if(playerData.getLeftWhileProcessing()) {
             Minigame.getInstance().tpPlayerToRespawnLocation(player);
             playerData.setLeftWhileProcessing(false);
+        }
+    }
+
+    public PlayerData getPlayerData(UUID uuidOfPlayer) {
+        if(Database.getInstance().isConnected) {
+            return PlayerDataDatabase.getInstance().getPlayerData(uuidOfPlayer);
+        }
+        else {
+            if(this.checkIfPlayerIsKnown(uuidOfPlayer)) {
+                return knownPlayers.get(uuidOfPlayer);
+            }
+            else {
+                Main.getMainLogger().info("Player of uuid " + uuidOfPlayer + " is not known");
+                return null;
+            }
         }
     }
 }

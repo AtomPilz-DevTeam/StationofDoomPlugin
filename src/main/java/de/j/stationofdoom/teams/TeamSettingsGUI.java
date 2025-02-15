@@ -1,5 +1,7 @@
 package de.j.stationofdoom.teams;
 
+import de.j.deathMinigames.main.HandlePlayers;
+import de.j.deathMinigames.main.PlayerData;
 import de.j.deathMinigames.settings.AnvilUI;
 import de.j.deathMinigames.settings.GUI;
 import de.j.deathMinigames.settings.MainMenu;
@@ -10,19 +12,19 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class TeamSettingsGUI extends GUI {
     private final TranslationFactory tf = new TranslationFactory();
     private volatile Team team;
     private final int inventorySize = 54;
     private final int maxSlotsPerPage = 27;
-    private volatile HashMap<Integer, Player> invSlots = new HashMap<>();
+    private volatile HashMap<Integer, PlayerData> invSlots = new HashMap<>();
     private int pagesBasedOnMemberQuantity;
-    private volatile List<Player> members;
+    private volatile List<UUID> members;
     private volatile float memberQuantity;
     private final int startSlotToFill = 18;
     public static AnvilUI renameTeam = new AnvilUI(MainMenu.AnvilUIs.TEAM_RENAME);
@@ -50,7 +52,7 @@ public class TeamSettingsGUI extends GUI {
             pagesBasedOnMemberQuantity = (int) Math.ceil(memberQuantity / maxSlotsPerPage);
             fillPage(page);
         }
-        if(members.contains(playerToShowTheInvTo)) {
+        if(members.contains(playerToShowTheInvTo.getUniqueId())) {
             addClickableItemStack(tf.getTranslation(playerToShowTheInvTo, "leaveTeam"), Material.BARRIER, 1, 45);
         }
         else {
@@ -77,11 +79,17 @@ public class TeamSettingsGUI extends GUI {
         invSlots.clear();
         for(int playersAdded = 0; playersAdded < maxSlotsPerPage; playersAdded++) {
             if(playersAdded >= memberQuantity || playersAdded >= maxSlotsPerPage || intToStartFrom + playersAdded >= memberQuantity) return;
-            Player currentPlayer = members.get(intToStartFrom + playersAdded);
+            PlayerData currentPlayerData = HandlePlayers.getInstance().getPlayerData(members.get(intToStartFrom + playersAdded));
             ArrayList<String> lore = new ArrayList<>();
-            lore.add("Operator: " + team.isTeamOperator(currentPlayer));
-            addPlayerHead(currentPlayer, playersAdded + startSlotToFill, lore);
-            invSlots.put(playersAdded + startSlotToFill, currentPlayer);
+            lore.add("Operator: " + team.isTeamOperator(currentPlayerData));
+            if(!currentPlayerData.isOnline()) {
+                lore.add("Offline");
+            }
+            else {
+                lore.add("Online");
+            }
+            addPlayerHead(currentPlayerData, playersAdded + startSlotToFill, lore);
+            invSlots.put(playersAdded + startSlotToFill, currentPlayerData);
         }
     }
 
@@ -93,8 +101,8 @@ public class TeamSettingsGUI extends GUI {
         return team;
     }
 
-    public Player getMemberBasedOnSlot(int slot) {
-        Player playerBasedOnSlot = invSlots.get(slot);
+    public PlayerData getMemberBasedOnSlot(int slot) {
+        PlayerData playerBasedOnSlot = invSlots.get(slot);
         if(playerBasedOnSlot == null) {
             return null;
         }

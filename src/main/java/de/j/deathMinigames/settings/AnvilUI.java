@@ -1,5 +1,7 @@
 package de.j.deathMinigames.settings;
 
+import de.j.deathMinigames.database.PlayerDataDatabase;
+import de.j.deathMinigames.main.HandlePlayers;
 import de.j.stationofdoom.teams.TeamsMainMenuGUI;
 import de.j.stationofdoom.util.Tablist;
 import de.j.stationofdoom.util.translations.TranslationFactory;
@@ -74,8 +76,8 @@ public class AnvilUI implements InventoryHolder {
                     inputItemName = Tablist.getServerName();
                     break;
                 case TEAM_RENAME:
-                    if(TeamsMainMenuGUI.getTeam(player).getName() != null) {
-                        inputItemName = TeamsMainMenuGUI.getTeam(player).getName();
+                    if(TeamsMainMenuGUI.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId())).getName() != null) {
+                        inputItemName = TeamsMainMenuGUI.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId())).getName();
                     }
                     else {
                         inputItemName = "";
