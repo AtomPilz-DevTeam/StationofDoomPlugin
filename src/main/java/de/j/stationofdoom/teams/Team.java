@@ -209,6 +209,7 @@ public class Team {
         if(this.members.containsKey(playerData.getUniqueId())) {
             this.members.put(playerData.getUniqueId(), value);
         }
+        if(getTeamOperators().isEmpty()) this.locked = false;
     }
 
     public boolean isTeamOperator(PlayerData playerData) {
