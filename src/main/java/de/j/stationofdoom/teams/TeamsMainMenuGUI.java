@@ -48,6 +48,13 @@ public class TeamsMainMenuGUI extends GUI {
         return new Team();
     }
 
+    public static Team getTeam(UUID uuidOfTeam) {
+        for(Team team : TeamsMainMenuGUI.teams) {
+            if(team.getUuid().equals(uuidOfTeam)) return team;
+        }
+        return null;
+    }
+
     public static boolean teamExists(UUID uuidOfTeam) {
         for(Team team : TeamsMainMenuGUI.teams) {
             if(team.getUuid().equals(uuidOfTeam)) return true;

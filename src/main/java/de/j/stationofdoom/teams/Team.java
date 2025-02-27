@@ -1,6 +1,7 @@
 package de.j.stationofdoom.teams;
 
 import de.j.deathMinigames.database.PlayerDataDatabase;
+import de.j.deathMinigames.database.TeamEnderchestsDatabase;
 import de.j.deathMinigames.database.TeamsDatabase;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
@@ -24,7 +25,7 @@ public class Team {
     private String name;
     private Material colorAsConcreteBlock;
     private boolean locked;
-    public volatile Inventory inventory = Bukkit.createInventory(null, 27); // TODO save in database
+    public volatile Inventory inventory;
     private HashMap<UUID, Boolean> members = new HashMap<>();
     private UUID uuid;
 
@@ -39,9 +40,8 @@ public class Team {
         this.colorAsConcreteBlock = Material.valueOf(colorAsString);
         this.locked = locked;
         this.uuid = UUID.fromString(uuid);
-        Inventory changeInv = Bukkit.createInventory(null, 27, name);
-        changeInv.setContents(inventory.getContents());
-        inventory = changeInv; // TODO change to use from database
+        this.inventory = Bukkit.createInventory(null, 27, name);
+        this.inventory.setContents(TeamEnderchestsDatabase.getInstance().getTeamEnderchest(this.getUuid()).getContents());
     }
 
     // used to create a new team without any operators
@@ -52,9 +52,8 @@ public class Team {
     public Team(PlayerData playerData) {
         uuid = UUID.randomUUID();
         name = playerData.getName() + "'s Team";
-        Inventory changeInv = Bukkit.createInventory(null, 27, name);
-        changeInv.setContents(inventory.getContents());
-        inventory = changeInv;
+        this.inventory = Bukkit.createInventory(null, 27, name);
+        this.inventory.setContents(TeamEnderchestsDatabase.getInstance().getTeamEnderchest(this.getUuid()).getContents());
         setRandomConcreteMaterial();
         handlePlayerLeaveOrJoin(playerData);
         setTeamOperator(HandlePlayers.getInstance().getPlayerData(playerData.getUniqueId()), true);
@@ -63,9 +62,8 @@ public class Team {
     public Team(Player player) {
         uuid = UUID.randomUUID();
         name = player.getName() + "'s Team";
-        Inventory changeInv = Bukkit.createInventory(null, 27, name);
-        changeInv.setContents(inventory.getContents());
-        inventory = changeInv;
+        this.inventory = Bukkit.createInventory(null, 27, name);
+        this.inventory.setContents(TeamEnderchestsDatabase.getInstance().getTeamEnderchest(this.getUuid()).getContents());
         setRandomConcreteMaterial();
         handlePlayerLeaveOrJoin(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()));
         setTeamOperator(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()), true);

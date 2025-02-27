@@ -32,7 +32,7 @@ public class TeamsDatabase {
         return instance;
     }
 
-    public void createTables() {
+    public void createTable() {
         if(!Database.getInstance().isConnected) return;
         Query.query("CREATE TABLE IF NOT EXISTS teams (name VARCHAR(255), color VARCHAR(255), locked BOOLEAN, uuid VARCHAR(255));")
                 .single()
