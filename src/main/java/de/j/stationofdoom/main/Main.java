@@ -15,7 +15,7 @@ import de.j.stationofdoom.enchants.FurnaceEvents;
 import de.j.stationofdoom.enchants.TelepathyEvents;
 import de.j.stationofdoom.listener.*;
 import de.j.stationofdoom.teams.TeamInventoryReload;
-import de.j.stationofdoom.teams.TeamSettingsCMD;
+import de.j.stationofdoom.teams.TeamsCMD;
 import de.j.stationofdoom.teams.TeamSettingsInventoryListener;
 import de.j.stationofdoom.util.EntityManager;
 import de.j.stationofdoom.util.translations.ChangeLanguageGUI;
@@ -92,7 +92,7 @@ public final class Main extends JavaPlugin {
             COMMANDS.register("sit", new PlayerSitListener());
             COMMANDS.register("game", "game related commands", new GameCMD());
             COMMANDS.register("leaderboard", "showing the leaderboard of the minigame", new LeaderboardCMD());
-            COMMANDS.register("teams", "showing the team settings", new TeamSettingsCMD());
+            COMMANDS.register("teams", "showing the team settings", new TeamsCMD());
         });
 
         PluginManager pluginManager = Bukkit.getPluginManager();
