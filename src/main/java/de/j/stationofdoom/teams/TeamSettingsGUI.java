@@ -132,6 +132,9 @@ public class TeamSettingsGUI extends GUI {
         ArrayList<String> teamEnderChestLore = new ArrayList<>();
         teamEnderChestLore.add(tf.getTranslation(player, "teamEnderChestLore"));
         addClickableItemStack(tf.getTranslation(player, "teamEnderChest"), Material.ENDER_CHEST, 1, 12, teamEnderChestLore);
+        ArrayList<String> teamClaimChunksLore = new ArrayList<>();
+        teamClaimChunksLore.add(tf.getTranslation(player, "teamClaimChunksLore"));
+        addClickableItemStack(tf.getTranslation(player, "teamClaimChunks"), Material.MAP, 1, 13, teamClaimChunksLore);
         addClickableItemStack(tf.getTranslation(player, "deleteTeam"), Material.COMPOSTER, 1, 17);
     }
 }

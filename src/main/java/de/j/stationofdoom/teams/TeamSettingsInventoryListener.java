@@ -7,6 +7,8 @@ import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -131,6 +133,9 @@ public class TeamSettingsInventoryListener implements Listener {
             case 12:
                 team.accessEnderChest(player);
                 break;
+            case 13:
+                Location playerLocation = player.getLocation();
+                Chunk chunk = playerLocation.getWorld().getChunkAt(playerLocation);
             case 17:
                 team.remove();
                 new TeamsMainMenuGUI().showPage(1, player);
@@ -142,7 +147,6 @@ public class TeamSettingsInventoryListener implements Listener {
                 }
                 PlayerData playerBasedOnSlot = teamSettingsGUI.getMemberBasedOnSlot(slot);
                 if(playerBasedOnSlot == null) return;
-                Main.getMainLogger().info("Opening player settings for " + playerBasedOnSlot.getName());
                 new TeamPlayerSettingsGUI().showInventory(player, playerBasedOnSlot);
                 break;
             case 45:
