@@ -2,6 +2,7 @@ package de.j.stationofdoom.main;
 
 import de.j.deathMinigames.commands.GameCMD;
 import de.j.deathMinigames.commands.LeaderboardCMD;
+import de.j.stationofdoom.teams.enderchest.TeamEnderchestPreventEnchantedItemsInput;
 import de.j.deathMinigames.database.TeamEnderchestsDatabase;
 import de.j.deathMinigames.database.TeamsDatabase;
 import de.j.deathMinigames.listeners.*;
@@ -120,6 +121,7 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new AnvilListener(), this);
         pluginManager.registerEvents(new TeamSettingsInventoryListener(), this);
         pluginManager.registerEvents(new TeamInventoryReload(), this);
+        pluginManager.registerEvents(new TeamEnderchestPreventEnchantedItemsInput(), this);
 
         //CustomEnchants.register(); -> see custom enchants class for more info
 
