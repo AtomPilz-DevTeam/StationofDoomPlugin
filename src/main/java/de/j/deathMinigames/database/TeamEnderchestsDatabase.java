@@ -38,15 +38,6 @@ public class TeamEnderchestsDatabase {
                 .insert();
     }
 
-    public void removeTeamEnderchest(UUID uuidOfTeam) {
-        if(!Database.getInstance().isConnected) return;
-        Query.query("DELETE FROM teamEnderchests WHERE uuidOfTeam = ?;")
-                .single(Call.of()
-                        .bind(uuidOfTeam, UUIDAdapter.AS_STRING))
-                .delete();
-        Main.getMainLogger().info("Removed Enderchest of team " + TeamsMainMenuGUI.getTeam(uuidOfTeam).getName() + " from database");
-    }
-
     public Inventory getTeamEnderchest(UUID uuidOfTeam) {
         Inventory inv = Bukkit.createInventory(null, 27, "Team Enderchest");
         if(!Database.getInstance().isConnected) return inv;

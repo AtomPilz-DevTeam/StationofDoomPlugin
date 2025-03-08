@@ -107,7 +107,8 @@
       "teamDeleted": "Das Team, %s, ist gelöscht und du kannst es nicht mehr öffnen",
       "playerIsOffline": "Der Spieler ist offline",
       "teamClaimChunks": "Chunks beanspruchen",
-      "teamClaimChunksLore": "Klicke hier, um Anspruch auf die drei umgebenden Chunks zu erheben"
+      "teamClaimChunksLore": "Klicke hier, um Anspruch auf die drei umgebenden Chunks zu erheben",
+      "teamEnderchestPreventEnchantedItemsInput": "Du kannst keine verzauberten Items in die Enderchest legen"
     }
   ],
   "en-US": [
@@ -218,7 +219,8 @@
       "teamDeleted": "The team, %s, is deleted and you can not open it anymore",
       "playerIsOffline": "This player is offline",
       "teamClaimChunks": "Claim chunks",
-      "teamClaimChunksLore": "Click here to claim the three surrounding chunks for your team"
+      "teamClaimChunksLore": "Click here to claim the three surrounding chunks for your team",
+      "teamEnderchestPreventEnchantedItemsInput": "You can not put enchanted items into the team enderchest"
     }
   ]
 }

@@ -5,6 +5,7 @@ import de.j.deathMinigames.database.TeamsDatabase;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.stationofdoom.main.Main;
+import de.j.stationofdoom.teams.enderchest.EnderchestInvHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,6 +26,7 @@ public class Team {
     private Material colorAsConcreteBlock;
     private boolean locked;
     public volatile Inventory inventory;
+    private EnderchestInvHolder enderchestInvHolder = new EnderchestInvHolder();
     private HashMap<UUID, Boolean> members = new HashMap<>();
     private UUID uuid;
 
@@ -39,7 +41,7 @@ public class Team {
         this.colorAsConcreteBlock = Material.valueOf(colorAsString);
         this.locked = locked;
         this.uuid = UUID.fromString(uuid);
-        this.inventory = Bukkit.createInventory(null, 27, name);
+        this.inventory = Bukkit.createInventory(enderchestInvHolder, 27, name);
         this.inventory.setContents(TeamEnderchestsDatabase.getInstance().getTeamEnderchest(this.getUuid()).getContents());
     }
 
@@ -51,7 +53,7 @@ public class Team {
     public Team(PlayerData playerData) {
         uuid = UUID.randomUUID();
         name = playerData.getName() + "'s Team";
-        this.inventory = Bukkit.createInventory(null, 27, name);
+        this.inventory = Bukkit.createInventory(enderchestInvHolder, 27, name);
         this.inventory.setContents(TeamEnderchestsDatabase.getInstance().getTeamEnderchest(this.getUuid()).getContents());
         setRandomConcreteMaterial();
         handlePlayerLeaveOrJoin(playerData);
@@ -61,7 +63,7 @@ public class Team {
     public Team(Player player) {
         uuid = UUID.randomUUID();
         name = player.getName() + "'s Team";
-        this.inventory = Bukkit.createInventory(null, 27, name);
+        this.inventory = Bukkit.createInventory(enderchestInvHolder, 27, name);
         this.inventory.setContents(TeamEnderchestsDatabase.getInstance().getTeamEnderchest(this.getUuid()).getContents());
         setRandomConcreteMaterial();
         handlePlayerLeaveOrJoin(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()));
