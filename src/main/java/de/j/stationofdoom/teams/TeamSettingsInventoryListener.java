@@ -135,7 +135,10 @@ public class TeamSettingsInventoryListener implements Listener {
                 break;
             case 13:
                 Location playerLocation = player.getLocation();
-                Chunk chunk = playerLocation.getWorld().getChunkAt(playerLocation);
+                Main.getMainLogger().info("Player location: " + playerLocation);
+                player.sendMessage(Component.text(tf.getTranslation(player, "teamSetProtectedLocation", playerLocation.getBlockX(), playerLocation.getBlockY(), playerLocation.getBlockZ())).color(NamedTextColor.GREEN));
+                team.setProtectedLocation(playerLocation);
+                break;
             case 17:
                 team.remove();
                 new TeamsMainMenuGUI().showPage(1, player);

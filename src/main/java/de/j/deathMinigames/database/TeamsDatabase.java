@@ -10,6 +10,7 @@ import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.teams.Team;
 import de.j.stationofdoom.teams.TeamsMainMenuGUI;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class TeamsDatabase {
 
     public void createTable() {
         if(!Database.getInstance().isConnected) return;
-        Query.query("CREATE TABLE IF NOT EXISTS teams (name VARCHAR(255), color VARCHAR(255), locked BOOLEAN, uuid VARCHAR(255));")
+        Query.query("CREATE TABLE IF NOT EXISTS teams (name VARCHAR(255), color VARCHAR(255), locked BOOLEAN, uuid VARCHAR(255), world VARCHAR(255), protectedLocationX INT, protectedLocationY INT, protectedLocationZ INT);")
                 .single()
                 .insert();
     }
@@ -42,15 +43,28 @@ public class TeamsDatabase {
     public List<Team> getTeams() {
         if(!Database.getInstance().isConnected) return new ArrayList<>();
         List<Team> teams = new ArrayList<>();
-        Query.query("SELECT * FROM teams;")
-                .single()
-                .map(row -> new Team(row.getString("name"),
-                        row.getString("color"),
-                        row.getBoolean("locked"),
-                        row.getString("uuid")))
-                .all()
-                .forEach(team -> teams.add(team));
-        Main.getMainLogger().info("Found " + teams.size() + " teams:");
+        try {
+            Query.query("SELECT * FROM teams;")
+                    .single()
+                    .map(row -> new Team(row.getString("name"),
+                            row.getString("color"),
+                            row.getBoolean("locked"),
+                            row.getString("uuid"),
+                            new Location(Bukkit.getWorld(row.getString("world")), row.getInt("protectedLocationX"), row.getInt("protectedLocationY"), row.getInt("protectedLocationZ"))))
+                    .all()
+                    .forEach(team -> teams.add(team));
+        }
+        catch (IllegalArgumentException e) {
+            Query.query("SELECT * FROM teams;")
+                    .single()
+                    .map(row -> new Team(row.getString("name"),
+                            row.getString("color"),
+                            row.getBoolean("locked"),
+                            row.getString("uuid")))
+                    .all()
+                    .forEach(team -> teams.add(team));
+        }
+            Main.getMainLogger().info("Found " + teams.size() + " teams:");
         for (Team team : teams) {
             Main.getMainLogger().info(team.getName());
             Query.query("SELECT uuid FROM playerData WHERE uuidOfTeam = ?;")
@@ -80,13 +94,29 @@ public class TeamsDatabase {
 
     public void addTeam(Team team) {
         if(!Database.getInstance().isConnected) return;
-        Query.query("INSERT INTO teams (name, color, locked, uuid) VALUES (?, ?, ?, ?);")
-                .single(Call.of()
-                        .bind(team.getName())
-                        .bind(team.getColorAsConcreteBlock().name())
-                        .bind(team.getLocked())
-                        .bind(team.getUuid(), UUIDAdapter.AS_STRING))
-                .insert();
+        if(team.getProtectedLocation() != null) {
+            Query.query("INSERT INTO teams (name, color, locked, uuid, world, protectedLocationX, protectedLocationY, protectedLocationZ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);")
+                    .single(Call.of()
+                            .bind(team.getName())
+                            .bind(team.getColorAsConcreteBlock().name())
+                            .bind(team.getLocked())
+                            .bind(team.getUuid(), UUIDAdapter.AS_STRING)
+                            .bind(team.getProtectedLocation().getWorld().getName())
+                            .bind(team.getProtectedLocation().getBlockX())
+                            .bind(team.getProtectedLocation().getBlockY())
+                            .bind(team.getProtectedLocation().getBlockZ())
+                    )
+                    .insert();
+        }
+        else {
+            Query.query("INSERT INTO teams (name, color, locked, uuid) VALUES (?, ?, ?, ?);")
+                    .single(Call.of()
+                            .bind(team.getName())
+                            .bind(team.getColorAsConcreteBlock().name())
+                            .bind(team.getLocked())
+                            .bind(team.getUuid(), UUIDAdapter.AS_STRING))
+                    .insert();
+        }
         Main.getMainLogger().info("Added team " + team.getName() + " to database");
         for(UUID uuid : team.getAllPlayers()) {
             PlayerData playerData = HandlePlayers.getInstance().getPlayerData(uuid);
@@ -123,15 +153,30 @@ public class TeamsDatabase {
         List<Team> teams = TeamsMainMenuGUI.teams;
         for (Team team : teams) {
             if(checkIfTeamIsInDatabase(team)) {
-                Query.query("UPDATE teams SET name = ?, color = ?, locked = ? WHERE uuid = ?;")
-                        .single(Call.of()
-                                .bind(team.getName())
-                                .bind(team.getColorAsConcreteBlock().name())
-                                .bind(team.getLocked())
-                                .bind(team.getUuid(), UUIDAdapter.AS_STRING))
-                        .update();
-                for(UUID uuid : team.getAllPlayers()) {
-                    updatePlayerInDB(HandlePlayers.getInstance().getPlayerData(uuid));
+                if(team.getProtectedLocation() != null) {
+                    Query.query("UPDATE teams SET name = ?, color = ?, locked = ?, world = ?, protectedLocationX = ?, protectedLocationY = ?, protectedLocationZ = ? WHERE uuid = ?;")
+                            .single(Call.of()
+                                    .bind(team.getName())
+                                    .bind(team.getColorAsConcreteBlock().name())
+                                    .bind(team.getLocked())
+                                    .bind(team.getProtectedLocation().getWorld().getName())
+                                    .bind(team.getProtectedLocation().getBlockX())
+                                    .bind(team.getProtectedLocation().getBlockY())
+                                    .bind(team.getProtectedLocation().getBlockZ())
+                                    .bind(team.getUuid(), UUIDAdapter.AS_STRING))
+                            .update();
+                }
+                else {
+                    Query.query("UPDATE teams SET name = ?, color = ?, locked = ? WHERE uuid = ?;")
+                            .single(Call.of()
+                                    .bind(team.getName())
+                                    .bind(team.getColorAsConcreteBlock().name())
+                                    .bind(team.getLocked())
+                                    .bind(team.getUuid(), UUIDAdapter.AS_STRING))
+                            .update();
+                    for (UUID uuid : team.getAllPlayers()) {
+                        updatePlayerInDB(HandlePlayers.getInstance().getPlayerData(uuid));
+                    }
                 }
             }
             else {

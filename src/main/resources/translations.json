@@ -107,8 +107,10 @@
       "teamDeleted": "Das Team, %s, ist gelöscht und du kannst es nicht mehr öffnen",
       "playerIsOffline": "Der Spieler ist offline",
       "teamClaimChunks": "Chunks beanspruchen",
+      "teamClaimChunksProtectedLocation": "Chunks beanspruchen (gerade: x: %s y: %s z: %S)",
       "teamClaimChunksLore": "Klicke hier, um Anspruch auf die drei umgebenden Chunks zu erheben",
-      "teamEnderchestPreventEnchantedItemsInput": "Du kannst keine verzauberten Items in die Enderchest legen"
+      "teamEnderchestPreventEnchantedItemsInput": "Du kannst keine verzauberten Items in die Enderchest legen",
+      "teamSetProtectedLocation": "Du hast den Bereich um die Location x: %s y: %s z: %S geschützt"
     }
   ],
   "en-US": [
@@ -219,8 +221,10 @@
       "teamDeleted": "The team, %s, is deleted and you can not open it anymore",
       "playerIsOffline": "This player is offline",
       "teamClaimChunks": "Claim chunks",
+      "teamClaimChunksProtectedLocation": "Claim chunks (at the moment: x: %s y: %s z: %S)",
       "teamClaimChunksLore": "Click here to claim the three surrounding chunks for your team",
-      "teamEnderchestPreventEnchantedItemsInput": "You can not put enchanted items into the team enderchest"
+      "teamEnderchestPreventEnchantedItemsInput": "You can not put enchanted items into the team enderchest",
+      "teamSetProtectedLocation": "You claimed the location around x: %s y: %s z: %S"
     }
   ]
 }

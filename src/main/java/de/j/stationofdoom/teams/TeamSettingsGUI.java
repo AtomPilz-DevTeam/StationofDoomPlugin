@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public class TeamSettingsGUI extends GUI {
     private final TranslationFactory tf = new TranslationFactory();
-    private volatile Team team;
+    private final Team team;
     private final int inventorySize = 54;
     private final int maxSlotsPerPage = 27;
     private volatile HashMap<Integer, PlayerData> invSlots = new HashMap<>();
@@ -134,7 +134,14 @@ public class TeamSettingsGUI extends GUI {
         addClickableItemStack(tf.getTranslation(player, "teamEnderChest"), Material.ENDER_CHEST, 1, 12, teamEnderChestLore);
         ArrayList<String> teamClaimChunksLore = new ArrayList<>();
         teamClaimChunksLore.add(tf.getTranslation(player, "teamClaimChunksLore"));
-        addClickableItemStack(tf.getTranslation(player, "teamClaimChunks"), Material.MAP, 1, 13, teamClaimChunksLore);
+        if(team.getProtectedLocation() != null) {
+            Main.getMainLogger().info("TeamGUI: protected location is not null");
+            addClickableItemStack(tf.getTranslation(player, "teamClaimChunksProtectedLocation", team.getProtectedLocation().getBlockX(), team.getProtectedLocation().getBlockY(), team.getProtectedLocation().getBlockZ()), Material.FILLED_MAP, 1, 13, teamClaimChunksLore);
+        }
+        else {
+            Main.getMainLogger().info("TeamGUI: protected location is null");
+            addClickableItemStack(tf.getTranslation(player, "teamClaimChunks"), Material.MAP, 1, 13, teamClaimChunksLore);
+        }
         addClickableItemStack(tf.getTranslation(player, "deleteTeam"), Material.COMPOSTER, 1, 17);
     }
 }

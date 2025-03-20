@@ -29,12 +29,29 @@ public class Team {
     private EnderchestInvHolder enderchestInvHolder = new EnderchestInvHolder();
     private HashMap<UUID, Boolean> members = new HashMap<>();
     private UUID uuid;
+    private Location protectedLocation;
 
     public boolean isDeleted() {
         return deleted;
     }
 
     private volatile boolean deleted = false;
+
+    public Team(String name, String colorAsString, boolean locked, String uuid, Location protectedLocation) {
+        this.name = name;
+        this.colorAsConcreteBlock = Material.valueOf(colorAsString);
+        this.locked = locked;
+        this.uuid = UUID.fromString(uuid);
+        this.inventory = Bukkit.createInventory(enderchestInvHolder, 27, name);
+        this.inventory.setContents(TeamEnderchestsDatabase.getInstance().getTeamEnderchest(this.getUuid()).getContents());
+        if (protectedLocation != null && protectedLocation.getWorld() != null) {
+            Main.getMainLogger().info("Protected location: " + protectedLocation);
+            this.protectedLocation = protectedLocation;
+        }
+        else {
+            Main.getMainLogger().info("Protected location is null");
+        }
+    }
 
     public Team(String name, String colorAsString, boolean locked, String uuid) {
         this.name = name;
@@ -240,5 +257,13 @@ public class Team {
         }
         Main.getMainLogger().info("Player " + offlinePlayer.getName() + " is not a member of team " + this.getName());
         return false;
+    }
+
+    public void setProtectedLocation(Location location) {
+        this.protectedLocation = location;
+    }
+
+    public Location getProtectedLocation() {
+        return this.protectedLocation;
     }
 }
