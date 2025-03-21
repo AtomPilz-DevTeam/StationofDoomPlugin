@@ -10,7 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-public class TeamEnderchestPreventEnchantedItemsInput implements Listener {
+public class TeamEnderchestPreventEnchantedItemsInputListener implements Listener {
     @EventHandler
     public void onEnderchestInput2(InventoryClickEvent event) {
         try {

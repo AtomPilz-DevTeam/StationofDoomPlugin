@@ -55,6 +55,10 @@ public class TeamsMainMenuGUI extends GUI {
         return null;
     }
 
+    public List<Team> getTeams() {
+        return teams;
+    }
+
     public static boolean teamExists(UUID uuidOfTeam) {
         for(Team team : TeamsMainMenuGUI.teams) {
             if(team.getUuid().equals(uuidOfTeam)) return true;
