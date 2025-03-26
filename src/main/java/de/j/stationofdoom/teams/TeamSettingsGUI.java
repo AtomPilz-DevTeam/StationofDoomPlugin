@@ -44,10 +44,7 @@ public class TeamSettingsGUI extends GUI {
             return;
         }
         members = team.getAllPlayers();
-        if(members.isEmpty()) {
-            Main.getMainLogger().info("No players were found!");
-        }
-        else {
+        if(!members.isEmpty()) {
             memberQuantity = team.getAllPlayers().size();
             pagesBasedOnMemberQuantity = (int) Math.ceil(memberQuantity / maxSlotsPerPage);
             fillPage(page);
@@ -135,11 +132,9 @@ public class TeamSettingsGUI extends GUI {
         ArrayList<String> teamClaimChunksLore = new ArrayList<>();
         teamClaimChunksLore.add(tf.getTranslation(player, "teamClaimChunksLore"));
         if(team.getProtectedLocation() != null) {
-            Main.getMainLogger().info("TeamGUI: protected location is not null");
             addClickableItemStack(tf.getTranslation(player, "teamClaimChunksProtectedLocation", team.getProtectedLocation().getBlockX(), team.getProtectedLocation().getBlockY(), team.getProtectedLocation().getBlockZ()), Material.FILLED_MAP, 1, 13, teamClaimChunksLore);
         }
         else {
-            Main.getMainLogger().info("TeamGUI: protected location is null");
             addClickableItemStack(tf.getTranslation(player, "teamClaimChunks"), Material.MAP, 1, 13, teamClaimChunksLore);
         }
         addClickableItemStack(tf.getTranslation(player, "deleteTeam"), Material.COMPOSTER, 1, 17);

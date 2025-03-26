@@ -7,6 +7,7 @@ import de.chojo.sadu.queries.call.adapter.UUIDAdapter;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.stationofdoom.main.Main;
+import de.j.stationofdoom.teams.HandleTeams;
 import de.j.stationofdoom.teams.Team;
 import de.j.stationofdoom.teams.TeamsMainMenuGUI;
 import org.bukkit.Bukkit;
@@ -82,10 +83,6 @@ public class TeamsDatabase {
                 }
                 if(isTeamOperator(playerData.getUniqueId())) {
                     team.setTeamOperator(playerData, true);
-                    Main.getMainLogger().info("Found player " + playerData.getName() + " as operator of team " + team.getName());
-                }
-                else {
-                    Main.getMainLogger().info("Found player " + playerData.getName() + " as member of team " + team.getName());
                 }
             }
         }
@@ -121,7 +118,7 @@ public class TeamsDatabase {
         for(UUID uuid : team.getAllPlayers()) {
             PlayerData playerData = HandlePlayers.getInstance().getPlayerData(uuid);
             updatePlayerInDB(playerData);
-            Main.getMainLogger().info("Added player " + playerData.getName() + " to team " + team.getName());
+            Main.getMainLogger().info("Added player " + playerData.getName() + " to team " + team.getName() + " in database");
         }
     }
 
@@ -130,7 +127,7 @@ public class TeamsDatabase {
         String uuidOfTeam;
         boolean isTeamOperator;
         try {
-            Team team = TeamsMainMenuGUI.getTeam(playerData);
+            Team team = HandleTeams.getTeam(playerData);
             uuidOfTeam = team.getUuid().toString();
             isTeamOperator = team.isTeamOperator(playerData);
         }
@@ -146,44 +143,71 @@ public class TeamsDatabase {
                         .bind(playerData.getUniqueId(), UUIDAdapter.AS_STRING))
                 .insert();
         Main.getMainLogger().info("Updated player " + playerData.getName() + " in Database");
+
     }
 
     public void updateTeamsDatabase() {
         if(!Database.getInstance().isConnected) return;
-        List<Team> teams = TeamsMainMenuGUI.teams;
+        Main.getMainLogger().warning("Updating teams database");
+        List<Team> teams = HandleTeams.getInstance().getAllTeams();
+        Main.getMainLogger().info("- Teams: " + teams.size());
+        wipeDatabase();
         for (Team team : teams) {
-            if(checkIfTeamIsInDatabase(team)) {
-                if(team.getProtectedLocation() != null) {
-                    Query.query("UPDATE teams SET name = ?, color = ?, locked = ?, world = ?, protectedLocationX = ?, protectedLocationY = ?, protectedLocationZ = ? WHERE uuid = ?;")
-                            .single(Call.of()
-                                    .bind(team.getName())
-                                    .bind(team.getColorAsConcreteBlock().name())
-                                    .bind(team.getLocked())
-                                    .bind(team.getProtectedLocation().getWorld().getName())
-                                    .bind(team.getProtectedLocation().getBlockX())
-                                    .bind(team.getProtectedLocation().getBlockY())
-                                    .bind(team.getProtectedLocation().getBlockZ())
-                                    .bind(team.getUuid(), UUIDAdapter.AS_STRING))
-                            .update();
-                }
-                else {
-                    Query.query("UPDATE teams SET name = ?, color = ?, locked = ? WHERE uuid = ?;")
-                            .single(Call.of()
-                                    .bind(team.getName())
-                                    .bind(team.getColorAsConcreteBlock().name())
-                                    .bind(team.getLocked())
-                                    .bind(team.getUuid(), UUIDAdapter.AS_STRING))
-                            .update();
-                    for (UUID uuid : team.getAllPlayers()) {
-                        updatePlayerInDB(HandlePlayers.getInstance().getPlayerData(uuid));
-                    }
-                }
+            if(team.getAllPlayers().isEmpty()) {
+                Main.getMainLogger().info("Team " + team.getName() + " has no players, removing it");
             }
             else {
                 addTeam(team);
             }
         }
         Main.getMainLogger().info("Updated teams database");
+    }
+
+    private void wipeDatabase() {
+        if(!Database.getInstance().isConnected) return;
+        Query.query("DELETE FROM teams;")
+                .single()
+                .delete();
+    }
+
+    private void updateTeamInDB(Team team) {
+        Main.getMainLogger().info("Team " + team.getName() + " is already in a team database");
+        for(UUID uuid : team.getAllPlayers()) {
+            Main.getMainLogger().info("All Members:");
+            Main.getMainLogger().info("- " + uuid);
+        }
+        if(team.getAllPlayers().isEmpty()) {
+            Query.query("DELETE FROM teams WHERE uuid = ?;")
+                    .single(Call.of()
+                            .bind(team.getUuid().toString()))
+                    .delete();
+            return;
+        }
+        if(team.getProtectedLocation() != null) {
+            Query.query("UPDATE teams SET name = ?, color = ?, locked = ?, world = ?, protectedLocationX = ?, protectedLocationY = ?, protectedLocationZ = ? WHERE uuid = ?;")
+                    .single(Call.of()
+                            .bind(team.getName())
+                            .bind(team.getColorAsConcreteBlock().name())
+                            .bind(team.getLocked())
+                            .bind(team.getProtectedLocation().getWorld().getName())
+                            .bind(team.getProtectedLocation().getBlockX())
+                            .bind(team.getProtectedLocation().getBlockY())
+                            .bind(team.getProtectedLocation().getBlockZ())
+                            .bind(team.getUuid(), UUIDAdapter.AS_STRING))
+                    .update();
+        }
+        else {
+            Query.query("UPDATE teams SET name = ?, color = ?, locked = ? WHERE uuid = ?;")
+                    .single(Call.of()
+                            .bind(team.getName())
+                            .bind(team.getColorAsConcreteBlock().name())
+                            .bind(team.getLocked())
+                            .bind(team.getUuid(), UUIDAdapter.AS_STRING))
+                    .update();
+            for (UUID uuid : team.getAllPlayers()) {
+                updatePlayerInDB(HandlePlayers.getInstance().getPlayerData(uuid));
+            }
+        }
     }
 
     public void removeTeam(Team team) {
@@ -227,7 +251,6 @@ public class TeamsDatabase {
                         .bind(uuidOfPlayer, UUIDAdapter.AS_STRING))
                 .map(row -> teamOperators.put(uuidOfPlayer, row.getBoolean("isTeamOperator")))
                 .all();
-        Main.getMainLogger().info("Player " + Bukkit.getOfflinePlayer(uuidOfPlayer).getName() + " is team operator: " + teamOperators.get(uuidOfPlayer));
         return teamOperators.get(uuidOfPlayer);
     }
 }

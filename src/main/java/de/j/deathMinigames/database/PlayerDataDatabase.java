@@ -6,8 +6,7 @@ import de.chojo.sadu.queries.call.adapter.UUIDAdapter;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.stationofdoom.main.Main;
-import de.j.stationofdoom.teams.TeamsMainMenuGUI;
-import org.bukkit.Bukkit;
+import de.j.stationofdoom.teams.HandleTeams;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -120,7 +119,7 @@ public class PlayerDataDatabase {
                                 .bind("bestParkourTime", playerData.getBestParkourTime())
                                 .bind("uuid", playerData.getUniqueId(), UUIDAdapter.AS_STRING)
                                 .bind("uuidOfTeam", playerData.getUuidOfTeam(), UUIDAdapter.AS_STRING)
-                                .bind("isTeamOperator", TeamsMainMenuGUI.getTeam(playerData).isTeamOperator(playerData)))
+                                .bind("isTeamOperator", HandleTeams.getTeam(playerData).isTeamOperator(playerData)))
                         .update();
                 updatedPlayers++;
             }
@@ -142,14 +141,15 @@ public class PlayerDataDatabase {
      */
     public void addPlayerToDatabase(PlayerData playerData) {
         if(!Database.getInstance().isConnected) return;
-        Query.query("INSERT INTO playerData (name, UUID, introduction, usesPlugin, difficulty, bestParkourTime) VALUES (:name, :uuid, :introduction, :usesPlugin, :difficulty, :bestParkourTime);")
+        Query.query("INSERT INTO playerData (name, UUID, introduction, usesPlugin, difficulty, bestParkourTime, uuidOfTeam) VALUES (:name, :uuid, :introduction, :usesPlugin, :difficulty, :bestParkourTime, :uuidOfTeam);")
                 .single(Call.of()
                         .bind("name", playerData.getName())
                         .bind("uuid", playerData.getUniqueId(), UUIDAdapter.AS_STRING)
                         .bind("introduction", playerData.getIntroduction())
                         .bind("usesPlugin", playerData.getUsesPlugin())
                         .bind("difficulty", playerData.getDifficulty())
-                        .bind("bestParkourTime", playerData.getBestParkourTime()))
+                        .bind("bestParkourTime", playerData.getBestParkourTime())
+                        .bind("uuidOfTeam", playerData.getUuidOfTeam(), UUIDAdapter.AS_STRING))
                 .insert();
     }
 

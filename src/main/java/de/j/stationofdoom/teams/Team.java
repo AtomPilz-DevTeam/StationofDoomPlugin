@@ -26,9 +26,9 @@ public class Team {
     private Material colorAsConcreteBlock;
     private boolean locked;
     public volatile Inventory inventory;
-    private EnderchestInvHolder enderchestInvHolder = new EnderchestInvHolder();
-    private HashMap<UUID, Boolean> members = new HashMap<>();
-    private UUID uuid;
+    private final EnderchestInvHolder enderchestInvHolder = new EnderchestInvHolder();
+    private final HashMap<UUID, Boolean> members = new HashMap<>();
+    private final UUID uuid;
     private Location protectedLocation;
 
     public boolean isDeleted() {
@@ -45,12 +45,9 @@ public class Team {
         this.inventory = Bukkit.createInventory(enderchestInvHolder, 27, name);
         this.inventory.setContents(TeamEnderchestsDatabase.getInstance().getTeamEnderchest(this.getUuid()).getContents());
         if (protectedLocation != null && protectedLocation.getWorld() != null) {
-            Main.getMainLogger().info("Protected location: " + protectedLocation);
             this.protectedLocation = protectedLocation;
         }
-        else {
-            Main.getMainLogger().info("Protected location is null");
-        }
+        addToList();
     }
 
     public Team(String name, String colorAsString, boolean locked, String uuid) {
@@ -60,11 +57,13 @@ public class Team {
         this.uuid = UUID.fromString(uuid);
         this.inventory = Bukkit.createInventory(enderchestInvHolder, 27, name);
         this.inventory.setContents(TeamEnderchestsDatabase.getInstance().getTeamEnderchest(this.getUuid()).getContents());
+        addToList();
     }
 
     // used to create a new team without any operators
     public Team() {
         uuid = UUID.randomUUID();
+        addToList();
     }
 
     public Team(PlayerData playerData) {
@@ -75,6 +74,7 @@ public class Team {
         setRandomConcreteMaterial();
         handlePlayerLeaveOrJoin(playerData);
         setTeamOperator(HandlePlayers.getInstance().getPlayerData(playerData.getUniqueId()), true);
+        addToList();
     }
 
     public Team(Player player) {
@@ -85,6 +85,7 @@ public class Team {
         setRandomConcreteMaterial();
         handlePlayerLeaveOrJoin(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()));
         setTeamOperator(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()), true);
+        addToList();
     }
 
     public List<PlayerData> getMembers() {
@@ -100,7 +101,6 @@ public class Team {
     public void addMember(String uuidAsString) {
         UUID uuid = UUID.fromString(uuidAsString);
         this.members.put(uuid, false);
-        Main.getMainLogger().info("Added " + HandlePlayers.getInstance().getPlayerData(uuid).getName() + " to team " + this.name);
     }
 
     public List<PlayerData> getTeamOperators() {
@@ -160,7 +160,7 @@ public class Team {
 
     public void handlePlayerLeaveOrJoin(PlayerData playerData) {
         if(this.members.containsKey(playerData.getUniqueId())) {
-            if(getAllPlayers().size() == 1) {
+            if(getAllPlayers().size() <= 1) {
                 this.remove();
             }
             else {
@@ -168,9 +168,9 @@ public class Team {
             }
         }
         else {
-            TeamsMainMenuGUI.removePlayerFromEveryTeam(playerData);
+            HandleTeams.removePlayerFromEveryTeam(playerData);
             this.members.put(playerData.getUniqueId(), false);
-            Main.getMainLogger().info("Added " + playerData.getName() + " to team " + this.name);
+            playerData.setUuidOfTeam(this.getUuid());
         }
     }
 
@@ -178,16 +178,13 @@ public class Team {
         if(this.members.containsKey(playerData.getUniqueId())) {
             if(getTeamOperators().contains(playerData) && getTeamOperators().size() == 1) {
                 setLocked(false);
-                Main.getMainLogger().info("Team " + this.name + " is now unlocked because there are no operators anymore");
             }
             this.members.remove(playerData.getUniqueId());
-            Main.getMainLogger().info("Removed " + playerData.getName() + " from team " + this.name);
+            Main.getMainLogger().info("player " + playerData.getName() + " removed from the team");
+            playerData.setUuidOfTeam(null);
             if(this.members.isEmpty()) {
                 TeamsMainMenuGUI.teams.remove(this);
             }
-        }
-        else {
-            Main.getMainLogger().warning("Player " + playerData.getName() + " is not in team " + this.name + " and cannot be removed");
         }
     }
 
@@ -218,6 +215,7 @@ public class Team {
         this.members.clear();
         TeamsMainMenuGUI.teams.remove(this);
         this.deleted = true;
+
         Main.getMainLogger().info("Removed team " + this.name);
     }
 
@@ -240,22 +238,14 @@ public class Team {
 
     public boolean isMember(UUID uuidOfPlayerTOCheck) {
         if (uuidOfPlayerTOCheck == null) {
-            Main.getMainLogger().info("Player is null when checking if they are a member");
             return false;
         }
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuidOfPlayerTOCheck);
-        Main.getMainLogger().info("Checking if player " + offlinePlayer.getName() + " is a member of team " + this.getName());
         for (UUID uuid : this.members.keySet()) {
             if(uuid.equals(uuidOfPlayerTOCheck)) {
-                Main.getMainLogger().info("Player " + Bukkit.getOfflinePlayer(uuid).getName() + " is a member of team " + this.getName());
                 return true;
             }
-            else {
-                Main.getMainLogger().info("UUID of player " + offlinePlayer.getName() + " does not match UUID of player " + HandlePlayers.getInstance().getPlayerData(uuid).getName());
-                Main.getMainLogger().info(uuidOfPlayerTOCheck + " != " + uuid);
-            }
         }
-        Main.getMainLogger().info("Player " + offlinePlayer.getName() + " is not a member of team " + this.getName());
         return false;
     }
 
@@ -265,5 +255,9 @@ public class Team {
 
     public Location getProtectedLocation() {
         return this.protectedLocation;
+    }
+
+    private void addToList() {
+        HandleTeams.addTeam(this);
     }
 }

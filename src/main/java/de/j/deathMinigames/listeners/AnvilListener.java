@@ -1,12 +1,11 @@
 package de.j.deathMinigames.listeners;
 
-import de.j.deathMinigames.database.PlayerDataDatabase;
 import de.j.deathMinigames.dmUtil.DmUtil;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.settings.MainMenu;
 import de.j.stationofdoom.main.Main;
+import de.j.stationofdoom.teams.HandleTeams;
 import de.j.stationofdoom.teams.TeamSettingsGUI;
-import de.j.stationofdoom.teams.TeamsMainMenuGUI;
 import de.j.stationofdoom.util.Tablist;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
@@ -95,9 +94,9 @@ public class AnvilListener implements Listener {
                     Main.getMainLogger().info("teamName is null");
                     return;
                 }
-                Main.getMainLogger().info("set name of team " + TeamsMainMenuGUI.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId())).getName() + " to: " + teamName);
-                TeamsMainMenuGUI.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId())).setName(teamName);
-                new TeamSettingsGUI(TeamsMainMenuGUI.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()))).showPage(1, player);
+                Main.getMainLogger().info("set name of team " + HandleTeams.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId())).getName() + " to: " + teamName);
+                HandleTeams.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId())).setName(teamName);
+                new TeamSettingsGUI(HandleTeams.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()))).showPage(1, player);
                 DmUtil.getInstance().playSoundAtLocation(player.getLocation(), 0.5f, Sound.BLOCK_ANVIL_USE);
             }
         }

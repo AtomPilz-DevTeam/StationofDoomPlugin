@@ -53,7 +53,6 @@ public class TeamEnderchestsDatabase {
                     return itemStack;
                 })
                 .all();
-        Main.getMainLogger().info("Got Enderchest of team " + uuidOfTeam + " from DB");
         return inv;
     }
 
@@ -76,7 +75,6 @@ public class TeamEnderchestsDatabase {
                                 .bind(itemStack.getAmount())
                                 .bind(itemStack.getType().toString()))
                         .insert();
-                Main.getMainLogger().info("Added Item " + itemStack.getItemMeta().getDisplayName() + " of team " + team.getName() + " to database");
             }
         }
     }

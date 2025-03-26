@@ -1,7 +1,6 @@
 package de.j.deathMinigames.main;
 import de.j.stationofdoom.main.Main;
-import de.j.stationofdoom.teams.Team;
-import de.j.stationofdoom.teams.TeamsMainMenuGUI;
+import de.j.stationofdoom.teams.HandleTeams;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -150,6 +149,7 @@ public class PlayerData {
     }
 
     public void setUuidOfTeam(UUID uuidOfTeam) {
+        Main.getMainLogger().info("Setting teamUUID to " + uuidOfTeam);
         this.uuidOfTeam = uuidOfTeam;
     }
 
@@ -199,11 +199,7 @@ public class PlayerData {
         this.introduction = introduction;
         this.usesPlugin = usesPlugin;
         this.leftWhileProcessing = false;
-        if(uuidOfTeam == null || !TeamsMainMenuGUI.teamExists(UUID.fromString(uuidOfTeam))) {
-            this.uuidOfTeam = null;
-            this.teamOperator = false;
-        }
-        else {
+        if(uuidOfTeam != null) {
             this.uuidOfTeam = UUID.fromString(uuidOfTeam);
             this.teamOperator = teamOperator;
         }

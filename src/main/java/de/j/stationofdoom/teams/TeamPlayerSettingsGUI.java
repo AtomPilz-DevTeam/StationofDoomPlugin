@@ -1,7 +1,5 @@
 package de.j.stationofdoom.teams;
 
-import de.j.deathMinigames.database.PlayerDataDatabase;
-import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.deathMinigames.settings.GUI;
 import de.j.stationofdoom.util.translations.TranslationFactory;
@@ -26,7 +24,7 @@ public class TeamPlayerSettingsGUI extends GUI {
 
     private void fillInv(Player playerToShowTheInvTo,PlayerData playerDataBasedOnSlot) {
         this.inventory = Bukkit.createInventory(this.inventory.getHolder(), 18, playerDataBasedOnSlot.getName());
-        this.team = TeamsMainMenuGUI.getTeam(playerDataBasedOnSlot);
+        this.team = HandleTeams.getTeam(playerDataBasedOnSlot);
         boolean isOperator = team.isTeamOperator(playerDataBasedOnSlot);
         this.inventory.clear();
         for (int i = 0; i < 9; i++) {
