@@ -38,7 +38,6 @@ public class TeamSettingsGUI extends GUI {
         this.inventory = null;
         this.inventory = Bukkit.createInventory(this, inventorySize, team.getName() +" - " + tf.getTranslation(playerToShowTheInvTo, "page") + " " + page );
         if(this.team.isDeleted()) {
-            Main.getMainLogger().info("Team is deleted and therefore not opened");
             playerToShowTheInvTo.sendMessage(Component.text(tf.getTranslation(playerToShowTheInvTo, "teamDeleted", team.getName())).color(NamedTextColor.RED));
             new TeamsMainMenuGUI().showPage(1, playerToShowTheInvTo);
             return;

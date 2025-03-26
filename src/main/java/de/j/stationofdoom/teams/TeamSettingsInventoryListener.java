@@ -134,7 +134,6 @@ public class TeamSettingsInventoryListener implements Listener {
                 break;
             case 13:
                 Location playerLocation = player.getLocation();
-                Main.getMainLogger().info("Player location: " + playerLocation);
                 player.sendMessage(Component.text(tf.getTranslation(player, "teamSetProtectedLocation", playerLocation.getBlockX(), playerLocation.getBlockY(), playerLocation.getBlockZ())).color(NamedTextColor.GREEN));
                 team.setProtectedLocation(playerLocation);
                 break;
@@ -175,7 +174,6 @@ public class TeamSettingsInventoryListener implements Listener {
                 }
                 break;
             default:
-                Main.getMainLogger().warning("Invalid slot: " + slot);
         }
     }
 

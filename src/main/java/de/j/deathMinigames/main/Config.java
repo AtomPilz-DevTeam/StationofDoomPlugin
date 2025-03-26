@@ -135,7 +135,6 @@ public class Config {
             int y = Main.getPlugin().getConfig().getInt("WaitingListPosition.y");
             int z = Main.getPlugin().getConfig().getInt("WaitingListPosition.z");
             configWaitingListPosition = new Location(world, x, y, z);
-            Main.getMainLogger().info("set WaitingListPosition from config to: " + configWaitingListPosition.getBlockX() + ", " + configWaitingListPosition.getBlockY() + ", " + configWaitingListPosition.getBlockZ());
         }
         else {
             Main.getMainLogger().warning("WaitingListPosition not found in config!");

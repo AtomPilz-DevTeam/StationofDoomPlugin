@@ -65,7 +65,7 @@ public class TeamsDatabase {
                     .all()
                     .forEach(team -> teams.add(team));
         }
-            Main.getMainLogger().info("Found " + teams.size() + " teams:");
+            Main.getMainLogger().info("Found " + teams.size() + " team(s):");
         for (Team team : teams) {
             Main.getMainLogger().info(team.getName());
             Query.query("SELECT uuid FROM playerData WHERE uuidOfTeam = ?;")
@@ -114,11 +114,9 @@ public class TeamsDatabase {
                             .bind(team.getUuid(), UUIDAdapter.AS_STRING))
                     .insert();
         }
-        Main.getMainLogger().info("Added team " + team.getName() + " to database");
         for(UUID uuid : team.getAllPlayers()) {
             PlayerData playerData = HandlePlayers.getInstance().getPlayerData(uuid);
             updatePlayerInDB(playerData);
-            Main.getMainLogger().info("Added player " + playerData.getName() + " to team " + team.getName() + " in database");
         }
     }
 
@@ -148,9 +146,7 @@ public class TeamsDatabase {
 
     public void updateTeamsDatabase() {
         if(!Database.getInstance().isConnected) return;
-        Main.getMainLogger().warning("Updating teams database");
         List<Team> teams = HandleTeams.getInstance().getAllTeams();
-        Main.getMainLogger().info("- Teams: " + teams.size());
         wipeDatabase();
         for (Team team : teams) {
             if(team.getAllPlayers().isEmpty()) {
@@ -171,11 +167,6 @@ public class TeamsDatabase {
     }
 
     private void updateTeamInDB(Team team) {
-        Main.getMainLogger().info("Team " + team.getName() + " is already in a team database");
-        for(UUID uuid : team.getAllPlayers()) {
-            Main.getMainLogger().info("All Members:");
-            Main.getMainLogger().info("- " + uuid);
-        }
         if(team.getAllPlayers().isEmpty()) {
             Query.query("DELETE FROM teams WHERE uuid = ?;")
                     .single(Call.of()
@@ -219,9 +210,7 @@ public class TeamsDatabase {
         for(UUID uuid : team.getAllPlayers()) {
             PlayerData playerData = HandlePlayers.getInstance().getPlayerData(uuid);
             updatePlayerInDB(playerData);
-            Main.getMainLogger().info("Removed player " + playerData.getName() + " from team " + team.getName());
         }
-        Main.getMainLogger().info("Removed team " + team.getName() + " from database");
     }
 
     public boolean checkIfTeamIsInDatabase(Team team) {

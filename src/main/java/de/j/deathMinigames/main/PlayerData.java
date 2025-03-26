@@ -149,7 +149,6 @@ public class PlayerData {
     }
 
     public void setUuidOfTeam(UUID uuidOfTeam) {
-        Main.getMainLogger().info("Setting teamUUID to " + uuidOfTeam);
         this.uuidOfTeam = uuidOfTeam;
     }
 

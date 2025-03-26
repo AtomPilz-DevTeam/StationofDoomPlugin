@@ -12,7 +12,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class TeamEnderchestPreventEnchantedItemsInputListener implements Listener {
     @EventHandler
-    public void onEnderchestInput2(InventoryClickEvent event) {
+    public void onEnderchestInput(InventoryClickEvent event) {
         try {
             if(event.getView().getTopInventory().getHolder() instanceof EnderchestInvHolder && !event.getCurrentItem().getEnchantments().isEmpty()) {
                 event.setCancelled(true);

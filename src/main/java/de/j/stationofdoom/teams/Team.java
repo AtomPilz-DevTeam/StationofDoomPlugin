@@ -180,7 +180,6 @@ public class Team {
                 setLocked(false);
             }
             this.members.remove(playerData.getUniqueId());
-            Main.getMainLogger().info("player " + playerData.getName() + " removed from the team");
             playerData.setUuidOfTeam(null);
             if(this.members.isEmpty()) {
                 TeamsMainMenuGUI.teams.remove(this);

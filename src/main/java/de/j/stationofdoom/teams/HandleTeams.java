@@ -30,17 +30,11 @@ public class HandleTeams {
 
     public static Team getTeam(PlayerData playerData) {
         for(Team team : teams) {
-            Main.getMainLogger().info(team.getName());
-            for (UUID uuid : team.getAllPlayers()) {
-                Main.getMainLogger().info(HandlePlayers.getInstance().getPlayerData(uuid).getName());
-            }
             if(team.isDeleted()) continue;
             if(team.isMember(playerData.getUniqueId())) {
-                Main.getMainLogger().info("Found team " + team.getName());
                 return team;
             }
         }
-        Main.getMainLogger().info("No team found for player " + playerData.getName());
         return new Team();
     }
 
@@ -61,10 +55,7 @@ public class HandleTeams {
     public static void removePlayerFromEveryTeam(PlayerData playerData) {
         List<Team> teamToRemoveOrAddPlayer = new ArrayList<>();
         for(Team team : teams) {
-            if(team == null) {
-                Main.getMainLogger().info("Team is null");
-                continue;
-            }
+            if(team == null) continue;
             if(team.isMember(playerData.getUniqueId())) {
                 teamToRemoveOrAddPlayer.add(team);
             }

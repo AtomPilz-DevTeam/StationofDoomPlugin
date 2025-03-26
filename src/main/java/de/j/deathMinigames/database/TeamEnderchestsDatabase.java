@@ -64,10 +64,9 @@ public class TeamEnderchestsDatabase {
                     .single(Call.of()
                             .bind(uuidOfTeam, UUIDAdapter.AS_STRING))
                     .delete();
+            if(team.inventory == null) continue;
             for (ItemStack itemStack : team.inventory.getContents()) {
                 if(itemStack == null) continue;
-                String enchants = itemStack.getItemMeta().getEnchants().toString();
-                Main.getMainLogger().warning(enchants);
                 Query.query("INSERT INTO teamEnderchests (uuidOfTeam, name, amount, material) VALUES (?, ?, ?, ?);")
                         .single(Call.of()
                                 .bind(uuidOfTeam, UUIDAdapter.AS_STRING)
