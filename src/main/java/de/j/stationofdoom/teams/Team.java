@@ -50,6 +50,19 @@ public class Team {
         addToList();
     }
 
+    public Team(String name, String colorAsString, boolean locked, String uuid, String world, int x, int y, int z) {
+        this.name = name;
+        this.colorAsConcreteBlock = Material.valueOf(colorAsString);
+        this.locked = locked;
+        this.uuid = UUID.fromString(uuid);
+        this.inventory = Bukkit.createInventory(enderchestInvHolder, 27, name);
+        this.inventory.setContents(TeamEnderchestsDatabase.getInstance().getTeamEnderchest(this.getUuid()).getContents());
+        if(world != null) {
+            this.protectedLocation = new Location(Bukkit.getWorld(world), x, y, z);
+        }
+        addToList();
+    }
+
     public Team(String name, String colorAsString, boolean locked, String uuid) {
         this.name = name;
         this.colorAsConcreteBlock = Material.valueOf(colorAsString);

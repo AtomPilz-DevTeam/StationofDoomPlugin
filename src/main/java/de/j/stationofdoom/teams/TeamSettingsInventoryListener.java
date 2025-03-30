@@ -4,6 +4,7 @@ import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.deathMinigames.settings.GUI;
 import de.j.stationofdoom.main.Main;
+import de.j.stationofdoom.teams.chunkClaimSystem.ChunkClaimSystem;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -133,9 +134,7 @@ public class TeamSettingsInventoryListener implements Listener {
                 team.accessEnderChest(player);
                 break;
             case 13:
-                Location playerLocation = player.getLocation();
-                player.sendMessage(Component.text(tf.getTranslation(player, "teamSetProtectedLocation", playerLocation.getBlockX(), playerLocation.getBlockY(), playerLocation.getBlockZ())).color(NamedTextColor.GREEN));
-                team.setProtectedLocation(playerLocation);
+                ChunkClaimSystem.getInstance().playerClaim(player, team, player.getLocation());
                 break;
             case 17:
                 team.remove();
