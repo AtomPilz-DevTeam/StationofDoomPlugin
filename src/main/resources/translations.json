@@ -111,8 +111,9 @@
       "teamClaimChunksLore": "Klicke hier, um Anspruch auf die drei umgebenden Chunks zu erheben",
       "chunkClaimedByDifferentTeam": "Dieser Chunk ist von dem Team: %s beansprucht",
       "teamEnderchestPreventEnchantedItemsInput": "Du kannst keine verzauberten Items in die Enderchest legen",
-      "teamSetProtectedLocation": "Du hast den Bereich um die Location x: %s y: %s z: %S geschützt",
-      "teamLocationAlreadyProtected": "Dieser Bereich ist bereits beschützt"
+      "teamSetProtectedLocation": "Du hast den Bereich um die Location x: %s z: %S geschützt",
+      "teamLocationAlreadyProtected": "Dieser Bereich ist bereits beschützt",
+      "teamMembersNewProtectedLocation": "Dein Team hat einen neuen Bereich geschützt: x: %s z: %s"
     }
   ],
   "en-US": [
@@ -227,8 +228,9 @@
       "teamClaimChunksLore": "Click here to claim the three surrounding chunks for your team",
       "chunkClaimedByDifferentTeam": "This chunk is claimed by the team: %s",
       "teamEnderchestPreventEnchantedItemsInput": "You can not put enchanted items into the team enderchest",
-      "teamSetProtectedLocation": "You claimed the location around x: %s y: %s z: %S",
-      "teamLocationAlreadyProtected": "This location is already claimed"
+      "teamSetProtectedLocation": "You claimed the location around x: %s z: %s",
+      "teamLocationAlreadyProtected": "This location is already claimed",
+      "teamMembersNewProtectedLocation": "Your team has claimed a new location: x: %s z: %s"
     }
   ]
 }
