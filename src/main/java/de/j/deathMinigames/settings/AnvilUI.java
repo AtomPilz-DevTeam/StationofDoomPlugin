@@ -2,6 +2,7 @@ package de.j.deathMinigames.settings;
 
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.stationofdoom.teams.HandleTeams;
+import de.j.stationofdoom.teams.chunkClaimSystem.ChunkClaimSystem;
 import de.j.stationofdoom.util.Tablist;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
@@ -81,6 +82,9 @@ public class AnvilUI implements InventoryHolder {
                     else {
                         inputItemName = "";
                     }
+                    break;
+                case SET_CLAIMING_RADIUS:
+                    inputItemName = String.valueOf(ChunkClaimSystem.getInstance().getProtectedLocationSizeInBlocks());
                     break;
                 default:
                     throw new IllegalArgumentException("Title: " + title + " is not supported!");

@@ -256,6 +256,9 @@ public class InventoryListener implements Listener {
             case 5:
                 MainMenu.getSetServerName().showInventory(player);
                 break;
+            case 6:
+                MainMenu.getSetClaimingRadius().showInventory(player);
+                break;
         }
     }
 

@@ -113,7 +113,8 @@
       "teamEnderchestPreventEnchantedItemsInput": "Du kannst keine verzauberten Items in die Enderchest legen",
       "teamSetProtectedLocation": "Du hast den Bereich um die Location x: %s z: %S geschützt",
       "teamLocationAlreadyProtected": "Dieser Bereich ist bereits beschützt",
-      "teamMembersNewProtectedLocation": "Dein Team hat einen neuen Bereich geschützt: x: %s z: %s"
+      "teamMembersNewProtectedLocation": "Dein Team hat einen neuen Bereich geschützt: x: %s z: %s",
+      "setClaimingRadius": "Du hast den Radius des beschützen Bereichs jedes Team auf: %s gesetzt"
     }
   ],
   "en-US": [
@@ -230,7 +231,8 @@
       "teamEnderchestPreventEnchantedItemsInput": "You can not put enchanted items into the team enderchest",
       "teamSetProtectedLocation": "You claimed the location around x: %s z: %s",
       "teamLocationAlreadyProtected": "This location is already claimed",
-      "teamMembersNewProtectedLocation": "Your team has claimed a new location: x: %s z: %s"
+      "teamMembersNewProtectedLocation": "Your team has claimed a new location: x: %s z: %s",
+      "setClaimingRadius": "You set the claiming radius to: %s"
     }
   ]
 }

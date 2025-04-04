@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class ChunkClaimSystem {
     private final TranslationFactory tf = new TranslationFactory();
-    private final int protectedLocationSizeInBlocks = 16;
+    private int protectedLocationSizeInBlocks = 16;
 
     private static volatile ChunkClaimSystem instance;
 
@@ -29,6 +29,14 @@ public class ChunkClaimSystem {
             }
         }
         return instance;
+    }
+
+    public int getProtectedLocationSizeInBlocks() {
+        return protectedLocationSizeInBlocks;
+    }
+
+    public void setProtectedLocationSizeInBlocks(int protectedLocationSizeInBlocks) {
+        this.protectedLocationSizeInBlocks = protectedLocationSizeInBlocks;
     }
 
     public boolean checkIfLocationProtectedFromPlayer(int locationX, int locationZ, Player player) {

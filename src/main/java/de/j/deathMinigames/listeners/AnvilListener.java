@@ -6,6 +6,7 @@ import de.j.deathMinigames.settings.MainMenu;
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.teams.HandleTeams;
 import de.j.stationofdoom.teams.TeamSettingsGUI;
+import de.j.stationofdoom.teams.chunkClaimSystem.ChunkClaimSystem;
 import de.j.stationofdoom.util.Tablist;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
@@ -29,6 +30,7 @@ public class AnvilListener implements Listener {
     private String serverName;
     private String hostName;
     private String teamName;
+    private int claimingRadius;
     private TranslationFactory tf = new TranslationFactory();
 
     @EventHandler
@@ -62,6 +64,16 @@ public class AnvilListener implements Listener {
             finishAnvilInvAfterOpening(event, player);
             if(renameText == null) return;
             teamName = renameText;
+        }
+        else if(MainMenu.getSetClaimingRadius().compareLocIDTo(loc)) {
+            finishAnvilInvAfterOpening(event, player);
+            if(renameText == null) return;
+            try {
+                claimingRadius = Integer.parseInt(renameText);
+            }
+            catch(NumberFormatException e) {
+                return;
+            }
         }
     }
 
@@ -99,6 +111,12 @@ public class AnvilListener implements Listener {
                 new TeamSettingsGUI(HandleTeams.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()))).showPage(1, player);
                 DmUtil.getInstance().playSoundAtLocation(player.getLocation(), 0.5f, Sound.BLOCK_ANVIL_USE);
             }
+            else if(MainMenu.getSetClaimingRadius().compareLocIDTo(loc)) {
+                event.setCancelled(true);
+                ChunkClaimSystem.getInstance().setProtectedLocationSizeInBlocks(claimingRadius);
+                event.getView().close();
+                player.sendMessage(Component.text(tf.getTranslation(player, "setClaimingRadius", ChunkClaimSystem.getInstance().getProtectedLocationSizeInBlocks())).color(NamedTextColor.GOLD));
+            }
         }
     }
 
@@ -115,6 +133,9 @@ public class AnvilListener implements Listener {
                 anvilInventory.clear();
             }
             else if(TeamSettingsGUI.renameTeam.compareLocIDTo(loc)) {
+                anvilInventory.clear();
+            }
+            else if(MainMenu.getSetClaimingRadius().compareLocIDTo(loc)) {
                 anvilInventory.clear();
             }
         }
