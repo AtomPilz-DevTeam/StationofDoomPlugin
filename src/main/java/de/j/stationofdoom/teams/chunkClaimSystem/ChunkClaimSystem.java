@@ -1,5 +1,6 @@
 package de.j.stationofdoom.teams.chunkClaimSystem;
 
+import de.j.deathMinigames.main.Config;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.stationofdoom.teams.HandleTeams;
 import de.j.stationofdoom.teams.Team;
@@ -14,7 +15,7 @@ import java.util.UUID;
 
 public class ChunkClaimSystem {
     private final TranslationFactory tf = new TranslationFactory();
-    private int protectedLocationSizeInBlocks = 16;
+    private int protectedLocationSizeInBlocks = 32;
 
     private static volatile ChunkClaimSystem instance;
 
@@ -37,6 +38,7 @@ public class ChunkClaimSystem {
 
     public void setProtectedLocationSizeInBlocks(int protectedLocationSizeInBlocks) {
         this.protectedLocationSizeInBlocks = protectedLocationSizeInBlocks;
+        Config.getInstance().setProtectedLocationSizeInBlocksInConfig(protectedLocationSizeInBlocks);
     }
 
     public boolean checkIfLocationProtectedFromPlayer(int locationX, int locationZ, Player player) {

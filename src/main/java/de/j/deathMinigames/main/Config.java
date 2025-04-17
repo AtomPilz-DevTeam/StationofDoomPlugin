@@ -1,5 +1,6 @@
 package de.j.deathMinigames.main;
 
+import de.j.stationofdoom.teams.chunkClaimSystem.ChunkClaimSystem;
 import de.j.stationofdoom.util.Tablist;
 import org.bukkit.Location;
 
@@ -123,6 +124,10 @@ public class Config {
                 Tablist.setHostedBy(config.getString("Tablist.HostedBy"));
             }
         }
+        if(config.contains("ProtectedLocationRadius")) {
+            ChunkClaimSystem.getInstance().setProtectedLocationSizeInBlocks(config.getInt("ProtectedLocationRadius"));
+            Main.getMainLogger().warning("Setting protectedLocationRadius to " + config.getInt("ProtectedLocationRadius"));
+        }
     }
 
     public void cloneWaitingListLocationToPlugin(World world) {
@@ -224,6 +229,13 @@ public class Config {
         Main.getPlugin().getConfig().set("WaitingListPosition.z", location.getBlockZ());
         Main.getPlugin().saveConfig();
         Main.getMainLogger().info("set WaitingListPosition to: " + configWaitingListPosition);
+    }
+
+    public synchronized void setProtectedLocationSizeInBlocksInConfig(int size) {
+        if(size == 0 || size == Main.getPlugin().getConfig().getInt("ProtectedLocationRadius")) return;
+        Main.getPlugin().getConfig().set("ProtectedLocationRadius", size);
+        Main.getPlugin().saveConfig();
+        Main.getMainLogger().info("set ProtectedLocationSizeInBlocksInConfig to: " + size);
     }
 
     /**
