@@ -126,7 +126,6 @@ public class Config {
         }
         if(config.contains("ProtectedLocationRadius")) {
             ChunkClaimSystem.getInstance().setProtectedLocationSizeInBlocks(config.getInt("ProtectedLocationRadius"));
-            Main.getMainLogger().warning("Setting protectedLocationRadius to " + config.getInt("ProtectedLocationRadius"));
         }
     }
 
