@@ -2,6 +2,7 @@ package de.j.stationofdoom.main;
 
 import de.j.deathMinigames.commands.GameCMD;
 import de.j.deathMinigames.commands.LeaderboardCMD;
+import de.j.stationofdoom.teams.TeamCMD;
 import de.j.stationofdoom.teams.chunkClaimSystem.BlockBreakAndUseCancelListener;
 import de.j.stationofdoom.teams.enderchest.TeamEnderchestPreventEnchantedItemsInputListener;
 import de.j.deathMinigames.database.TeamEnderchestsDatabase;
@@ -94,7 +95,8 @@ public final class Main extends JavaPlugin {
             COMMANDS.register("sit", new PlayerSitListener());
             COMMANDS.register("game", "game related commands", new GameCMD());
             COMMANDS.register("leaderboard", "showing the leaderboard of the minigame", new LeaderboardCMD());
-            COMMANDS.register("teams", "showing the team settings", new TeamsCMD());
+            COMMANDS.register("teams", "showing the Main teams menu settings", new TeamsCMD());
+            COMMANDS.register("team", "showing your team's settings", new TeamCMD());
         });
 
         PluginManager pluginManager = Bukkit.getPluginManager();
