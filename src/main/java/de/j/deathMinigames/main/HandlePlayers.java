@@ -4,6 +4,7 @@ import de.j.deathMinigames.database.Database;
 import de.j.deathMinigames.database.PlayerDataDatabase;
 import de.j.deathMinigames.minigames.Minigame;
 import de.j.stationofdoom.main.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -150,13 +151,10 @@ public class HandlePlayers {
             return PlayerDataDatabase.getInstance().getPlayerData(uuidOfPlayer);
         }
         else {
-            if(this.checkIfPlayerIsKnown(uuidOfPlayer)) {
-                return knownPlayers.get(uuidOfPlayer);
+            if(!this.checkIfPlayerIsKnown(uuidOfPlayer)) {
+                addNewPlayer(Bukkit.getPlayer(uuidOfPlayer));
             }
-            else {
-                Main.getMainLogger().info("Player of uuid " + uuidOfPlayer + " is not known");
-                return null;
-            }
+            return knownPlayers.get(uuidOfPlayer);
         }
     }
 }

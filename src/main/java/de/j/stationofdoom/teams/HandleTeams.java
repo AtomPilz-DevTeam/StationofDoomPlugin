@@ -1,9 +1,9 @@
 package de.j.stationofdoom.teams;
 
 import de.j.deathMinigames.database.TeamsDatabase;
-import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.stationofdoom.main.Main;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +38,16 @@ public class HandleTeams {
         return new Team();
     }
 
+    public static Team getTeamFromPlayerUUID(UUID uuid) {
+        for(Team team : teams) {
+            if(team.isDeleted()) continue;
+            if(team.isMember(uuid)) {
+                return team;
+            }
+        }
+        return new Team();
+    }
+
     public static Team getTeam(UUID uuidOfTeam) {
         for(Team team : teams) {
             if(team.getUuid().equals(uuidOfTeam)) return team;
@@ -66,7 +76,7 @@ public class HandleTeams {
     }
 
     public static void addTeam(Team team) {
-        if(!teams.contains(team)) {
+        if(!teams.contains(team) && team.getName() != null && team.getUuid() != null && !team.getAllPlayers().isEmpty()) {
             teams.add(team);
         }
     }

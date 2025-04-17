@@ -174,4 +174,17 @@ public class PlayerDataDatabase {
         }
         return isInDatabase;
     }
+
+    public boolean checkIfPlayerIsInDatabase(UUID uuidOfPlayerToCheck) {
+        if(!Database.getInstance().isConnected) return HandlePlayers.getKnownPlayers().containsKey(uuidOfPlayerToCheck); // does not return false or true to prevent unpredictable behavior
+        List<PlayerData> playerDatas = getAllPlayerDatas();
+        boolean isInDatabase = false;
+        if(playerDatas.isEmpty()) return false;
+        for (PlayerData playerDataToCompare : playerDatas) {
+            if(playerDataToCompare.getUniqueId().equals(uuidOfPlayerToCheck)) {
+                isInDatabase = true;
+            }
+        }
+        return isInDatabase;
+    }
 }

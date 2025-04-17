@@ -3,6 +3,7 @@ package de.j.stationofdoom.teams;
 import de.j.deathMinigames.database.Database;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.deathMinigames.settings.GUI;
+import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -61,7 +62,7 @@ public class TeamsMainMenuGUI extends GUI {
             if(teamsAdded >= teamQuantity || teamsAdded >= maxSlotsPerPage || intToStartFrom + teamsAdded >= teamQuantity) return;
             Team currentTeam = TeamsMainMenuGUI.teams.get(intToStartFrom + teamsAdded);
             ArrayList<String> lore = getTeamInformation(currentTeam);
-            addClickableItemStack(currentTeam.getName(), currentTeam.getColorAsConcreteBlock(), 1, teamsAdded, lore);
+            addClickableItemStack(currentTeam.getName(), currentTeam.getColorAsMaterial(), 1, teamsAdded, lore);
             invSlots.put(teamsAdded, currentTeam);
         }
     }

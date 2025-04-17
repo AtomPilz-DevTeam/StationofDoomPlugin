@@ -23,7 +23,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Team {
     private String name;
-    private Material colorAsConcreteBlock;
+    private Material colorAsMaterial;
+    private String colorAsString;
     private boolean locked;
     public volatile Inventory inventory;
     private final EnderchestInvHolder enderchestInvHolder = new EnderchestInvHolder();
@@ -39,7 +40,8 @@ public class Team {
 
     public Team(String name, String colorAsString, boolean locked, String uuid, Location protectedLocation) {
         this.name = name;
-        this.colorAsConcreteBlock = Material.valueOf(colorAsString);
+        this.colorAsMaterial = Material.valueOf(colorAsString);
+        convertMaterialToString(this.colorAsMaterial);
         this.locked = locked;
         this.uuid = UUID.fromString(uuid);
         this.inventory = Bukkit.createInventory(enderchestInvHolder, 27, name);
@@ -52,7 +54,8 @@ public class Team {
 
     public Team(String name, String colorAsString, boolean locked, String uuid, String world, int x, int y, int z) {
         this.name = name;
-        this.colorAsConcreteBlock = Material.valueOf(colorAsString);
+        this.colorAsMaterial = Material.valueOf(colorAsString);
+        convertMaterialToString(this.colorAsMaterial);
         this.locked = locked;
         this.uuid = UUID.fromString(uuid);
         this.inventory = Bukkit.createInventory(enderchestInvHolder, 27, name);
@@ -65,7 +68,8 @@ public class Team {
 
     public Team(String name, String colorAsString, boolean locked, String uuid) {
         this.name = name;
-        this.colorAsConcreteBlock = Material.valueOf(colorAsString);
+        this.colorAsMaterial = Material.valueOf(colorAsString);
+        convertMaterialToString(this.colorAsMaterial);
         this.locked = locked;
         this.uuid = UUID.fromString(uuid);
         this.inventory = Bukkit.createInventory(enderchestInvHolder, 27, name);
@@ -141,12 +145,19 @@ public class Team {
         this.locked = locked;
     }
 
-    public Material getColorAsConcreteBlock() {
-        return colorAsConcreteBlock;
+    public Material getColorAsMaterial() {
+        return colorAsMaterial;
     }
 
-    public void setColorAsConcreteBlock(Material colorAsConcreteBlock) {
-        this.colorAsConcreteBlock = colorAsConcreteBlock;
+    public void setColorAsMaterial(Material colorAsMaterial) {
+        this.colorAsMaterial = colorAsMaterial;
+        convertMaterialToString(colorAsMaterial);
+    }
+
+    private void convertMaterialToString(Material material) {
+        String color = material.toString();
+        color = color.replace("_CONCRETE", "");
+        this.colorAsString = color;
     }
 
     public String getName() {
@@ -164,7 +175,7 @@ public class Team {
                 materials.add(material);
             }
         }
-        this.colorAsConcreteBlock = materials.get(ThreadLocalRandom.current().nextInt(0, materials.size()));
+        this.colorAsMaterial = materials.get(ThreadLocalRandom.current().nextInt(0, materials.size()));
     }
 
     public UUID getUuid() {
@@ -271,5 +282,12 @@ public class Team {
 
     private void addToList() {
         HandleTeams.addTeam(this);
+    }
+
+    public String getColorAsString() {
+        if(colorAsString == null) {
+            convertMaterialToString(this.colorAsMaterial);
+        }
+        return colorAsString;
     }
 }

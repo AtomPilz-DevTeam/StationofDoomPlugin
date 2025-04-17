@@ -9,8 +9,6 @@ import de.j.deathMinigames.main.PlayerData;
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.teams.HandleTeams;
 import de.j.stationofdoom.teams.Team;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,22 +56,28 @@ public class TeamsDatabase {
         Main.getMainLogger().info("Found " + teams.size() + " team(s):");
         for (Team team : teams) {
             Main.getMainLogger().info(team.getName());
-            Query.query("SELECT uuid FROM playerData WHERE uuidOfTeam = ?;")
-                    .single(Call.of()
-                            .bind(team.getUuid(), UUIDAdapter.AS_STRING)
-                    )
-                    .map(row -> row.getString("uuid"))
-                    .all()
-                    .forEach(team::addMember);
-            for(UUID uuid : team.getAllPlayers()) {
-                PlayerData playerData = HandlePlayers.getInstance().getPlayerData(uuid);
-                if(playerData == null) {
-                    Main.getMainLogger().info("Found null player in team " + team.getName());
-                    continue;
+            try {
+                Query.query("SELECT uuid FROM playerData WHERE uuidOfTeam = ?;")
+                        .single(Call.of()
+                                .bind(team.getUuid(), UUIDAdapter.AS_STRING)
+                        )
+                        .map(row -> row.getString("uuid"))
+                        .all()
+                        .forEach(team::addMember);
+                for (UUID uuid : team.getAllPlayers()) {
+                    PlayerData playerData = HandlePlayers.getInstance().getPlayerData(uuid);
+                    if (playerData == null) {
+                        Main.getMainLogger().info("Found null player in team " + team.getName());
+                        continue;
+                    }
+                    if (isTeamOperator(playerData.getUniqueId())) {
+                        team.setTeamOperator(playerData, true);
+                    }
                 }
-                if(isTeamOperator(playerData.getUniqueId())) {
-                    team.setTeamOperator(playerData, true);
-                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                Main.getMainLogger().warning("Could not get players from team " + team.getName());
             }
         }
         return teams;
@@ -85,7 +89,7 @@ public class TeamsDatabase {
             Query.query("INSERT INTO teams (name, color, locked, uuid, world, protectedLocationX, protectedLocationY, protectedLocationZ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);")
                     .single(Call.of()
                             .bind(team.getName())
-                            .bind(team.getColorAsConcreteBlock().name())
+                            .bind(team.getColorAsMaterial().name())
                             .bind(team.getLocked())
                             .bind(team.getUuid(), UUIDAdapter.AS_STRING)
                             .bind(team.getProtectedLocation().getWorld().getName())
@@ -99,7 +103,7 @@ public class TeamsDatabase {
             Query.query("INSERT INTO teams (name, color, locked, uuid) VALUES (?, ?, ?, ?);")
                     .single(Call.of()
                             .bind(team.getName())
-                            .bind(team.getColorAsConcreteBlock().name())
+                            .bind(team.getColorAsMaterial().name())
                             .bind(team.getLocked())
                             .bind(team.getUuid(), UUIDAdapter.AS_STRING))
                     .insert();

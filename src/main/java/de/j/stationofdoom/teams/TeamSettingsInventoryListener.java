@@ -8,7 +8,6 @@ import de.j.stationofdoom.teams.chunkClaimSystem.ChunkClaimSystem;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -180,7 +179,7 @@ public class TeamSettingsInventoryListener implements Listener {
         Material clickedColor = inv.getItem(slot).getType();
         Team teamToChangeColor = HandleTeams.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()));
         if(teamToChangeColor == null) return;
-        teamToChangeColor.setColorAsConcreteBlock(clickedColor);
+        teamToChangeColor.setColorAsMaterial(clickedColor);
         new TeamSettingsGUI(teamToChangeColor).showPage(1, player);
     }
 

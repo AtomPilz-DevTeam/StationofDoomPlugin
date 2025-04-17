@@ -5,7 +5,6 @@ import de.j.deathMinigames.main.PlayerData;
 import de.j.deathMinigames.settings.AnvilUI;
 import de.j.deathMinigames.settings.GUI;
 import de.j.deathMinigames.settings.MainMenu;
-import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -106,12 +105,12 @@ public class TeamSettingsGUI extends GUI {
     }
 
     private void addTopBarToInventory() {
-        String colorAsGlassPane = team.getColorAsConcreteBlock().toString().replace("_CONCRETE", "_STAINED_GLASS_PANE");
+        String colorAsGlassPane = team.getColorAsMaterial().toString().replace("_CONCRETE", "_STAINED_GLASS_PANE");
         Material material = Material.getMaterial(colorAsGlassPane);
         for (int i = 0; i < 9; i++) {
             addClickableItemStack(team.getName(), material, 1, i);
         }
-        addClickableItemStack(team.getName(), team.getColorAsConcreteBlock(), 1, 4);
+        addClickableItemStack(team.getName(), team.getColorAsMaterial(), 1, 4);
     }
 
     private void addFunctionsToInventory(Player player) {
