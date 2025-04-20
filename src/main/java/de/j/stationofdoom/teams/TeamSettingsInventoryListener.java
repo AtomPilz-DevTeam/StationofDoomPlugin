@@ -108,7 +108,7 @@ public class TeamSettingsInventoryListener implements Listener {
                 return;
             }
         }
-        if(slot >= 9 && slot <=11 || slot == 17 || slot >= 18 && slot <= 44 && inv.getItem(slot) != null) {
+        if(slot >= 9 && slot <=13 || slot == 17 || slot >= 18 && slot <= 44 && inv.getItem(slot) != null) {
             if(team.getLocked() && !team.isTeamOperator(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()))) {
                 player.sendMessage(Component.text(tf.getTranslation(player, "teamLockedAndNotOperator")).color(NamedTextColor.RED));
                 teamSettingsGUI.showPage(currentPage, player);
