@@ -63,6 +63,15 @@ public class ChunkClaimSystem {
         return false;
     }
 
+    public boolean checkIfAreaLocationIsProtectedFromPlayer(int locationX, int locationZ, Player player) {
+        if(checkIfLocationProtectedFromPlayer(locationX + protectedLocationSizeInBlocks, locationZ + protectedLocationSizeInBlocks, player) ||
+                checkIfLocationProtectedFromPlayer(locationX - protectedLocationSizeInBlocks, locationZ - protectedLocationSizeInBlocks, player) ||
+                checkIfLocationProtectedFromPlayer(locationX + protectedLocationSizeInBlocks, locationZ - protectedLocationSizeInBlocks, player) ||
+                checkIfLocationProtectedFromPlayer(locationX - protectedLocationSizeInBlocks, locationZ + protectedLocationSizeInBlocks, player)
+        ) return true;
+        else return false;
+    }
+
     public Team getTeam(Location location) {
         return getTeamFromLocation(location.getBlockX(), location.getBlockZ());
     }
@@ -95,7 +104,7 @@ public class ChunkClaimSystem {
     }
 
     public void playerClaim(Player player, Team team, Location location) {
-        if(!checkIfLocationProtectedFromPlayer(location.getBlockX(), location.getBlockZ(), player)) {
+        if(!checkIfAreaLocationIsProtectedFromPlayer(location.getBlockX(), location.getBlockZ(), player)) {
             team.setProtectedLocation(location);
             messageTeamMembersAboutNewProtectedLocation(team, player);
             showPlayerProtectedLocationViaParticles(player, team.getProtectedLocation());
