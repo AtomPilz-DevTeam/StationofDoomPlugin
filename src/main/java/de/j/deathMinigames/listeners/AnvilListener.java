@@ -26,6 +26,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.view.AnvilView;
 
+import static io.papermc.paper.registry.keys.SoundEventKeys.*;
+
 public class AnvilListener implements Listener {
     private String serverName;
     private String hostName;
@@ -90,14 +92,14 @@ public class AnvilListener implements Listener {
                 if (hostName == null) return;
                 Tablist.setHostedBy(hostName);
                 event.getView().close();
-                DmUtil.getInstance().playSoundAtLocation(player.getLocation(), 0.5f, Sound.BLOCK_ANVIL_USE);
+                player.playSound(net.kyori.adventure.sound.Sound.sound(BLOCK_CHISELED_BOOKSHELF_INSERT_ENCHANTED, net.kyori.adventure.sound.Sound.Source.PLAYER, 3F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
                 player.sendMessage(Component.text("Host name: " + hostName).color(NamedTextColor.GOLD));
             } else if (MainMenu.getSetServerName().compareLocIDTo(loc)) {
                 event.setCancelled(true);
                 if (serverName == null) return;
                 Tablist.setServerName(serverName);
                 event.getView().close();
-                DmUtil.getInstance().playSoundAtLocation(player.getLocation(), 0.5f, Sound.BLOCK_ANVIL_USE);
+                player.playSound(net.kyori.adventure.sound.Sound.sound(BLOCK_CHISELED_BOOKSHELF_INSERT_ENCHANTED, net.kyori.adventure.sound.Sound.Source.PLAYER, 3F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
                 player.sendMessage(Component.text("Server name: " + serverName).color(NamedTextColor.GOLD));
             }
             else if(TeamSettingsGUI.renameTeam.compareLocIDTo(loc)) {
@@ -109,7 +111,7 @@ public class AnvilListener implements Listener {
                 Main.getMainLogger().info("set name of team " + HandleTeams.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId())).getName() + " to: " + teamName);
                 HandleTeams.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId())).setName(teamName);
                 new TeamSettingsGUI(HandleTeams.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()))).showPage(1, player);
-                DmUtil.getInstance().playSoundAtLocation(player.getLocation(), 0.5f, Sound.BLOCK_ANVIL_USE);
+                player.playSound(net.kyori.adventure.sound.Sound.sound(BLOCK_CHISELED_BOOKSHELF_INSERT_ENCHANTED, net.kyori.adventure.sound.Sound.Source.PLAYER, 3F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
             }
             else if(MainMenu.getSetClaimingRadius().compareLocIDTo(loc)) {
                 event.setCancelled(true);
