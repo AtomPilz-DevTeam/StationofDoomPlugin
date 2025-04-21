@@ -15,9 +15,14 @@ public class Config {
 
     private volatile static boolean configSetUp;
     private volatile static int configParkourStartHeight;
+    private final static int configParkourStartHeightDefault = 100;
     private volatile static int configParkourLength;
+    private final static int configParkourLengthDefault = 10;
     private volatile static int configCostToLowerTheDifficulty;
+    private final static int configCostToLowerTheDifficultyDefault = 6;
     private volatile static int configTimeToDecideWhenRespawning;
+    private final static int configTimeToDecideWhenRespawningDefault = 10;
+
     private volatile static Location configWaitingListPosition;
 
     private Config(){}
@@ -74,37 +79,46 @@ public class Config {
      */
     public void cloneConfigToPlugin() {
         FileConfiguration config = Main.getPlugin().getConfig();
-        if(config.contains("SetUp")) {
-            setSetUp(config.getBoolean("SetUp"));
-        }
-        else {
-            setSetUp(false);
-        }
+        handleCloneSetUp(config);
+        handleCloneDatabase(config);
+        handleCloneTablist(config);
+        handleCloneCustomEnchants(config);
+    }
+
+    private void handleCloneSetUp(FileConfiguration config) {
+        boolean setUp = true;
         if(config.contains("ParkourStartHeight")) {
             setParkourStartHeight(config.getInt("ParkourStartHeight"));
         }
         else {
-            setParkourStartHeight(100);
+            setParkourStartHeight(configParkourStartHeightDefault);
+            setUp = false;
         }
         if(config.contains("ParkourLength")) {
             setParkourLength(config.getInt("ParkourLength"));
         }
         else {
-            setParkourLength(10);
+            setParkourLength(configParkourLengthDefault);
+            setUp = false;
         }
         if(config.contains("CostToLowerTheDifficulty")) {
             setCostToLowerTheDifficulty(config.getInt("CostToLowerTheDifficulty"));
         }
         else {
-            setCostToLowerTheDifficulty(6);
+            setCostToLowerTheDifficulty(configCostToLowerTheDifficultyDefault);
+            setUp = false;
         }
         if(config.contains("TimeToDecideWhenRespawning")) {
             setTimeToDecideWhenRespawning(config.getInt("TimeToDecideWhenRespawning"));
         }
         else {
-            setTimeToDecideWhenRespawning(10);
+            setTimeToDecideWhenRespawning(configTimeToDecideWhenRespawningDefault);
+            setUp = false;
         }
-        // Database
+        configSetUp = setUp;
+    }
+
+    private void handleCloneDatabase(FileConfiguration config) {
         if(!config.contains("Database")) {
             config.set("Database.host", "default");
             config.set("Database.port", "default");
@@ -115,7 +129,9 @@ public class Config {
             config.set("Database.schema", "public");
             Main.getPlugin().saveConfig();
         }
-        //Tablist
+    }
+
+    private void handleCloneTablist(FileConfiguration config) {
         if(config.contains("Tablist")) {
             if(config.contains("Tablist.ServerName") && config.get("Tablist.ServerName") != null) {
                 Tablist.setServerName(config.getString("Tablist.ServerName"));
@@ -126,6 +142,31 @@ public class Config {
         }
         if(config.contains("ProtectedLocationRadius")) {
             ChunkClaimSystem.getInstance().setProtectedLocationSizeInBlocks(config.getInt("ProtectedLocationRadius"));
+        }
+    }
+
+    private void handleCloneCustomEnchants(FileConfiguration config) {
+        if(config.contains("CustomEnchants")) {
+            boolean customEnchantBool;
+            for (CustomEnchantsEnum customEnchantsEnum : CustomEnchantsEnum.values() ) {
+                try {
+                    customEnchantBool = config.getBoolean("CustomEnchants." + customEnchantsEnum.name());
+                    customEnchantsEnum.setEnabled(customEnchantBool);
+                }
+                catch (Exception e) {
+                    Main.getMainLogger().warning("Setting value for custom enchantment " + customEnchantsEnum.name() + " failed. Falling back to default true value.");
+                    e.printStackTrace();
+                    customEnchantsEnum.setEnabled(true);
+                }
+            }
+        }
+        else {
+            config.createSection("CustomEnchants");
+            for (CustomEnchantsEnum customEnchantsEnum : CustomEnchantsEnum.values() ) {
+                config.set("CustomEnchants." + customEnchantsEnum.name(), true);
+                customEnchantsEnum.setEnabled(true);
+            }
+            Main.getPlugin().saveConfig();
         }
     }
 
@@ -143,16 +184,6 @@ public class Config {
         else {
             Main.getMainLogger().warning("WaitingListPosition not found in config!");
         }
-    }
-
-    /**
-     * Sets whether the plugin is set up or not.
-     * @param bool Whether the plugin is set up.
-     */
-    public synchronized void setSetUp(boolean bool) {
-        configSetUp = bool;
-        Main.getPlugin().getConfig().set("SetUp", bool);
-        Main.getPlugin().saveConfig();
     }
 
     /**
