@@ -116,7 +116,8 @@
       "teamMembersNewProtectedLocation": "Dein Team hat einen neuen Bereich geschützt: x: %s z: %s",
       "setClaimingRadius": "Du hast den Radius des beschützen Bereichs jedes Team auf: %s gesetzt",
       "TeamCMDNoTeam": "Du bist in keinem Team",
-      "teamLocked": "Das Team ist gesperrt"
+      "teamLocked": "Das Team ist gesperrt",
+      "enchantNotEnabled": "Diese Verzauberung ist auf diesem Server nicht aktiviert."
     }
   ],
   "en-US": [
@@ -236,7 +237,8 @@
       "teamMembersNewProtectedLocation": "Your team has claimed a new location: x: %s z: %s",
       "setClaimingRadius": "You set the claiming radius to: %s",
       "TeamCMDNoTeam": "You are not in any team",
-      "teamLocked": "This team is locked"
+      "teamLocked": "This team is locked",
+      "enchantNotEnabled": "This enchantment is currently not activated."
     }
   ]
 }

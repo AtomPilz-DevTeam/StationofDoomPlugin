@@ -1,9 +1,9 @@
 package de.j.deathMinigames.main;
 
+import de.j.stationofdoom.enchants.CustomEnchantsEnum;
 import de.j.stationofdoom.teams.chunkClaimSystem.ChunkClaimSystem;
 import de.j.stationofdoom.util.Tablist;
 import org.bukkit.Location;
-
 import de.j.stationofdoom.main.Main;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
