@@ -6,10 +6,8 @@ import de.chojo.sadu.queries.call.adapter.UUIDAdapter;
 import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.stationofdoom.main.Main;
-import org.bukkit.Bukkit;
+import de.j.stationofdoom.teams.HandleTeams;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -50,7 +48,7 @@ public class PlayerDataDatabase {
      */
     public void createTable() {
         if(!Database.getInstance().isConnected) return;
-        Query.query("CREATE TABLE IF NOT EXISTS playerData (name VARCHAR(255), UUID VARCHAR(255), introduction BOOLEAN, usesPlugin BOOLEAN, difficulty INT, bestParkourTime FLOAT);")
+        Query.query("CREATE TABLE IF NOT EXISTS playerData (name VARCHAR(255), UUID VARCHAR(255), introduction BOOLEAN, usesPlugin BOOLEAN, difficulty INT, bestParkourTime FLOAT, uuidOfTeam VARCHAR(255), isTeamOperator BOOLEAN);")
                 .single()
                 .insert();
     }
@@ -74,8 +72,27 @@ public class PlayerDataDatabase {
                         row.getBoolean("introduction"),
                         row.getBoolean("usesPlugin"),
                         row.getInt("difficulty"),
-                        row.getFloat("bestParkourTime")))
+                        row.getFloat("bestParkourTime"),
+                        row.getString("uuidOfTeam"),
+                        row.getBoolean("isTeamOperator")))
                 .all();
+    }
+
+    public PlayerData getPlayerData(UUID uuid) {
+        if(!Database.getInstance().isConnected) return null;
+        return Query.query("SELECT * FROM playerdata WHERE uuid = ?;")
+                .single(Call.of()
+                        .bind(uuid, UUIDAdapter.AS_STRING))
+                .map(row -> new PlayerData(row.getString("name"),
+                        row.getString("uuid"),
+                        row.getBoolean("introduction"),
+                        row.getBoolean("usesPlugin"),
+                        row.getInt("difficulty"),
+                        row.getFloat("bestParkourTime"),
+                        row.getString("uuidOfTeam"),
+                        row.getBoolean("isTeamOperator")))
+                .all()
+                .getFirst();
     }
 
     /**
@@ -93,14 +110,16 @@ public class PlayerDataDatabase {
         if(!Database.getInstance().isConnected) return;
         for (PlayerData playerData : playerDatas) {
             if(checkIfPlayerIsInDatabase(playerData)) {
-                Query.query("UPDATE playerData SET name = :name, introduction = :introduction, usesPlugin = :usesPlugin, difficulty = :difficulty, bestParkourTime = :bestParkourTime WHERE uuid = :uuid;")
+                Query.query("UPDATE playerData SET name = :name, introduction = :introduction, usesPlugin = :usesPlugin, difficulty = :difficulty, bestParkourTime = :bestParkourTime, uuidOfTeam = :uuidOfTeam, isTeamOperator = :isTeamOperator WHERE uuid = :uuid;")
                         .single(Call.of()
                                 .bind("name", playerData.getName())
                                 .bind("introduction", playerData.getIntroduction())
                                 .bind("usesPlugin", playerData.getUsesPlugin())
                                 .bind("difficulty", playerData.getDifficulty())
                                 .bind("bestParkourTime", playerData.getBestParkourTime())
-                                .bind("uuid", playerData.getUUID(), UUIDAdapter.AS_STRING))
+                                .bind("uuid", playerData.getUniqueId(), UUIDAdapter.AS_STRING)
+                                .bind("uuidOfTeam", playerData.getUuidOfTeam(), UUIDAdapter.AS_STRING)
+                                .bind("isTeamOperator", HandleTeams.getTeam(playerData).isTeamOperator(playerData)))
                         .update();
                 updatedPlayers++;
             }
@@ -122,14 +141,15 @@ public class PlayerDataDatabase {
      */
     public void addPlayerToDatabase(PlayerData playerData) {
         if(!Database.getInstance().isConnected) return;
-        Query.query("INSERT INTO playerData (name, UUID, introduction, usesPlugin, difficulty, bestParkourTime) VALUES (:name, :uuid, :introduction, :usesPlugin, :difficulty, :bestParkourTime);")
+        Query.query("INSERT INTO playerData (name, UUID, introduction, usesPlugin, difficulty, bestParkourTime, uuidOfTeam) VALUES (:name, :uuid, :introduction, :usesPlugin, :difficulty, :bestParkourTime, :uuidOfTeam);")
                 .single(Call.of()
                         .bind("name", playerData.getName())
-                        .bind("uuid", playerData.getUUID(), UUIDAdapter.AS_STRING)
+                        .bind("uuid", playerData.getUniqueId(), UUIDAdapter.AS_STRING)
                         .bind("introduction", playerData.getIntroduction())
                         .bind("usesPlugin", playerData.getUsesPlugin())
                         .bind("difficulty", playerData.getDifficulty())
-                        .bind("bestParkourTime", playerData.getBestParkourTime()))
+                        .bind("bestParkourTime", playerData.getBestParkourTime())
+                        .bind("uuidOfTeam", playerData.getUuidOfTeam(), UUIDAdapter.AS_STRING))
                 .insert();
     }
 
@@ -143,12 +163,25 @@ public class PlayerDataDatabase {
      * @return true if the player is in the database, false otherwise.
      */
     public boolean checkIfPlayerIsInDatabase(PlayerData playerDataPlayerToCheck) {
-        if(!Database.getInstance().isConnected) return HandlePlayers.getKnownPlayers().containsKey(playerDataPlayerToCheck.getUUID()); // does not return false or true to prevent unpredictable behavior
-        List<PlayerData> playerDatas =  getAllPlayerDatas();
+        if(!Database.getInstance().isConnected) return HandlePlayers.getKnownPlayers().containsKey(playerDataPlayerToCheck.getUniqueId()); // does not return false or true to prevent unpredictable behavior
+        List<PlayerData> playerDatas = getAllPlayerDatas();
         boolean isInDatabase = false;
         if(playerDatas.isEmpty()) return false;
         for (PlayerData playerDataToCompare : playerDatas) {
-            if(playerDataToCompare.getUUID().equals(playerDataPlayerToCheck.getUUID())) {
+            if(playerDataToCompare.getUniqueId().equals(playerDataPlayerToCheck.getUniqueId())) {
+                isInDatabase = true;
+            }
+        }
+        return isInDatabase;
+    }
+
+    public boolean checkIfPlayerIsInDatabase(UUID uuidOfPlayerToCheck) {
+        if(!Database.getInstance().isConnected) return HandlePlayers.getKnownPlayers().containsKey(uuidOfPlayerToCheck); // does not return false or true to prevent unpredictable behavior
+        List<PlayerData> playerDatas = getAllPlayerDatas();
+        boolean isInDatabase = false;
+        if(playerDatas.isEmpty()) return false;
+        for (PlayerData playerDataToCompare : playerDatas) {
+            if(playerDataToCompare.getUniqueId().equals(uuidOfPlayerToCheck)) {
                 isInDatabase = true;
             }
         }

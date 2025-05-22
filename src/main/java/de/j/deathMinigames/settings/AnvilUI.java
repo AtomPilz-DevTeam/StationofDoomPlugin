@@ -1,5 +1,8 @@
 package de.j.deathMinigames.settings;
 
+import de.j.deathMinigames.main.HandlePlayers;
+import de.j.stationofdoom.teams.HandleTeams;
+import de.j.stationofdoom.teams.chunkClaimSystem.ChunkClaimSystem;
 import de.j.stationofdoom.util.Tablist;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
@@ -66,9 +69,25 @@ public class AnvilUI implements InventoryHolder {
         }
         else {
             switch (title) {
-                case SET_HOST_NAME -> inputItemName = Tablist.getHostedBy();
-                case SET_SERVER_NAME -> inputItemName = Tablist.getServerName();
-                default -> throw new IllegalArgumentException("Title: " + title + " is not supported");
+                case SET_HOST_NAME:
+                    inputItemName = Tablist.getHostedBy();
+                    break;
+                case SET_SERVER_NAME:
+                    inputItemName = Tablist.getServerName();
+                    break;
+                case TEAM_RENAME:
+                    if(HandleTeams.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId())).getName() != null) {
+                        inputItemName = HandleTeams.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId())).getName();
+                    }
+                    else {
+                        inputItemName = "";
+                    }
+                    break;
+                case SET_CLAIMING_RADIUS:
+                    inputItemName = String.valueOf(ChunkClaimSystem.getInstance().getProtectedLocationSizeInBlocks());
+                    break;
+                default:
+                    throw new IllegalArgumentException("Title: " + title + " is not supported!");
             }
             if(inputItemName == null) {
                 inputMeta.displayName(Component.text(new TranslationFactory().getTranslation(player, "noNameSet")));

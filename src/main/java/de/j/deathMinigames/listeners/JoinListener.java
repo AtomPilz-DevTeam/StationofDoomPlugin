@@ -32,13 +32,12 @@ public class JoinListener implements Listener {
         Player player = event.getPlayer();
         TranslationFactory tf = new TranslationFactory();
         HandlePlayers handlePlayers = HandlePlayers.getInstance();
-
         if(!handlePlayers.checkIfPlayerIsKnown(player.getUniqueId())) {
             handlePlayers.addNewPlayer(player);
             player.sendMessage(Component.text(tf.getTranslation(player,"addedToPlayerList")).color(NamedTextColor.GOLD)
                     .append(Component.text(HandlePlayers.getKnownPlayers().get(player.getUniqueId()).getDifficulty()).color(NamedTextColor.RED)));
         }
-        PlayerData playerData = HandlePlayers.getKnownPlayers().get(player.getUniqueId());
+        PlayerData playerData = HandlePlayers.getInstance().getPlayerData(player.getUniqueId());
         if(playerData.getStatus().equals(PlayerMinigameStatus.DECIDING)) {
             respawnListener.handleTimerWhilePlayerDecides(player);
         }
