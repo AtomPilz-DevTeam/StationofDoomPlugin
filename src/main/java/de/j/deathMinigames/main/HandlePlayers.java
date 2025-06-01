@@ -148,11 +148,28 @@ public class HandlePlayers {
 
     public PlayerData getPlayerData(UUID uuidOfPlayer) {
         if(Database.getInstance().isConnected) {
-            return PlayerDataDatabase.getInstance().getPlayerData(uuidOfPlayer);
+            PlayerData data = PlayerDataDatabase.getInstance().getPlayerData(uuidOfPlayer);
+            if (data != null) {
+                return data;
+            }
+            // If not found in database but player is online, add them
+            Player player = Bukkit.getPlayer(uuidOfPlayer);
+            if (player != null) {
+                addNewPlayer(player);
+                return knownPlayers.get(uuidOfPlayer);
+            }
+            return null;
         }
         else {
             if(!this.checkIfPlayerIsKnown(uuidOfPlayer)) {
-                addNewPlayer(Bukkit.getPlayer(uuidOfPlayer));
+                Player player = Bukkit.getPlayer(uuidOfPlayer);
+                if (player != null) {
+                    addNewPlayer(player);
+                }
+                else {
+                    Main.getMainLogger().warning("Cannot add player data for offline player: " + uuidOfPlayer);
+                    return null;
+                }
             }
             return knownPlayers.get(uuidOfPlayer);
         }
