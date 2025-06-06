@@ -146,13 +146,11 @@ public class PlayerData {
     private volatile boolean teamOperator; // in database
 
     public boolean isInTeam() {
-        Main.getMainLogger().warning("Tried accessing isInTeam of " + this + " isInTeam = " + this.isInTeam); //TODO remove
         return this.isInTeam;
     }
 
     public void setInTeam(boolean isInTeam) {
         this.isInTeam = isInTeam;
-        Main.getMainLogger().warning("Set isInTeam of " + this + " to " + this.isInTeam); //TODO remove
     }
 
     public UUID getUuidOfTeam() {
@@ -194,7 +192,6 @@ public class PlayerData {
         this.introduction = false;
         this.usesPlugin = true;
         this.leftWhileProcessing = false;
-        Main.getMainLogger().warning("created player data for player " + this.name + " " + this.uuid); //TODO remove
     }
 
     public PlayerData(String name, String uuid, boolean introduction, boolean usesPlugin, int difficulty, float bestParkourTime, boolean isInTeam,  String uuidOfTeam, boolean teamOperator) {
@@ -214,7 +211,6 @@ public class PlayerData {
             this.uuidOfTeam = UUID.fromString(uuidOfTeam);
             this.teamOperator = teamOperator;
         }
-        Main.getMainLogger().warning("created player data for player " + this.name + " " + this.uuid + " via long method"); //TODO remove
     }
 
     /**

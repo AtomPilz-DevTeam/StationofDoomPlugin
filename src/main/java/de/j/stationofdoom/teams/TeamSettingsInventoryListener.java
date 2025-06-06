@@ -110,25 +110,7 @@ public class TeamSettingsInventoryListener implements Listener {
     private void handleTeamSettingsGUI(int slot, Inventory inv, InventoryHolder invHolder, Player player, PlayerData playerData, int currentPage, int lastPage, int nextPage) {
         TeamSettingsGUI teamSettingsGUI = (TeamSettingsGUI) invHolder;
         Team team = teamSettingsGUI.getTeam();
-        if(slot != 45) {
-            if(player.getUniqueId() == null) {
-                Main.getMainLogger().info("Player is null in TeamSettingsInventoryListener");
-                return;
-            }
-            if(!team.isMember(player.getUniqueId())) {
-                player.sendMessage(Component.text(tf.getTranslation(player, "teamNotAMember")).color(NamedTextColor.RED));
-                player.playSound(Sound.sound(BLOCK_AMETHYST_CLUSTER_BREAK, Sound.Source.PLAYER, 0.5F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
-                return;
-            }
-        }
-        if(slot >= 9 && slot <=13 || slot == 17 || slot >= 18 && slot <= 44 && inv.getItem(slot) != null) {
-            if(team.getLocked() && !team.isTeamOperator(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()))) {
-                player.sendMessage(Component.text(tf.getTranslation(player, "teamLockedAndNotOperator")).color(NamedTextColor.RED));
-                player.playSound(Sound.sound(BLOCK_AMETHYST_CLUSTER_BREAK, Sound.Source.PLAYER, 0.5F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
-                teamSettingsGUI.showPage(currentPage, player);
-                return;
-            }
-        }
+        handleTeamSettingsGUIChecking(slot, player, team, teamSettingsGUI, currentPage, inv);
         switch (slot) {
             case -999:
                 return;
@@ -145,14 +127,7 @@ public class TeamSettingsInventoryListener implements Listener {
                 player.playSound(Sound.sound(BLOCK_COPPER_BULB_TURN_ON, Sound.Source.PLAYER, 2F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
                 break;
             case 11:
-                team.setLocked(!team.getLocked());
-                teamSettingsGUI.showPage(currentPage, player);
-                if(team.getLocked()) {
-                    player.playSound(Sound.sound(BLOCK_IRON_DOOR_CLOSE, Sound.Source.PLAYER, 0.5F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
-                }
-                else {
-                    player.playSound(Sound.sound(BLOCK_IRON_DOOR_OPEN, Sound.Source.PLAYER, 0.5F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
-                }
+                handleTeamSettingsGUICase11(team, player, teamSettingsGUI, currentPage);
                 break;
             case 12:
                 team.accessEnderChest(player);
@@ -169,36 +144,13 @@ public class TeamSettingsInventoryListener implements Listener {
                 break;
             case 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41,
                  42, 43, 44:
-                if (inv.getItem(slot) == null) {
-                    player.playSound(Sound.sound(BLOCK_COPPER_BULB_PLACE, Sound.Source.PLAYER, 0.5F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
-                    return;
-                }
-                PlayerData playerBasedOnSlot = teamSettingsGUI.getMemberBasedOnSlot(slot);
-                if(playerBasedOnSlot == null) return;
-                new TeamPlayerSettingsGUI().showInventory(player, playerBasedOnSlot);
-                player.playSound(Sound.sound(BLOCK_ENDER_CHEST_OPEN, Sound.Source.PLAYER, 0.5F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
+                handleTeamSettingsGUICase18To44(inv, slot, player, teamSettingsGUI);
                 break;
             case 45:
-                if(team.getLocked() && !team.isMember(player.getUniqueId())) {
-                    player.sendMessage(Component.text(tf.getTranslation(player, "teamLocked")).color(NamedTextColor.RED));
-                    return;
-                }
-                if(team.isMember(player.getUniqueId())) player.playSound(Sound.sound(BLOCK_AMETHYST_BLOCK_BREAK, Sound.Source.PLAYER, 1F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
-                else player.playSound(net.kyori.adventure.sound.Sound.sound(BLOCK_CHISELED_BOOKSHELF_INSERT_ENCHANTED, net.kyori.adventure.sound.Sound.Source.PLAYER, 3F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
-                team.handlePlayerLeaveOrJoin(playerData);
-                if(!team.getAllPlayers().isEmpty()) {
-                    teamSettingsGUI.showPage(currentPage, player);
-                }
-                else {
-                    new TeamsMainMenuGUI().showPage(1, player);
-                }
+                handleTeamSettingsGUICase45(team, player, teamSettingsGUI, currentPage, playerData);
                 break;
             case 52:
-                if (currentPage == 1) {
-                    return;
-                } else {
-                    teamSettingsGUI.showPage(lastPage, player);
-                    player.playSound(Sound.sound(BLOCK_COPPER_BULB_TURN_ON, Sound.Source.PLAYER, 2F, 1), net.kyori.adventure.sound.Sound.Emitter.self());                }
+                handleTeamSettingsGUICase52(currentPage, player, teamSettingsGUI, lastPage);
                 break;
             case 53:
                 if (currentPage == teamSettingsGUI.getPagesQuantity() || teamSettingsGUI.getPagesQuantity() == 1 || teamSettingsGUI.getPagesQuantity() == 0) {
@@ -208,6 +160,72 @@ public class TeamSettingsInventoryListener implements Listener {
                     player.playSound(Sound.sound(BLOCK_COPPER_BULB_TURN_ON, Sound.Source.PLAYER, 2F, 1), net.kyori.adventure.sound.Sound.Emitter.self());                }
                 break;
             default:
+        }
+    }
+
+    private void handleTeamSettingsGUIChecking(int slot, Player player, Team team, TeamSettingsGUI teamSettingsGUI, int currentPage, Inventory inv) {
+        if(slot != 45) {
+            if(player.getUniqueId() == null) {
+                Main.getMainLogger().info("Player is null in TeamSettingsInventoryListener");
+                return;
+            }
+            if(!team.isMember(player.getUniqueId())) {
+                player.sendMessage(Component.text(tf.getTranslation(player, "teamNotAMember")).color(NamedTextColor.RED));
+                player.playSound(Sound.sound(BLOCK_AMETHYST_CLUSTER_BREAK, Sound.Source.PLAYER, 0.5F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
+                return;
+            }
+        }
+        if(slot >= 9 && slot <=13 || slot == 17 || slot >= 18 && slot <= 44 && inv.getItem(slot) != null) {
+            if(team.getLocked() && !team.isTeamOperator(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()))) {
+                player.sendMessage(Component.text(tf.getTranslation(player, "teamLockedAndNotOperator")).color(NamedTextColor.RED));
+                player.playSound(Sound.sound(BLOCK_AMETHYST_CLUSTER_BREAK, Sound.Source.PLAYER, 0.5F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
+                teamSettingsGUI.showPage(currentPage, player);
+            }
+        }
+    }
+
+    private void handleTeamSettingsGUICase11(Team team, Player player, TeamSettingsGUI teamSettingsGUI, int currentPage) {
+        team.setLocked(!team.getLocked());
+        teamSettingsGUI.showPage(currentPage, player);
+        if(team.getLocked()) {
+            player.playSound(Sound.sound(BLOCK_IRON_DOOR_CLOSE, Sound.Source.PLAYER, 0.5F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
+        }
+        else {
+            player.playSound(Sound.sound(BLOCK_IRON_DOOR_OPEN, Sound.Source.PLAYER, 0.5F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
+        }
+    }
+
+    private void handleTeamSettingsGUICase18To44(Inventory inv, int slot, Player player, TeamSettingsGUI teamSettingsGUI) {
+        if (inv.getItem(slot) == null) {
+            player.playSound(Sound.sound(BLOCK_COPPER_BULB_PLACE, Sound.Source.PLAYER, 0.5F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
+            return;
+        }
+        PlayerData playerBasedOnSlot = teamSettingsGUI.getMemberBasedOnSlot(slot);
+        if(playerBasedOnSlot == null) return;
+        new TeamPlayerSettingsGUI().showInventory(player, playerBasedOnSlot);
+        player.playSound(Sound.sound(BLOCK_ENDER_CHEST_OPEN, Sound.Source.PLAYER, 0.5F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
+    }
+
+    private void handleTeamSettingsGUICase45(Team team, Player player, TeamSettingsGUI teamSettingsGUI, int currentPage, PlayerData playerData) {
+        if(team.getLocked() && !team.isMember(player.getUniqueId())) {
+            player.sendMessage(Component.text(tf.getTranslation(player, "teamLocked")).color(NamedTextColor.RED));
+            return;
+        }
+        if(team.isMember(player.getUniqueId())) player.playSound(Sound.sound(BLOCK_AMETHYST_BLOCK_BREAK, Sound.Source.PLAYER, 1F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
+        else player.playSound(net.kyori.adventure.sound.Sound.sound(BLOCK_CHISELED_BOOKSHELF_INSERT_ENCHANTED, net.kyori.adventure.sound.Sound.Source.PLAYER, 3F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
+        team.handlePlayerLeaveOrJoin(playerData);
+        if(!team.getAllPlayers().isEmpty()) {
+            teamSettingsGUI.showPage(currentPage, player);
+        }
+        else {
+            new TeamsMainMenuGUI().showPage(1, player);
+        }
+    }
+
+    private void handleTeamSettingsGUICase52(int currentPage, Player player, TeamSettingsGUI teamSettingsGUI, int lastPage) {
+        if (currentPage != 1) {
+            teamSettingsGUI.showPage(lastPage, player);
+            player.playSound(Sound.sound(BLOCK_COPPER_BULB_TURN_ON, Sound.Source.PLAYER, 2F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
         }
     }
 
@@ -250,29 +268,41 @@ public class TeamSettingsInventoryListener implements Listener {
         }
         switch (slot) {
             case 9:
-                if(team.isTeamOperator(playerData)) player.playSound(Sound.sound(BLOCK_PISTON_CONTRACT, Sound.Source.PLAYER, 0.5F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
-                else player.playSound(Sound.sound(BLOCK_PISTON_CONTRACT, Sound.Source.PLAYER, 0.5F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
-                team.setTeamOperator(clickedOnPlayerData, !team.isTeamOperator(clickedOnPlayerData));
+                handleTeamPlayerSettingsGUICase9(team, player, clickedOnPlayerData);
                 break;
             case 10:
-                team.removeMember(clickedOnPlayerData);
-                if(clickedOnPlayerData.isOnline()) {
-                    clickedOnPlayerData.getPlayer().sendMessage(Component.text(tf.getTranslation(clickedOnPlayerData.getPlayer(), "kickedFromTeam", player.getName())).color(NamedTextColor.RED));
-                    Bukkit.getPlayer(clickedOnPlayerData.getUniqueId()).playSound(Sound.sound(BLOCK_AMETHYST_BLOCK_RESONATE, Sound.Source.PLAYER, 1F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
-                }
-                player.playSound(Sound.sound(BLOCK_COPPER_BULB_TURN_ON, Sound.Source.PLAYER, 2F, 1), net.kyori.adventure.sound.Sound.Emitter.self());                break;
+                handleTeamPlayerSettingsGUICase10(team, player, clickedOnPlayerData);
+                break;
             case 17:
-                if(!team.getAllPlayers().isEmpty()) {
-                    new TeamSettingsGUI(team).showPage(1, player);
-                }
-                else {
-                    new TeamsMainMenuGUI().showPage(1, player);
-                }
-                player.playSound(Sound.sound(ITEM_BOOK_PAGE_TURN, Sound.Source.PLAYER, 1F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
+                handleTeamPlayerSettingsGUICase17(team, player);
                 return;
         }
         if(!team.getAllPlayers().isEmpty()) {
             teamPlayerSettingsGUI.showInventory(player, clickedOnPlayerData);
         }
+    }
+
+    private void handleTeamPlayerSettingsGUICase9(Team team, Player player, PlayerData clickedOnPlayerData) {
+        player.playSound(Sound.sound(BLOCK_PISTON_CONTRACT, Sound.Source.PLAYER, 0.5F, 1), Sound.Emitter.self());
+        team.setTeamOperator(clickedOnPlayerData, !team.isTeamOperator(clickedOnPlayerData));
+    }
+
+    private void handleTeamPlayerSettingsGUICase10(Team team, Player player, PlayerData clickedOnPlayerData) {
+        team.removeMember(clickedOnPlayerData);
+        if(clickedOnPlayerData.isOnline()) {
+            clickedOnPlayerData.getPlayer().sendMessage(Component.text(tf.getTranslation(clickedOnPlayerData.getPlayer(), "kickedFromTeam", player.getName())).color(NamedTextColor.RED));
+            Bukkit.getPlayer(clickedOnPlayerData.getUniqueId()).playSound(Sound.sound(BLOCK_AMETHYST_BLOCK_RESONATE, Sound.Source.PLAYER, 1F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
+        }
+        player.playSound(Sound.sound(BLOCK_COPPER_BULB_TURN_ON, Sound.Source.PLAYER, 2F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
+    }
+
+    private void handleTeamPlayerSettingsGUICase17(Team team, Player player) {
+        if(!team.getAllPlayers().isEmpty()) {
+            new TeamSettingsGUI(team).showPage(1, player);
+        }
+        else {
+            new TeamsMainMenuGUI().showPage(1, player);
+        }
+        player.playSound(Sound.sound(ITEM_BOOK_PAGE_TURN, Sound.Source.PLAYER, 1F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
     }
 }

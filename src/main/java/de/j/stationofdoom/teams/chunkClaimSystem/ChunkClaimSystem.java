@@ -64,12 +64,10 @@ public class ChunkClaimSystem {
     }
 
     public boolean checkIfAreaLocationIsProtectedFromPlayer(int locationX, int locationZ, Player player) {
-        if(checkIfLocationProtectedFromPlayer(locationX + protectedLocationSizeInBlocks, locationZ + protectedLocationSizeInBlocks, player) ||
+        return checkIfLocationProtectedFromPlayer(locationX + protectedLocationSizeInBlocks, locationZ + protectedLocationSizeInBlocks, player) ||
                 checkIfLocationProtectedFromPlayer(locationX - protectedLocationSizeInBlocks, locationZ - protectedLocationSizeInBlocks, player) ||
                 checkIfLocationProtectedFromPlayer(locationX + protectedLocationSizeInBlocks, locationZ - protectedLocationSizeInBlocks, player) ||
-                checkIfLocationProtectedFromPlayer(locationX - protectedLocationSizeInBlocks, locationZ + protectedLocationSizeInBlocks, player)
-        ) return true;
-        else return false;
+                checkIfLocationProtectedFromPlayer(locationX - protectedLocationSizeInBlocks, locationZ + protectedLocationSizeInBlocks, player);
     }
 
     public Team getTeam(Location location) {

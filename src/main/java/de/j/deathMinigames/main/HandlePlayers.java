@@ -59,7 +59,6 @@ public class HandlePlayers {
         PlayerDataDatabase playerDataDatabase = PlayerDataDatabase.getInstance();
         for(PlayerData playerData : playerDataDatabase.getAllPlayerDataFromDB()) {
             HandlePlayers.knownPlayers.put(playerData.getUniqueId(), playerData);
-            Main.getMainLogger().warning(playerData.getName() + " has been loaded"); //TODO remove
         }
         Main.getMainLogger().info("Loaded " + HandlePlayers.knownPlayers.size() + " known players and their data");
     }
@@ -71,7 +70,6 @@ public class HandlePlayers {
      * @return true if the player is known, false otherwise.
      */
     public boolean checkIfPlayerIsKnown(UUID uuid) {
-        Main.getMainLogger().warning("checking if player with uuid is known: " + HandlePlayers.knownPlayers.containsKey(uuid)); //TODO remove
         return HandlePlayers.knownPlayers.containsKey(uuid);
     }
 
@@ -89,12 +87,10 @@ public class HandlePlayers {
             return;
         }
         else {
-            Main.getMainLogger().warning("adding new unknown player: " + player.getName()); //TODO remove
         }
         PlayerData playerData = new PlayerData(player);
         HandlePlayers.knownPlayers.put(playerUUID, playerData);
         PlayerDataDatabase.getInstance().addPlayerToDatabase(playerData);
-        Main.getMainLogger().warning("Added new player " + playerData.getName()); //TODO remove
     }
 
 
@@ -153,7 +149,6 @@ public class HandlePlayers {
 
     public PlayerData getPlayerData(UUID uuidOfPlayer) {
         if(!this.checkIfPlayerIsKnown(uuidOfPlayer)) {
-            Main.getMainLogger().warning("tried getting playerData and player is not known, therefore creating new"); //TODO remove
             addNewPlayer(Bukkit.getPlayer(uuidOfPlayer));
         }
         return HandlePlayers.knownPlayers.get(uuidOfPlayer);

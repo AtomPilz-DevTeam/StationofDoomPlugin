@@ -68,7 +68,6 @@ public class PlayerDataDatabase {
     public List<PlayerData> getAllPlayerDataFromDB() {
         if(!Database.getInstance().isConnected) return new ArrayList<>();
         updatePlayerDataDatabase(HandlePlayers.getKnownPlayers().values());
-        Main.getMainLogger().warning("used getAllPlayerData"); //TODO remove
         return Query.query("SELECT * FROM playerdata;")
                 .single()
                 .map(row -> new PlayerData(row.getString("name"),
@@ -85,7 +84,6 @@ public class PlayerDataDatabase {
 
     public PlayerData getPlayerDataFromDB(UUID uuid) {
         if(!Database.getInstance().isConnected) return null;
-        Main.getMainLogger().warning("used getSinglePlayerData"); //TODO remove
         return Query.query("SELECT * FROM playerdata WHERE uuid = ?;")
                 .single(Call.of()
                         .bind(uuid, UUIDAdapter.AS_STRING))
