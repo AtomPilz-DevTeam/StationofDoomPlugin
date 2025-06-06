@@ -86,8 +86,6 @@ public class HandlePlayers {
             Main.getMainLogger().warning("Player " + playerUUID + " was tried to add, but is already known!");
             return;
         }
-        else {
-        }
         PlayerData playerData = new PlayerData(player);
         HandlePlayers.knownPlayers.put(playerUUID, playerData);
         PlayerDataDatabase.getInstance().addPlayerToDatabase(playerData);

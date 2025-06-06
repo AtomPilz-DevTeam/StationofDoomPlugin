@@ -10,10 +10,7 @@ import de.j.stationofdoom.teams.HandleTeams;
 import de.j.stationofdoom.teams.Team;
 import org.bukkit.Bukkit;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerDataDatabase {
     private static volatile PlayerDataDatabase instance;
@@ -84,20 +81,26 @@ public class PlayerDataDatabase {
 
     public PlayerData getPlayerDataFromDB(UUID uuid) {
         if(!Database.getInstance().isConnected) return null;
-        return Query.query("SELECT * FROM playerdata WHERE uuid = ?;")
-                .single(Call.of()
-                        .bind(uuid, UUIDAdapter.AS_STRING))
-                .map(row -> new PlayerData(row.getString("name"),
-                        row.getString("uuid"),
-                        row.getBoolean("introduction"),
-                        row.getBoolean("usesPlugin"),
-                        row.getInt("difficulty"),
-                        row.getFloat("bestParkourTime"),
-                        row.getBoolean("isInTeam"),
-                        row.getString("uuidOfTeam"),
-                        row.getBoolean("isTeamOperator")))
-                .all()
-                .getFirst();
+        try {
+            return Query.query("SELECT * FROM playerdata WHERE uuid = ?;")
+                    .single(Call.of()
+                            .bind(uuid, UUIDAdapter.AS_STRING))
+                    .map(row -> new PlayerData(row.getString("name"),
+                            row.getString("uuid"),
+                            row.getBoolean("introduction"),
+                            row.getBoolean("usesPlugin"),
+                            row.getInt("difficulty"),
+                            row.getFloat("bestParkourTime"),
+                            row.getBoolean("isInTeam"),
+                            row.getString("uuidOfTeam"),
+                            row.getBoolean("isTeamOperator")))
+                    .all()
+                    .getFirst();
+        }
+        catch (NoSuchElementException e) {
+            Main.getMainLogger().warning("No player data found for uuid: " + uuid);
+            return null;
+        }
     }
 
     /**

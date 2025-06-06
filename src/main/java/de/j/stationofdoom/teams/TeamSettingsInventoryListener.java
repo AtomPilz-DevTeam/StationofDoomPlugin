@@ -35,8 +35,8 @@ public class TeamSettingsInventoryListener implements Listener {
             int slot = event.getSlot();
             Inventory inv = event.getClickedInventory();
             Player player = (Player) event.getWhoClicked();
-            PlayerData playerData = HandlePlayers.getInstance().getPlayerData(player.getUniqueId());
             if (player == null) return;
+            PlayerData playerData = HandlePlayers.getInstance().getPlayerData(player.getUniqueId());
             if (event.getClickedInventory().getItem(53) == null) return;
             int currentPage = event.getClickedInventory().getItem(53).getAmount() - 1;
             int lastPage = currentPage - 1;
