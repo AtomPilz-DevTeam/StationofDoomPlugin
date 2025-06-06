@@ -86,6 +86,19 @@ A minecraft paper survival plugin for private servers
     3. finished
   </details>
 
+- <details> 
+  <summary>Team System</summary>
+
+  - Another feature of this plugin is its team system, which lets players create teams, to access it enter the command `/teams`. The teams are saved in the database if one is connected
+  - **List of Features**
+    1. create Teams
+    2. change appearance of the team (color & name)
+    3. rank system inside the teams to lock important settings of it
+    4. team enderchest
+    5. shortcut command to the players team menu (`/team`)
+    6. protect a location from interactions of players outside the team (the radius of the location can be configured in game settings or via the config file)
+  </details>
+
 **Support and Project Discussion:**
 - [Discord](https://discord.gg/uYwAKpRyak)
 
@@ -152,7 +165,7 @@ dependencies {
 <repository>
     <id>reposilite-repository</id>
     <name>Jonas Franke Repository</name>
-    <url>https://repo.jonasfranke.xyz/<repository></url>
+    <url>https://repo.jonasfranke.xyz/</url>
 </repository>
 
 <dependency>

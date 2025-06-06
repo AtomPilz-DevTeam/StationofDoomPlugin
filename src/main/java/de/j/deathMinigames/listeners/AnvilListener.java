@@ -1,8 +1,13 @@
 package de.j.deathMinigames.listeners;
 
 import de.j.deathMinigames.dmUtil.DmUtil;
+import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.settings.MainMenu;
 import de.j.stationofdoom.main.Main;
+import de.j.stationofdoom.teams.HandleTeams;
+import de.j.stationofdoom.teams.Team;
+import de.j.stationofdoom.teams.TeamSettingsGUI;
+import de.j.stationofdoom.teams.chunkClaimSystem.ChunkClaimSystem;
 import de.j.stationofdoom.util.Tablist;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
@@ -22,9 +27,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.view.AnvilView;
 
+import static io.papermc.paper.registry.keys.SoundEventKeys.*;
+
 public class AnvilListener implements Listener {
     private String serverName;
     private String hostName;
+    private String teamName;
+    private int claimingRadius;
     private TranslationFactory tf = new TranslationFactory();
 
     @EventHandler
@@ -54,6 +63,26 @@ public class AnvilListener implements Listener {
             if(renameText == null) return;
             serverName = renameText;
         }
+        else if(TeamSettingsGUI.renameTeam.compareLocIDTo(loc)) {
+            finishAnvilInvAfterOpening(event, player);
+            if(renameText == null) return;
+            teamName = renameText;
+        }
+        else if(MainMenu.getSetClaimingRadius().compareLocIDTo(loc)) {
+            finishAnvilInvAfterOpening(event, player);
+            if(renameText == null) return;
+            try {
+                claimingRadius = Integer.parseInt(renameText);
+            }
+            catch(NumberFormatException e) {
+                player.sendMessage(Component.text(tf.getTranslation(player, "invalidAnvilInputClaimingRadius")));
+                return;
+            }
+            if(claimingRadius <= 0 || claimingRadius > 256) {
+                player.sendMessage(Component.text(tf.getTranslation(player, "invalidAnvilInputClaimingRadius")));
+                return;
+            }
+        }
     }
 
     @EventHandler
@@ -69,17 +98,43 @@ public class AnvilListener implements Listener {
                 if (hostName == null) return;
                 Tablist.setHostedBy(hostName);
                 event.getView().close();
-                DmUtil.getInstance().playSoundAtLocation(player.getLocation(), 0.5f, Sound.BLOCK_ANVIL_USE);
+                player.playSound(net.kyori.adventure.sound.Sound.sound(BLOCK_CHISELED_BOOKSHELF_INSERT_ENCHANTED, net.kyori.adventure.sound.Sound.Source.PLAYER, 3F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
                 player.sendMessage(Component.text("Host name: " + hostName).color(NamedTextColor.GOLD));
             } else if (MainMenu.getSetServerName().compareLocIDTo(loc)) {
                 event.setCancelled(true);
                 if (serverName == null) return;
                 Tablist.setServerName(serverName);
                 event.getView().close();
-                DmUtil.getInstance().playSoundAtLocation(player.getLocation(), 0.5f, Sound.BLOCK_ANVIL_USE);
+                player.playSound(net.kyori.adventure.sound.Sound.sound(BLOCK_CHISELED_BOOKSHELF_INSERT_ENCHANTED, net.kyori.adventure.sound.Sound.Source.PLAYER, 3F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
                 player.sendMessage(Component.text("Server name: " + serverName).color(NamedTextColor.GOLD));
             }
-
+            else if(TeamSettingsGUI.renameTeam.compareLocIDTo(loc)) {
+                event.setCancelled(true);
+                if(teamName == null) {
+                    Main.getMainLogger().info("teamName is null");
+                    return;
+                }
+                Team team = HandleTeams.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()));
+                if(team == null) {
+                    Main.getMainLogger().warning("Team is null in onAnvilClick");
+                    player.sendMessage(Component.text(tf.getTranslation(player, "noTeam")));
+                    return;
+                }
+                Main.getMainLogger().info("set name of team " + team.getName() + " to: " + teamName);
+                team.setName(teamName);
+                new TeamSettingsGUI(team).showPage(1, player);
+                player.playSound(net.kyori.adventure.sound.Sound.sound(BLOCK_CHISELED_BOOKSHELF_INSERT_ENCHANTED, net.kyori.adventure.sound.Sound.Source.PLAYER, 3F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
+            }
+            else if(MainMenu.getSetClaimingRadius().compareLocIDTo(loc)) {
+                event.setCancelled(true);
+                if(claimingRadius <= 0 || claimingRadius > 256) {
+                    player.sendMessage(Component.text(tf.getTranslation(player, "invalidAnvilInputClaimingRadius")));
+                    return;
+                }
+                ChunkClaimSystem.getInstance().setProtectedLocationSizeInBlocks(claimingRadius);
+                event.getView().close();
+                player.sendMessage(Component.text(tf.getTranslation(player, "setClaimingRadius", ChunkClaimSystem.getInstance().getProtectedLocationSizeInBlocks())).color(NamedTextColor.GOLD));
+            }
         }
     }
 
@@ -93,6 +148,12 @@ public class AnvilListener implements Listener {
                 anvilInventory.clear();
             }
             else if(MainMenu.getSetServerName().compareLocIDTo(loc)) {
+                anvilInventory.clear();
+            }
+            else if(TeamSettingsGUI.renameTeam.compareLocIDTo(loc)) {
+                anvilInventory.clear();
+            }
+            else if(MainMenu.getSetClaimingRadius().compareLocIDTo(loc)) {
                 anvilInventory.clear();
             }
         }

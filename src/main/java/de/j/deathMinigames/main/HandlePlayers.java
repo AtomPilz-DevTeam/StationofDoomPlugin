@@ -1,11 +1,10 @@
 package de.j.deathMinigames.main;
 
+import de.j.deathMinigames.database.Database;
 import de.j.deathMinigames.database.PlayerDataDatabase;
 import de.j.deathMinigames.minigames.Minigame;
 import de.j.stationofdoom.main.Main;
-import de.j.stationofdoom.util.translations.TranslationFactory;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -58,10 +57,10 @@ public class HandlePlayers {
      */
     public static void initKnownPlayersPlayerData() {
         PlayerDataDatabase playerDataDatabase = PlayerDataDatabase.getInstance();
-        for(PlayerData playerData : playerDataDatabase.getAllPlayerDatas()) {
-            knownPlayers.put(playerData.getUUID(), playerData);
+        for(PlayerData playerData : playerDataDatabase.getAllPlayerDataFromDB()) {
+            HandlePlayers.knownPlayers.put(playerData.getUniqueId(), playerData);
         }
-        Main.getMainLogger().info("Loaded " + knownPlayers.size() + " known players and their data");
+        Main.getMainLogger().info("Loaded " + HandlePlayers.knownPlayers.size() + " known players and their data");
     }
 
     /**
@@ -71,7 +70,7 @@ public class HandlePlayers {
      * @return true if the player is known, false otherwise.
      */
     public boolean checkIfPlayerIsKnown(UUID uuid) {
-        return knownPlayers.containsKey(uuid);
+        return HandlePlayers.knownPlayers.containsKey(uuid);
     }
 
     /**
@@ -82,14 +81,14 @@ public class HandlePlayers {
      * @param player The player to add.
      */
     public synchronized void addNewPlayer(Player player) {
-        PlayerData playerData = new PlayerData(player);
         UUID playerUUID = player.getUniqueId();
         if(checkIfPlayerIsKnown(playerUUID)) {
             Main.getMainLogger().warning("Player " + playerUUID + " was tried to add, but is already known!");
             return;
         }
-        knownPlayers.put(playerUUID, playerData);
-        Main.getMainLogger().info("Added new player " + playerData.getName());
+        PlayerData playerData = new PlayerData(player);
+        HandlePlayers.knownPlayers.put(playerUUID, playerData);
+        PlayerDataDatabase.getInstance().addPlayerToDatabase(playerData);
     }
 
 
@@ -101,7 +100,7 @@ public class HandlePlayers {
      */
     public static void copyAllPlayerDataIntoDatabase() {
         PlayerDataDatabase playerDataDatabase = PlayerDataDatabase.getInstance();
-        playerDataDatabase.updatePlayerDataDatabase(knownPlayers.values());
+        playerDataDatabase.updatePlayerDataDatabase(HandlePlayers.knownPlayers.values());
     }
 
     /**
@@ -114,7 +113,7 @@ public class HandlePlayers {
     public List<PlayerData> getLeaderBoard() {
         float defaultTime = 1000f;
         List<PlayerData> leaderboard = new ArrayList<>();
-        for (PlayerData playerData : knownPlayers.values()) {
+        for (PlayerData playerData : HandlePlayers.knownPlayers.values()) {
             if(playerData.getBestParkourTime() == defaultTime) continue;
             leaderboard.add(playerData);
         }
@@ -124,7 +123,7 @@ public class HandlePlayers {
     }
 
     public void resetLeaderboardAndTimesOfPlayers() {
-        for (PlayerData playerData : knownPlayers.values()) {
+        for (PlayerData playerData : HandlePlayers.knownPlayers.values()) {
             playerData.setBestParkourTime(1000f);
         }
     }
@@ -144,5 +143,12 @@ public class HandlePlayers {
             Minigame.getInstance().tpPlayerToRespawnLocation(player);
             playerData.setLeftWhileProcessing(false);
         }
+    }
+
+    public PlayerData getPlayerData(UUID uuidOfPlayer) {
+        if(!this.checkIfPlayerIsKnown(uuidOfPlayer)) {
+            addNewPlayer(Bukkit.getPlayer(uuidOfPlayer));
+        }
+        return HandlePlayers.knownPlayers.get(uuidOfPlayer);
     }
 }
