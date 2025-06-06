@@ -12,16 +12,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TeamSettingsGUI extends GUI {
     private final TranslationFactory tf = new TranslationFactory();
     private final Team team;
     private final int inventorySize = 54;
     private final int maxSlotsPerPage = 27;
-    private volatile HashMap<Integer, PlayerData> invSlots = new HashMap<>();
+    private volatile ConcurrentHashMap<Integer, PlayerData> invSlots = new ConcurrentHashMap<>();
     private int pagesBasedOnMemberQuantity;
     private volatile List<UUID> members;
     private volatile float memberQuantity;
@@ -107,6 +107,7 @@ public class TeamSettingsGUI extends GUI {
     private void addTopBarToInventory() {
         String colorAsGlassPane = team.getColorAsMaterial().toString().replace("_CONCRETE", "_STAINED_GLASS_PANE");
         Material material = Material.getMaterial(colorAsGlassPane);
+        if(material == null) material = Material.WHITE_STAINED_GLASS_PANE;
         for (int i = 0; i < 9; i++) {
             addClickableItemStack(team.getName(), material, 1, i);
         }

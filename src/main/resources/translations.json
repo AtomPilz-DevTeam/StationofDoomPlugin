@@ -117,7 +117,9 @@
       "setClaimingRadius": "Du hast den Radius des beschützen Bereichs jedes Team auf: %s gesetzt",
       "TeamCMDNoTeam": "Du bist in keinem Team",
       "teamLocked": "Das Team ist gesperrt",
-      "enchantNotEnabled": "Diese Verzauberung ist auf diesem Server nicht aktiviert."
+      "enchantNotEnabled": "Diese Verzauberung ist auf diesem Server nicht aktiviert",
+      "noTeam": "Es wurde für dich kein Team gefunden",
+      "invalidAnvilInputClaimingRadius": "Deine Eingabe war invalide, bitte gebe nur positive Zahlen bis 256 ein"
     }
   ],
   "en-US": [
@@ -238,7 +240,9 @@
       "setClaimingRadius": "You set the claiming radius to: %s",
       "TeamCMDNoTeam": "You are not in any team",
       "teamLocked": "This team is locked",
-      "enchantNotEnabled": "This enchantment is currently not activated."
+      "enchantNotEnabled": "This enchantment is currently not activated.",
+      "noTeam": "There was no team found for you",
+      "invalidAnvilInputClaimingRadius": "Your input is invalid, please only use positive numbers which are smaller than 256"
     }
   ]
 }

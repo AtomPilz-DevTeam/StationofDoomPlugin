@@ -141,11 +141,22 @@ public class PlayerData {
     private volatile int difficulty; // in database
     private volatile int decisionTimer;
     private volatile float bestParkourTime; // in database
-    private volatile UUID uuidOfTeam;
-    private volatile boolean teamOperator;
+    private volatile boolean isInTeam; // in database
+    private volatile UUID uuidOfTeam; // in database
+    private volatile boolean teamOperator; // in database
+
+    public boolean isInTeam() {
+        Main.getMainLogger().warning("Tried accessing isInTeam of " + this + " isInTeam = " + this.isInTeam); //TODO remove
+        return this.isInTeam;
+    }
+
+    public void setInTeam(boolean isInTeam) {
+        this.isInTeam = isInTeam;
+        Main.getMainLogger().warning("Set isInTeam of " + this + " to " + this.isInTeam); //TODO remove
+    }
 
     public UUID getUuidOfTeam() {
-        return uuidOfTeam;
+        return this.uuidOfTeam;
     }
 
     public void setUuidOfTeam(UUID uuidOfTeam) {
@@ -183,9 +194,10 @@ public class PlayerData {
         this.introduction = false;
         this.usesPlugin = true;
         this.leftWhileProcessing = false;
+        Main.getMainLogger().warning("created player data for player " + this.name + " " + this.uuid); //TODO remove
     }
 
-    public PlayerData(String name, String uuid, boolean introduction, boolean usesPlugin, int difficulty, float bestParkourTime, String uuidOfTeam, boolean teamOperator) {
+    public PlayerData(String name, String uuid, boolean introduction, boolean usesPlugin, int difficulty, float bestParkourTime, boolean isInTeam,  String uuidOfTeam, boolean teamOperator) {
         Config config = Config.getInstance();
         this.name = name;
         this.uuid = UUID.fromString(uuid);
@@ -198,10 +210,11 @@ public class PlayerData {
         this.introduction = introduction;
         this.usesPlugin = usesPlugin;
         this.leftWhileProcessing = false;
-        if(uuidOfTeam != null) {
+        if(isInTeam) {
             this.uuidOfTeam = UUID.fromString(uuidOfTeam);
             this.teamOperator = teamOperator;
         }
+        Main.getMainLogger().warning("created player data for player " + this.name + " " + this.uuid + " via long method"); //TODO remove
     }
 
     /**

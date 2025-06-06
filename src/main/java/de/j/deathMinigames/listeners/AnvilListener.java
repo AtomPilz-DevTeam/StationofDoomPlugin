@@ -5,6 +5,7 @@ import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.settings.MainMenu;
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.teams.HandleTeams;
+import de.j.stationofdoom.teams.Team;
 import de.j.stationofdoom.teams.TeamSettingsGUI;
 import de.j.stationofdoom.teams.chunkClaimSystem.ChunkClaimSystem;
 import de.j.stationofdoom.util.Tablist;
@@ -74,6 +75,11 @@ public class AnvilListener implements Listener {
                 claimingRadius = Integer.parseInt(renameText);
             }
             catch(NumberFormatException e) {
+                player.sendMessage(Component.text(tf.getTranslation(player, "invalidAnvilInputClaimingRadius")));
+                return;
+            }
+            if(claimingRadius <= 0 || claimingRadius > 256) {
+                player.sendMessage(Component.text(tf.getTranslation(player, "invalidAnvilInputClaimingRadius")));
                 return;
             }
         }
@@ -108,13 +114,23 @@ public class AnvilListener implements Listener {
                     Main.getMainLogger().info("teamName is null");
                     return;
                 }
-                Main.getMainLogger().info("set name of team " + HandleTeams.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId())).getName() + " to: " + teamName);
-                HandleTeams.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId())).setName(teamName);
-                new TeamSettingsGUI(HandleTeams.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()))).showPage(1, player);
+                Team team = HandleTeams.getTeam(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()));
+                if(team == null) {
+                    Main.getMainLogger().warning("Team is null in onAnvilClick");
+                    player.sendMessage(Component.text(tf.getTranslation(player, "noTeam")));
+                    return;
+                }
+                Main.getMainLogger().info("set name of team " + team.getName() + " to: " + teamName);
+                team.setName(teamName);
+                new TeamSettingsGUI(team).showPage(1, player);
                 player.playSound(net.kyori.adventure.sound.Sound.sound(BLOCK_CHISELED_BOOKSHELF_INSERT_ENCHANTED, net.kyori.adventure.sound.Sound.Source.PLAYER, 3F, 1), net.kyori.adventure.sound.Sound.Emitter.self());
             }
             else if(MainMenu.getSetClaimingRadius().compareLocIDTo(loc)) {
                 event.setCancelled(true);
+                if(claimingRadius <= 0 || claimingRadius > 256) {
+                    player.sendMessage(Component.text(tf.getTranslation(player, "invalidAnvilInputClaimingRadius")));
+                    return;
+                }
                 ChunkClaimSystem.getInstance().setProtectedLocationSizeInBlocks(claimingRadius);
                 event.getView().close();
                 player.sendMessage(Component.text(tf.getTranslation(player, "setClaimingRadius", ChunkClaimSystem.getInstance().getProtectedLocationSizeInBlocks())).color(NamedTextColor.GOLD));

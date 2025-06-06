@@ -20,6 +20,7 @@ public class BlockBreakAndUseCancelListener implements Listener {
             Team team = ChunkClaimSystem.getInstance().getTeam(event.getClickedBlock().getLocation());
             if(team == null) {
                 Main.getMainLogger().warning("Team is null when checking if location is protected");
+                return;
             }
             player.sendMessage(Component.text(new TranslationFactory().getTranslation(player, "chunkClaimedByDifferentTeam", team.getName())).color(NamedTextColor.RED));
             event.setCancelled(true);

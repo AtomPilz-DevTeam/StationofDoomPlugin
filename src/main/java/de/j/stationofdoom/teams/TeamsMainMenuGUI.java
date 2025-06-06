@@ -18,7 +18,7 @@ public class TeamsMainMenuGUI extends GUI {
     private final HashMap<Integer, Team> invSlots = new HashMap<>(); // for checking which team settings to open based on clicked slot
     private float teamQuantity;
     private final float maxSlotsPerPage = 45;
-    private int pagesBasedOnTeamsQuantity;
+    private int pagesBasedOnTeamsQuantity; // has to be greater than 0
     private final int inventorySize = 54;
     private final TranslationFactory tf = new TranslationFactory();
 

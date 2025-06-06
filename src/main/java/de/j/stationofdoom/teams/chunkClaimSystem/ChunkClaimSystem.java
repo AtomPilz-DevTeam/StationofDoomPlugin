@@ -168,7 +168,7 @@ public class ChunkClaimSystem {
                 y[0]++;
             }
         };
-        runnable.runTaskTimerAsynchronously(Main.getPlugin(), 0, period);
+        runnable.runTaskTimer(Main.getPlugin(), 0, period);
     }
 
     private void spawnBlockMarkerFromPointToAnother(Location locationFromWhereToDraw, Location locationToWhereToDraw, Player player) {

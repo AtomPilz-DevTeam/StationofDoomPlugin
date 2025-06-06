@@ -7,6 +7,8 @@ import de.j.deathMinigames.main.HandlePlayers;
 import de.j.deathMinigames.main.PlayerData;
 import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.teams.HandleTeams;
+import de.j.stationofdoom.teams.Team;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +50,7 @@ public class PlayerDataDatabase {
      */
     public void createTable() {
         if(!Database.getInstance().isConnected) return;
-        Query.query("CREATE TABLE IF NOT EXISTS playerData (name VARCHAR(255), UUID VARCHAR(255), introduction BOOLEAN, usesPlugin BOOLEAN, difficulty INT, bestParkourTime FLOAT, uuidOfTeam VARCHAR(255), isTeamOperator BOOLEAN);")
+        Query.query("CREATE TABLE IF NOT EXISTS playerData (name VARCHAR(255), UUID VARCHAR(255), introduction BOOLEAN, usesPlugin BOOLEAN, difficulty INT, bestParkourTime FLOAT, isInTeam BOOLEAN, uuidOfTeam VARCHAR(255), isTeamOperator BOOLEAN);")
                 .single()
                 .insert();
     }
@@ -63,8 +65,10 @@ public class PlayerDataDatabase {
      *
      * @return A list of PlayerData objects representing all players in the database.
      */
-    public List<PlayerData> getAllPlayerDatas() {
+    public List<PlayerData> getAllPlayerDataFromDB() {
         if(!Database.getInstance().isConnected) return new ArrayList<>();
+        updatePlayerDataDatabase(HandlePlayers.getKnownPlayers().values());
+        Main.getMainLogger().warning("used getAllPlayerData"); //TODO remove
         return Query.query("SELECT * FROM playerdata;")
                 .single()
                 .map(row -> new PlayerData(row.getString("name"),
@@ -73,13 +77,15 @@ public class PlayerDataDatabase {
                         row.getBoolean("usesPlugin"),
                         row.getInt("difficulty"),
                         row.getFloat("bestParkourTime"),
+                        row.getBoolean("isInTeam"),
                         row.getString("uuidOfTeam"),
                         row.getBoolean("isTeamOperator")))
                 .all();
     }
 
-    public PlayerData getPlayerData(UUID uuid) {
+    public PlayerData getPlayerDataFromDB(UUID uuid) {
         if(!Database.getInstance().isConnected) return null;
+        Main.getMainLogger().warning("used getSinglePlayerData"); //TODO remove
         return Query.query("SELECT * FROM playerdata WHERE uuid = ?;")
                 .single(Call.of()
                         .bind(uuid, UUIDAdapter.AS_STRING))
@@ -89,6 +95,7 @@ public class PlayerDataDatabase {
                         row.getBoolean("usesPlugin"),
                         row.getInt("difficulty"),
                         row.getFloat("bestParkourTime"),
+                        row.getBoolean("isInTeam"),
                         row.getString("uuidOfTeam"),
                         row.getBoolean("isTeamOperator")))
                 .all()
@@ -105,22 +112,39 @@ public class PlayerDataDatabase {
      * @param playerDatas The collection of player data to update the database with.
      */
     public void updatePlayerDataDatabase(Collection<PlayerData> playerDatas) {
+        if(playerDatas.isEmpty()) return;
         int newlyAddedPlayers = 0;
         int updatedPlayers = 0;
         if(!Database.getInstance().isConnected) return;
         for (PlayerData playerData : playerDatas) {
             if(checkIfPlayerIsInDatabase(playerData)) {
-                Query.query("UPDATE playerData SET name = :name, introduction = :introduction, usesPlugin = :usesPlugin, difficulty = :difficulty, bestParkourTime = :bestParkourTime, uuidOfTeam = :uuidOfTeam, isTeamOperator = :isTeamOperator WHERE uuid = :uuid;")
-                        .single(Call.of()
-                                .bind("name", playerData.getName())
-                                .bind("introduction", playerData.getIntroduction())
-                                .bind("usesPlugin", playerData.getUsesPlugin())
-                                .bind("difficulty", playerData.getDifficulty())
-                                .bind("bestParkourTime", playerData.getBestParkourTime())
-                                .bind("uuid", playerData.getUniqueId(), UUIDAdapter.AS_STRING)
-                                .bind("uuidOfTeam", playerData.getUuidOfTeam(), UUIDAdapter.AS_STRING)
-                                .bind("isTeamOperator", HandleTeams.getTeam(playerData).isTeamOperator(playerData)))
-                        .update();
+                Team team = HandleTeams.getTeam(playerData);
+                if(team == null || !playerData.isInTeam()) {
+                    Query.query("UPDATE playerData SET name = :name, introduction = :introduction, usesPlugin = :usesPlugin, difficulty = :difficulty, bestParkourTime = :bestParkourTime, isInTeam = :isInTeam WHERE uuid = :uuid;")
+                            .single(Call.of()
+                                    .bind("name", playerData.getName())
+                                    .bind("introduction", playerData.getIntroduction())
+                                    .bind("usesPlugin", playerData.getUsesPlugin())
+                                    .bind("difficulty", playerData.getDifficulty())
+                                    .bind("bestParkourTime", playerData.getBestParkourTime())
+                                    .bind("isInTeam", false)
+                                    .bind("uuid", playerData.getUniqueId(), UUIDAdapter.AS_STRING))
+                            .update();
+                }
+                else {
+                    Query.query("UPDATE playerData SET name = :name, introduction = :introduction, usesPlugin = :usesPlugin, difficulty = :difficulty, bestParkourTime = :bestParkourTime, isInTeam = :isInTeam, uuidOfTeam = :uuidOfTeam, isTeamOperator = :isTeamOperator WHERE uuid = :uuid;")
+                            .single(Call.of()
+                                    .bind("name", playerData.getName())
+                                    .bind("introduction", playerData.getIntroduction())
+                                    .bind("usesPlugin", playerData.getUsesPlugin())
+                                    .bind("difficulty", playerData.getDifficulty())
+                                    .bind("bestParkourTime", playerData.getBestParkourTime())
+                                    .bind("isInTeam", true)
+                                    .bind("uuidOfTeam", playerData.getUuidOfTeam(), UUIDAdapter.AS_STRING)
+                                    .bind("isTeamOperator", team.isTeamOperator(playerData))
+                                    .bind("uuid", playerData.getUniqueId(), UUIDAdapter.AS_STRING))
+                            .update();
+                }
                 updatedPlayers++;
             }
             else {
@@ -141,7 +165,7 @@ public class PlayerDataDatabase {
      */
     public void addPlayerToDatabase(PlayerData playerData) {
         if(!Database.getInstance().isConnected) return;
-        Query.query("INSERT INTO playerData (name, UUID, introduction, usesPlugin, difficulty, bestParkourTime, uuidOfTeam) VALUES (:name, :uuid, :introduction, :usesPlugin, :difficulty, :bestParkourTime, :uuidOfTeam);")
+        Query.query("INSERT INTO playerData (name, UUID, introduction, usesPlugin, difficulty, bestParkourTime, isInTeam, uuidOfTeam, isTeamOperator) VALUES (:name, :uuid, :introduction, :usesPlugin, :difficulty, :bestParkourTime, :isInTeam, :uuidOfTeam, :isTeamOperator);")
                 .single(Call.of()
                         .bind("name", playerData.getName())
                         .bind("uuid", playerData.getUniqueId(), UUIDAdapter.AS_STRING)
@@ -149,7 +173,9 @@ public class PlayerDataDatabase {
                         .bind("usesPlugin", playerData.getUsesPlugin())
                         .bind("difficulty", playerData.getDifficulty())
                         .bind("bestParkourTime", playerData.getBestParkourTime())
-                        .bind("uuidOfTeam", playerData.getUuidOfTeam(), UUIDAdapter.AS_STRING))
+                        .bind("isInTeam", playerData.isInTeam())
+                        .bind("uuidOfTeam", playerData.getUuidOfTeam(), UUIDAdapter.AS_STRING)
+                        .bind("isTeamOperator", playerData.isTeamOperator()))
                 .insert();
     }
 
@@ -159,32 +185,22 @@ public class PlayerDataDatabase {
      * <p>This method fetches all player data records from the database and checks
      * if the player with the given UUID is present in the list.
      *
-     * @param playerDataPlayerToCheck The player data to check.
+     * @param playerDataToCheck The player data to check.
      * @return true if the player is in the database, false otherwise.
      */
-    public boolean checkIfPlayerIsInDatabase(PlayerData playerDataPlayerToCheck) {
-        if(!Database.getInstance().isConnected) return HandlePlayers.getKnownPlayers().containsKey(playerDataPlayerToCheck.getUniqueId()); // does not return false or true to prevent unpredictable behavior
-        List<PlayerData> playerDatas = getAllPlayerDatas();
-        boolean isInDatabase = false;
-        if(playerDatas.isEmpty()) return false;
-        for (PlayerData playerDataToCompare : playerDatas) {
-            if(playerDataToCompare.getUniqueId().equals(playerDataPlayerToCheck.getUniqueId())) {
-                isInDatabase = true;
-            }
-        }
-        return isInDatabase;
+    public boolean checkIfPlayerIsInDatabase(PlayerData playerDataToCheck) {
+        return checkIfPlayerIsInDatabase(playerDataToCheck.getUniqueId());
     }
 
     public boolean checkIfPlayerIsInDatabase(UUID uuidOfPlayerToCheck) {
         if(!Database.getInstance().isConnected) return HandlePlayers.getKnownPlayers().containsKey(uuidOfPlayerToCheck); // does not return false or true to prevent unpredictable behavior
-        List<PlayerData> playerDatas = getAllPlayerDatas();
-        boolean isInDatabase = false;
-        if(playerDatas.isEmpty()) return false;
-        for (PlayerData playerDataToCompare : playerDatas) {
-            if(playerDataToCompare.getUniqueId().equals(uuidOfPlayerToCheck)) {
-                isInDatabase = true;
-            }
-        }
-        return isInDatabase;
+        List<UUID> data = Query.query("SELECT UUID FROM playerData WHERE UUID = :UUID;")
+                .single(Call.of()
+                        .bind("UUID", uuidOfPlayerToCheck, UUIDAdapter.AS_STRING))
+                .map(row -> UUID.fromString(row.getString("UUID")))
+                .all();
+
+        Main.getMainLogger().warning("CheckIfPlayerIsInDatabase for: " + Bukkit.getOfflinePlayer(uuidOfPlayerToCheck).getName() + ", found " + !data.isEmpty());
+        return !data.isEmpty();
     }
 }

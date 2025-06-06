@@ -2,10 +2,12 @@ package de.j.stationofdoom.teams;
 
 import de.j.deathMinigames.main.PlayerData;
 import de.j.deathMinigames.settings.GUI;
+import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 
 import java.util.ArrayList;
 
@@ -14,7 +16,9 @@ public class TeamPlayerSettingsGUI extends GUI {
     private volatile PlayerData playerData;
     private volatile Team team;
 
-    public TeamPlayerSettingsGUI() {}
+    public TeamPlayerSettingsGUI() {
+
+    }
 
     public void showInventory(Player playerToShowTheInvTo, PlayerData playerDataBasedOnSlot) {
         this.playerData = playerDataBasedOnSlot;
@@ -23,8 +27,13 @@ public class TeamPlayerSettingsGUI extends GUI {
     }
 
     private void fillInv(Player playerToShowTheInvTo,PlayerData playerDataBasedOnSlot) {
-        this.inventory = Bukkit.createInventory(this.inventory.getHolder(), 18, playerDataBasedOnSlot.getName());
-        this.team = HandleTeams.getTeam(playerDataBasedOnSlot);
+        this.inventory = Bukkit.createInventory(this, 18, playerDataBasedOnSlot.getName());
+        Team team = HandleTeams.getTeam(playerDataBasedOnSlot);
+        if(team == null) {
+            Main.getMainLogger().warning("Team is null in fillInv");
+            return;
+        }
+        this.team = team;
         boolean isOperator = team.isTeamOperator(playerDataBasedOnSlot);
         this.inventory.clear();
         for (int i = 0; i < 9; i++) {

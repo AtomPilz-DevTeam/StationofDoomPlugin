@@ -1,6 +1,7 @@
 package de.j.stationofdoom.teams.enderchest;
 
 import de.j.deathMinigames.dmUtil.DmUtil;
+import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.util.translations.TranslationFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -23,6 +24,7 @@ public class TeamEnderchestPreventEnchantedItemsInputListener implements Listene
             }
         }
         catch (NullPointerException e) {
+            Main.getMainLogger().warning(e.getMessage());
             return;
         }
     }

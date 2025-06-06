@@ -10,6 +10,7 @@ import de.j.stationofdoom.main.Main;
 import de.j.stationofdoom.teams.HandleTeams;
 import de.j.stationofdoom.teams.Team;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,23 +58,16 @@ public class TeamsDatabase {
         for (Team team : teams) {
             Main.getMainLogger().info(team.getName());
             try {
-                Query.query("SELECT uuid FROM playerData WHERE uuidOfTeam = ?;")
+                Query.query("SELECT isInTeam, uuid, isTeamOperator FROM playerData WHERE uuidOfTeam = ?;")
                         .single(Call.of()
                                 .bind(team.getUuid(), UUIDAdapter.AS_STRING)
                         )
-                        .map(row -> row.getString("uuid"))
+                        .map(row -> new DBTeamMember(
+                                row.getBoolean("isInTeam"),
+                                row.getString("uuid"),
+                                row.getBoolean("isTeamOperator")))
                         .all()
                         .forEach(team::addMember);
-                for (UUID uuid : team.getAllPlayers()) {
-                    PlayerData playerData = HandlePlayers.getInstance().getPlayerData(uuid);
-                    if (playerData == null) {
-                        Main.getMainLogger().info("Found null player in team " + team.getName());
-                        continue;
-                    }
-                    if (isTeamOperator(playerData.getUniqueId())) {
-                        team.setTeamOperator(playerData, true);
-                    }
-                }
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -116,24 +110,24 @@ public class TeamsDatabase {
 
     public void updatePlayerInDB(PlayerData playerData) {
         if(!Database.getInstance().isConnected) return;
-        String uuidOfTeam;
-        boolean isTeamOperator;
-        try {
-            Team team = HandleTeams.getTeam(playerData);
-            uuidOfTeam = team.getUuid().toString();
-            isTeamOperator = team.isTeamOperator(playerData);
+        Team team = HandleTeams.getTeam(playerData);
+        if(team == null || !playerData.isInTeam()) {
+            Main.getMainLogger().warning("Player is not in team, isInTeam = " + playerData.isInTeam());
+            Query.query("UPDATE playerData SET isInTeam = ? WHERE uuid = ?;")
+                    .single(Call.of()
+                            .bind(false)
+                            .bind(playerData.getUniqueId(), UUIDAdapter.AS_STRING))
+                    .insert();
         }
-        catch (NullPointerException e) {
-            Main.getMainLogger().info("Player " + playerData.getName() + " is not in a team");
-            uuidOfTeam = null;
-            isTeamOperator = false;
+        else {
+            Main.getMainLogger().warning("Player is in team, isInTeam = " + playerData.isInTeam());
+            Query.query("UPDATE playerData SET uuidOfTeam = ?, isTeamOperator = ? WHERE uuid = ?;")
+                    .single(Call.of()
+                            .bind(team.getUuid().toString())
+                            .bind(team.isTeamOperator(playerData))
+                            .bind(playerData.getUniqueId(), UUIDAdapter.AS_STRING))
+                    .insert();
         }
-        Query.query("UPDATE playerData SET uuidOfTeam = ?, isTeamOperator = ? WHERE uuid = ?;")
-                .single(Call.of()
-                        .bind(uuidOfTeam)
-                        .bind(isTeamOperator)
-                        .bind(playerData.getUniqueId(), UUIDAdapter.AS_STRING))
-                .insert();
     }
 
     public void updateTeamsDatabase() {
@@ -168,16 +162,5 @@ public class TeamsDatabase {
             PlayerData playerData = HandlePlayers.getInstance().getPlayerData(uuid);
             updatePlayerInDB(playerData);
         }
-    }
-
-    private boolean isTeamOperator(UUID uuidOfPlayer) {
-        if(!Database.getInstance().isConnected) return false;
-        HashMap <UUID, Boolean> teamOperators = new HashMap<>();
-        Query.query("SELECT uuid, isTeamOperator FROM playerData WHERE uuid = ?;")
-                .single(Call.of()
-                        .bind(uuidOfPlayer, UUIDAdapter.AS_STRING))
-                .map(row -> teamOperators.put(uuidOfPlayer, row.getBoolean("isTeamOperator")))
-                .all();
-        return teamOperators.get(uuidOfPlayer);
     }
 }

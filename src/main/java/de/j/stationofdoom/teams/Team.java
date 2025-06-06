@@ -1,5 +1,6 @@
 package de.j.stationofdoom.teams;
 
+import de.j.deathMinigames.database.DBTeamMember;
 import de.j.deathMinigames.database.TeamEnderchestsDatabase;
 import de.j.deathMinigames.database.TeamsDatabase;
 import de.j.deathMinigames.main.HandlePlayers;
@@ -9,7 +10,6 @@ import de.j.stationofdoom.teams.enderchest.EnderchestInvHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -29,8 +29,18 @@ public class Team {
     public volatile Inventory inventory;
     private final EnderchestInvHolder enderchestInvHolder = new EnderchestInvHolder();
     private final HashMap<UUID, Boolean> members = new HashMap<>();
-    private final UUID uuid;
+    private UUID uuid;
     private Location protectedLocation;
+
+    public void addToMembers(UUID uuid, boolean isOperator) {
+        Main.getMainLogger().info("Adding member: " + uuid + " " + isOperator);
+        this.members.put(uuid, isOperator);
+    }
+
+    public void removeFromMembers(UUID uuid) {
+        Main.getMainLogger().info("Removing member: " + uuid);
+        this.members.remove(uuid);
+    }
 
     public boolean isDeleted() {
         return deleted;
@@ -39,42 +49,30 @@ public class Team {
     private volatile boolean deleted = false;
 
     public Team(String name, String colorAsString, boolean locked, String uuid, Location protectedLocation) {
-        this.name = name;
-        this.colorAsMaterial = Material.valueOf(colorAsString);
+        init(name, UUID.fromString(uuid), Material.valueOf(colorAsString));
         convertMaterialToString(this.colorAsMaterial);
         this.locked = locked;
-        this.uuid = UUID.fromString(uuid);
-        this.inventory = Bukkit.createInventory(enderchestInvHolder, 27, name);
         this.inventory.setContents(TeamEnderchestsDatabase.getInstance().getTeamEnderchest(this.getUuid()).getContents());
         if (protectedLocation != null && protectedLocation.getWorld() != null) {
             this.protectedLocation = protectedLocation;
         }
-        addToList();
     }
 
     public Team(String name, String colorAsString, boolean locked, String uuid, String world, int x, int y, int z) {
-        this.name = name;
-        this.colorAsMaterial = Material.valueOf(colorAsString);
+        init(name, UUID.fromString(uuid), Material.valueOf(colorAsString));
         convertMaterialToString(this.colorAsMaterial);
         this.locked = locked;
-        this.uuid = UUID.fromString(uuid);
-        this.inventory = Bukkit.createInventory(enderchestInvHolder, 27, name);
         this.inventory.setContents(TeamEnderchestsDatabase.getInstance().getTeamEnderchest(this.getUuid()).getContents());
         if(world != null) {
             this.protectedLocation = new Location(Bukkit.getWorld(world), x, y, z);
         }
-        addToList();
     }
 
     public Team(String name, String colorAsString, boolean locked, String uuid) {
-        this.name = name;
-        this.colorAsMaterial = Material.valueOf(colorAsString);
+        init(name, UUID.fromString(uuid), Material.valueOf(colorAsString));
         convertMaterialToString(this.colorAsMaterial);
         this.locked = locked;
-        this.uuid = UUID.fromString(uuid);
-        this.inventory = Bukkit.createInventory(enderchestInvHolder, 27, name);
         this.inventory.setContents(TeamEnderchestsDatabase.getInstance().getTeamEnderchest(this.getUuid()).getContents());
-        addToList();
     }
 
     // used to create a new team without any operators
@@ -84,24 +82,24 @@ public class Team {
     }
 
     public Team(PlayerData playerData) {
-        uuid = UUID.randomUUID();
-        name = playerData.getName() + "'s Team";
-        this.inventory = Bukkit.createInventory(enderchestInvHolder, 27, name);
+        init(playerData.getName() + "'s Team", UUID.randomUUID(), getRandomConcreteMaterial());
         this.inventory.setContents(TeamEnderchestsDatabase.getInstance().getTeamEnderchest(this.getUuid()).getContents());
-        setRandomConcreteMaterial();
         handlePlayerLeaveOrJoin(playerData);
         setTeamOperator(HandlePlayers.getInstance().getPlayerData(playerData.getUniqueId()), true);
-        addToList();
     }
 
     public Team(Player player) {
-        uuid = UUID.randomUUID();
-        name = player.getName() + "'s Team";
-        this.inventory = Bukkit.createInventory(enderchestInvHolder, 27, name);
+        init(player.getName() + "'s Team", UUID.randomUUID(), getRandomConcreteMaterial());
         this.inventory.setContents(TeamEnderchestsDatabase.getInstance().getTeamEnderchest(this.getUuid()).getContents());
-        setRandomConcreteMaterial();
         handlePlayerLeaveOrJoin(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()));
         setTeamOperator(HandlePlayers.getInstance().getPlayerData(player.getUniqueId()), true);
+    }
+
+    private void init(String name, UUID uuid, Material colorAsMaterial) {
+        this.name = name;
+        this.uuid = uuid;
+        this.colorAsMaterial = colorAsMaterial;
+        this.inventory = Bukkit.createInventory(this.enderchestInvHolder, 27, name);
         addToList();
     }
 
@@ -115,9 +113,8 @@ public class Team {
         return members;
     }
 
-    public void addMember(String uuidAsString) {
-        UUID uuid = UUID.fromString(uuidAsString);
-        this.members.put(uuid, false);
+    public void addMember(DBTeamMember member) {
+        if(member.isInTeam) this.members.put(member.uuid, member.isTeamOperator);
     }
 
     public List<PlayerData> getTeamOperators() {
@@ -168,14 +165,14 @@ public class Team {
         this.name = name;
     }
 
-    private void setRandomConcreteMaterial() {
+    private Material getRandomConcreteMaterial() {
         List<Material> materials = new ArrayList<>();
         for (Material material : Material.values()) {
             if (material.name().contains("CONCRETE") && !material.name().contains("POWDER")) {
                 materials.add(material);
             }
         }
-        this.colorAsMaterial = materials.get(ThreadLocalRandom.current().nextInt(0, materials.size()));
+        return materials.get(ThreadLocalRandom.current().nextInt(0, materials.size()));
     }
 
     public UUID getUuid() {
@@ -195,6 +192,7 @@ public class Team {
             HandleTeams.removePlayerFromEveryTeam(playerData);
             this.members.put(playerData.getUniqueId(), false);
             playerData.setUuidOfTeam(this.getUuid());
+            playerData.setInTeam(true);
         }
     }
 
@@ -205,6 +203,8 @@ public class Team {
             }
             this.members.remove(playerData.getUniqueId());
             playerData.setUuidOfTeam(null);
+            playerData.setInTeam(false);
+            Main.getMainLogger().warning("Removed player " + playerData.getName());
             if(this.members.isEmpty()) {
                 TeamsMainMenuGUI.teams.remove(this);
             }
@@ -214,30 +214,45 @@ public class Team {
     public void remove() {
         Main.getMainLogger().info("Removing team " + this.name);
         TeamsDatabase.getInstance().removeTeam(this);
-        if(this.inventory != null && !this.inventory.isEmpty()) {
+        this.deleted = true;
+        if (this.inventory != null && !this.inventory.isEmpty()) {
             Location loc;
-            Main.getMainLogger().warning("team " + this.name + " is being removed but has items in its ender chest, dropping items to first operator");
-            if(!getTeamOperators().isEmpty()) {
+            Main.getMainLogger().warning("Team " + this.name + " is being removed but has items in its ender chest, dropping items to first operator");
+            if (!getTeamOperators().isEmpty()) {
                 loc = getTeamOperators().getFirst().getLocation();
-                for (ItemStack itemStack : this.inventory.getContents()) {
-                    if(itemStack == null) continue;
-                    loc.getWorld().dropItem(loc, itemStack);
-                }
-            }
-            else {
-                Main.getMainLogger().warning("team has no operators, dropping items to first member");
-                if(!getAllPlayers().isEmpty()) {
-                    loc = HandlePlayers.getInstance().getPlayerData(getAllPlayers().getFirst()).getLocation();
+                try {
                     for (ItemStack itemStack : this.inventory.getContents()) {
-                        if(itemStack == null) continue;
+                        if (itemStack == null) continue;
                         loc.getWorld().dropItem(loc, itemStack);
                     }
                 }
+                catch (Exception e) {
+                    Main.getMainLogger().severe("Could not drop enderchest items for team " + this.name);
+                    e.printStackTrace();
+                }
+            } else {
+                Main.getMainLogger().warning("Team has no operators, dropping items to first member");
+                if (!getAllPlayers().isEmpty()) {
+                    loc = HandlePlayers.getInstance().getPlayerData(getAllPlayers().getFirst()).getLocation();
+                    try {
+                        for (ItemStack itemStack : this.inventory.getContents()) {
+                            if (itemStack == null) continue;
+                            loc.getWorld().dropItem(loc, itemStack);
+                        }
+                    }
+                    catch (Exception e) {
+                        Main.getMainLogger().severe("Could not drop enderchest items for team " + this.name);
+                        e.printStackTrace();
+                    }
+                }
+                else Main.getMainLogger().warning("Team has no members, can not drop items");
             }
         }
         this.members.clear();
         TeamsMainMenuGUI.teams.remove(this);
-        this.deleted = true;
+        if(this.inventory != null && !this.inventory.isEmpty()) {
+            this.inventory.clear();
+        }
 
         Main.getMainLogger().info("Removed team " + this.name);
     }
@@ -259,13 +274,12 @@ public class Team {
         player.openInventory(this.inventory);
     }
 
-    public boolean isMember(UUID uuidOfPlayerTOCheck) {
-        if (uuidOfPlayerTOCheck == null) {
+    public boolean isMember(UUID uuidOfPlayerToCheck) {
+        if (uuidOfPlayerToCheck == null) {
             return false;
         }
-        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuidOfPlayerTOCheck);
         for (UUID uuid : this.members.keySet()) {
-            if(uuid.equals(uuidOfPlayerTOCheck)) {
+            if(uuid.equals(uuidOfPlayerToCheck)) {
                 return true;
             }
         }

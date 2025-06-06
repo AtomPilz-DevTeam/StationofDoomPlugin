@@ -45,10 +45,18 @@ public class TeamEnderchestsDatabase {
                 .single(Call.of()
                         .bind(uuidOfTeam, UUIDAdapter.AS_STRING))
                 .map(row -> {
-                    ItemStack itemStack = new ItemStack(Material.valueOf(row.getString("material")), row.getInt("amount"));
-                    ItemMeta itemMeta = itemStack.getItemMeta();
-                    if(row.getString("name") != null && !row.getString("name").isEmpty()) itemMeta.displayName(Component.text(row.getString("name")));
-                    itemStack.setItemMeta(itemMeta);
+                    ItemStack itemStack;
+                    try {
+                        itemStack = new ItemStack(Material.valueOf(row.getString("material")), row.getInt("amount"));
+                        ItemMeta itemMeta = itemStack.getItemMeta();
+                        if(row.getString("name") != null && !row.getString("name").isEmpty()) itemMeta.displayName(Component.text(row.getString("name")));
+                        itemStack.setItemMeta(itemMeta);
+                    }
+                    catch (NullPointerException e) {
+                        Main.getMainLogger().warning("Could not find material of " + row.getString("material") + " in team enderchests of team " + uuidOfTeam);
+                        itemStack = new ItemStack(Material.STONE, 1);
+                        itemStack.getItemMeta().displayName(Component.text("Could not find material of " + row.getString("material")));
+                    }
                     inv.addItem(itemStack);
                     return itemStack;
                 })

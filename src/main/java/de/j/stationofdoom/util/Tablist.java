@@ -32,6 +32,7 @@ public class Tablist {
     private static final int secondsBetweenReloads = 10;
     private static int n = 0;
     private static boolean autoReloadRunning = false;
+    private static int autoReloadTaskId;
 
     private enum Ranks {
         HOST,
@@ -125,11 +126,14 @@ public class Tablist {
     }
 
     private void createScoreboardTeamsFromTeam(Team team) {
+        TextColor teamColor;
         if(team.getColorAsString() == null || colors.get(team.getColorAsString()) == null) {
             Main.getMainLogger().warning("Could not find color for " + team.getName());
-            return;
+            teamColor = NamedTextColor.WHITE;
         }
-        TextColor teamColor = TextColor.fromHexString(colors.get(team.getColorAsString()));
+        else {
+            teamColor = TextColor.fromHexString(colors.get(team.getColorAsString()));
+        }
 
         scoreboard.registerNewTeam("0Host_" + team.getUuid());
         scoreboard.getTeam("0Host_" + team.getUuid()).prefix(Component.text("Host ")
@@ -158,7 +162,6 @@ public class Tablist {
                 .append(Component.text("Admin ")
                     .color(NamedTextColor.RED)
                 .append(Component.text("| ").color(NamedTextColor.WHITE)
-                    .color(NamedTextColor.DARK_GRAY)
                 .append(Component.text(team.getName() + " ").color(teamColor)
                 .append(Component.text("| ").color(NamedTextColor.WHITE))))));
 
@@ -338,11 +341,10 @@ public class Tablist {
 
     private static void startAutoReload() {
         autoReloadRunning = true;
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), new Runnable() {
+        autoReloadTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), new Runnable() {
             public void run() {
                 if(Bukkit.getOnlinePlayers().isEmpty()) {
-                    autoReloadRunning = false;
-                    Bukkit.getScheduler().cancelTasks(Main.getPlugin());
+                    stopAutoReload();
                 }
                 if (n >=  secondsBetweenReloads){
                     Tablist tablist = new Tablist();
@@ -352,5 +354,10 @@ public class Tablist {
                 n++;
             }
         }, 20, 20);
+    }
+
+    private static void stopAutoReload() {
+        autoReloadRunning = false;
+        Bukkit.getScheduler().cancelTask(autoReloadTaskId);
     }
 }

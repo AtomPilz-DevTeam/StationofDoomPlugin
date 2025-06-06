@@ -2,16 +2,17 @@ package de.j.stationofdoom.teams;
 
 import de.j.deathMinigames.database.TeamsDatabase;
 import de.j.deathMinigames.main.PlayerData;
-import de.j.stationofdoom.main.Main;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class HandleTeams {
     private static volatile HandleTeams instance;
 
-    private static List<Team> teams = new ArrayList<>();
+    private static List<Team> teams = new CopyOnWriteArrayList<>();
 
     private HandleTeams() {
         teams = TeamsDatabase.getInstance().getTeams();
@@ -28,6 +29,8 @@ public class HandleTeams {
         return instance;
     }
 
+    /** returns null when no them is found */
+    @Nullable
     public static Team getTeam(PlayerData playerData) {
         for(Team team : teams) {
             if(team.isDeleted()) continue;
@@ -35,7 +38,7 @@ public class HandleTeams {
                 return team;
             }
         }
-        return new Team();
+        return null;
     }
 
     public static Team getTeamFromPlayerUUID(UUID uuid) {
