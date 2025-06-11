@@ -1,9 +1,9 @@
 package de.j.deathMinigames.main;
 
 import de.j.stationofdoom.enchants.CustomEnchantsEnum;
+import de.j.stationofdoom.teams.chunkClaimSystem.ChunkClaimSystem;
 import de.j.stationofdoom.util.Tablist;
 import org.bukkit.Location;
-
 import de.j.stationofdoom.main.Main;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -140,6 +140,9 @@ public class Config {
                 Tablist.setHostedBy(config.getString("Tablist.HostedBy"));
             }
         }
+        if(config.contains("ProtectedLocationRadius")) {
+            ChunkClaimSystem.getInstance().setProtectedLocationSizeInBlocks(config.getInt("ProtectedLocationRadius"));
+        }
     }
 
     private void handleCloneCustomEnchants(FileConfiguration config) {
@@ -177,7 +180,6 @@ public class Config {
             int y = Main.getPlugin().getConfig().getInt("WaitingListPosition.y");
             int z = Main.getPlugin().getConfig().getInt("WaitingListPosition.z");
             configWaitingListPosition = new Location(world, x, y, z);
-            Main.getMainLogger().info("set WaitingListPosition from config to: " + configWaitingListPosition.getBlockX() + ", " + configWaitingListPosition.getBlockY() + ", " + configWaitingListPosition.getBlockZ());
         }
         else {
             Main.getMainLogger().warning("WaitingListPosition not found in config!");
@@ -257,6 +259,13 @@ public class Config {
         Main.getPlugin().getConfig().set("WaitingListPosition.z", location.getBlockZ());
         Main.getPlugin().saveConfig();
         Main.getMainLogger().info("set WaitingListPosition to: " + configWaitingListPosition);
+    }
+
+    public synchronized void setProtectedLocationSizeInBlocksInConfig(int size) {
+        if(size == 0 || size == Main.getPlugin().getConfig().getInt("ProtectedLocationRadius")) return;
+        Main.getPlugin().getConfig().set("ProtectedLocationRadius", size);
+        Main.getPlugin().saveConfig();
+        Main.getMainLogger().info("set ProtectedLocationSizeInBlocksInConfig to: " + size);
     }
 
     /**

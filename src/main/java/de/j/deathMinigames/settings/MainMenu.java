@@ -27,13 +27,13 @@ public class MainMenu implements InventoryHolder {
         PARKOUR_LENGTH,
         COST_TO_LOWER_THE_DIFFICULTY,
         TIME_TO_DECIDE_WHEN_RESPAWNING,
-        SET_HOST,
-        SET_SERVER_NAME
     }
 
     public enum AnvilUIs {
         SET_SERVER_NAME,
         SET_HOST_NAME,
+        TEAM_RENAME,
+        SET_CLAIMING_RADIUS,
         DEFAULT // usage when the input slot item should have no name
     }
 
@@ -85,6 +85,10 @@ public class MainMenu implements InventoryHolder {
         return setServerName;
     }
 
+    public static AnvilUI getSetClaimingRadius() {
+        return setClaimingRadius;
+    }
+
     private static final GUI introduction = new GUI("Introduction", true, false);
     private static final GUI difficulty = new GUI("Difficulty", true, true);
     private static final GUI usesPlugin = new GUI("UsesPlugin", true, false);
@@ -96,6 +100,7 @@ public class MainMenu implements InventoryHolder {
     private static final GUI timeToDecideWhenRespawning = new GUI("TimeToDecideWhenRespawning", false, false);
     private static final AnvilUI setHost = new AnvilUI(AnvilUIs.SET_HOST_NAME);
     private static final AnvilUI setServerName = new AnvilUI(AnvilUIs.SET_SERVER_NAME);
+    private static final AnvilUI setClaimingRadius = new AnvilUI(AnvilUIs.SET_CLAIMING_RADIUS);
 
     /**
      * Opens the main menu for the given player, where the player can
@@ -129,6 +134,7 @@ public class MainMenu implements InventoryHolder {
         addClickableItemStack("Difficulty", Material.RED_CONCRETE, 1, 3);
         addClickableItemStack("SetHost", Material.BOOK, 1, 4);
         addClickableItemStack("SetServerName", Material.BOOK, 1, 5);
+        addClickableItemStack("SetClaimingRadius", Material.MAP, 1, 6);
     }
 
     /**

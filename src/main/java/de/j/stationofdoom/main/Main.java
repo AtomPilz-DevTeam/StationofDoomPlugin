@@ -2,6 +2,11 @@ package de.j.stationofdoom.main;
 
 import de.j.deathMinigames.commands.GameCMD;
 import de.j.deathMinigames.commands.LeaderboardCMD;
+import de.j.stationofdoom.teams.TeamCMD;
+import de.j.stationofdoom.teams.chunkClaimSystem.BlockBreakAndUseCancelListener;
+import de.j.stationofdoom.teams.enderchest.TeamEnderchestPreventEnchantedItemsInputListener;
+import de.j.deathMinigames.database.TeamEnderchestsDatabase;
+import de.j.deathMinigames.database.TeamsDatabase;
 import de.j.deathMinigames.listeners.*;
 import de.j.deathMinigames.main.Config;
 import de.j.deathMinigames.database.Database;
@@ -12,6 +17,9 @@ import de.j.stationofdoom.enchants.FlightEvents;
 import de.j.stationofdoom.enchants.FurnaceEvents;
 import de.j.stationofdoom.enchants.TelepathyEvents;
 import de.j.stationofdoom.listener.*;
+import de.j.stationofdoom.teams.TeamInventoryReload;
+import de.j.stationofdoom.teams.TeamsCMD;
+import de.j.stationofdoom.teams.TeamSettingsInventoryListener;
 import de.j.stationofdoom.util.EntityManager;
 import de.j.stationofdoom.util.translations.ChangeLanguageGUI;
 import de.j.stationofdoom.util.translations.LanguageChanger;
@@ -87,6 +95,8 @@ public final class Main extends JavaPlugin {
             COMMANDS.register("sit", new PlayerSitListener());
             COMMANDS.register("game", "game related commands", new GameCMD());
             COMMANDS.register("leaderboard", "showing the leaderboard of the minigame", new LeaderboardCMD());
+            COMMANDS.register("teams", "showing the Main teams menu settings", new TeamsCMD());
+            COMMANDS.register("team", "showing your team's settings", new TeamCMD());
         });
 
         PluginManager pluginManager = Bukkit.getPluginManager();
@@ -112,6 +122,10 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new InitWaitingListLocationOnJoin(), this);
         pluginManager.registerEvents(new LeaveListener(), this);
         pluginManager.registerEvents(new AnvilListener(), this);
+        pluginManager.registerEvents(new TeamSettingsInventoryListener(), this);
+        pluginManager.registerEvents(new TeamInventoryReload(), this);
+        pluginManager.registerEvents(new TeamEnderchestPreventEnchantedItemsInputListener(), this);
+        pluginManager.registerEvents(new BlockBreakAndUseCancelListener(), this);
 
         //CustomEnchants.register(); -> see custom enchants class for more info
 
@@ -126,6 +140,8 @@ public final class Main extends JavaPlugin {
         EntityManager.removeOldEntities();
         WhoIsOnline.shutdown();
         HandlePlayers.copyAllPlayerDataIntoDatabase();
+        TeamsDatabase.getInstance().updateTeamsDatabase();
+        TeamEnderchestsDatabase.getInstance().updateTeamEnderchestsOfAllTeams();
     }
 
     public static Main getPlugin(){

@@ -77,6 +77,8 @@ public class Database {
             isConnected = true;
             configureDefaultQuery();
             PlayerDataDatabase.getInstance().createTable();
+            TeamsDatabase.getInstance().createTable();
+            TeamEnderchestsDatabase.getInstance().createTable();
             Main.getMainLogger().info("Database initialized");
         }
         catch(Exception e) {
