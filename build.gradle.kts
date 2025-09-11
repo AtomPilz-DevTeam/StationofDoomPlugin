@@ -21,14 +21,14 @@ repositories {
 }
 
 dependencies {
-    library("com.google.code.gson:gson:2.13.1")
+    library("com.google.code.gson:gson:2.13.2")
     library("club.minnced:discord-webhooks:0.8.4")
     paperweight.paperDevBundle("$minecraftVersion-R0.1-SNAPSHOT")
     library("org.postgresql:postgresql:42.7.7")
-    library("de.chojo.sadu:sadu-postgresql:2.3.2")
-    library("de.chojo.sadu:sadu-datasource:2.3.2")
-    library("de.chojo.sadu:sadu-queries:2.3.2")
-    library("com.zaxxer:HikariCP:6.3.0")
+    library("de.chojo.sadu:sadu-postgresql:2.3.3")
+    library("de.chojo.sadu:sadu-datasource:2.3.3")
+    library("de.chojo.sadu:sadu-queries:2.3.3")
+    library("com.zaxxer:HikariCP:6.3.2")
 }
 
 java {
