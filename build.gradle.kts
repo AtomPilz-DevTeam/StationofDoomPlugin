@@ -4,12 +4,12 @@ plugins {
     id("java")
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    id("io.papermc.paperweight.userdev") version "1.7.7"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.18"
     id("maven-publish")
     id("com.modrinth.minotaur") version "2.+"
 }
 
-val minecraftVersion = "1.21.3"
+val minecraftVersion = "1.21.10"
 val pluginVersion: String = "1.15.1" + if (System.getenv("runnumber") != null) "." + System.getenv("runnumber") else ""
 
 group = "com.github.atompilz-devteam"
@@ -62,19 +62,6 @@ modrinth {
 }
 
 publishing {
-    repositories {
-        maven {
-            name = "release"
-            url = uri("https://repo.jonasfranke.xyz/${findProperty("targetRepo") ?: "releases"}")
-            credentials {
-                username = System.getenv("REPOSILITE_USER")
-                password = System.getenv("REPOSILITE_PW")
-            }
-            authentication {
-                create<BasicAuthentication>("basic")
-            }
-        }
-    }
     publications {
         create<MavenPublication>("release") {
             groupId = "com.github.atompilz-devteam"

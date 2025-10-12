@@ -89,7 +89,7 @@ public class ItemBuilder {
         SkullMeta headMeta = (SkullMeta) head.getItemMeta();
         GameProfile profile = new GameProfile(UUID.randomUUID(), name);
 
-        profile.getProperties().put("textures", new Property("textures", url));
+        profile.properties().put("textures", new Property("textures", url));
 
         try {
             assert headMeta != null;
@@ -110,7 +110,7 @@ public class ItemBuilder {
         meta  = item.getItemMeta();
         GameProfile profile = new GameProfile(UUID.randomUUID(), name);
 
-        profile.getProperties().put("textures", new Property("textures", url));
+        profile.properties().put("textures", new Property("textures", url));
 
         try {
             assert meta != null;
