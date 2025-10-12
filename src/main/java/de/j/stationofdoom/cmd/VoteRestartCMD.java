@@ -75,7 +75,7 @@ public class VoteRestartCMD implements BasicCommand {
                         GlobalRegionScheduler globalScheduler = Main.getGlobalRegionScheduler();
                         globalScheduler.runDelayed(Main.getPlugin(), scheduledTask -> {
                             Main.getMainLogger().info("Server is restarting");
-                            Bukkit.spigot().restart();
+                            Bukkit.getServer().restart();
                         }, 5);
                     }
                 }
