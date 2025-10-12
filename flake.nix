@@ -10,7 +10,7 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
       jdk = pkgs.jdk21;
-      gradle = pkgs.gradle.override { java = jdk; };
+      gradle = pkgs.gradle_8.override { java = jdk; };
     in
     {
 
