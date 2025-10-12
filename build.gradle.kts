@@ -4,7 +4,7 @@ plugins {
     id("java")
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.18"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
     id("maven-publish")
     id("com.modrinth.minotaur") version "2.+"
 }
@@ -24,11 +24,11 @@ dependencies {
     library("com.google.code.gson:gson:2.13.2")
     library("club.minnced:discord-webhooks:0.8.4")
     paperweight.paperDevBundle("$minecraftVersion-R0.1-SNAPSHOT")
-    library("org.postgresql:postgresql:42.7.7")
+    library("org.postgresql:postgresql:42.7.8")
     library("de.chojo.sadu:sadu-postgresql:2.3.3")
     library("de.chojo.sadu:sadu-datasource:2.3.3")
     library("de.chojo.sadu:sadu-queries:2.3.3")
-    library("com.zaxxer:HikariCP:6.3.2")
+    library("com.zaxxer:HikariCP:6.3.3")
 }
 
 java {
