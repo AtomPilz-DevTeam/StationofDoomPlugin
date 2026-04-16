@@ -82,6 +82,13 @@ public class ItemBuilder {
         return this;
     }
 
+    /**
+     * Creates a PLAYER_HEAD ItemStack and, if a texture `url` is provided, applies it as the head's skin texture.
+     *
+     * @param url  the texture value to assign to the head's `textures` property (typically a base64-encoded texture payload); if empty, the default head is returned
+     * @param name the name to associate with the underlying GameProfile used for the head
+     * @return     an ItemStack representing the player head with the specified texture applied, or a default player head if `url` is empty
+     */
     public static ItemStack createHead(String url, String name) {
         ItemStack head = new ItemStack(Material.PLAYER_HEAD, (short) 1);
         if (url.isEmpty())
@@ -103,6 +110,13 @@ public class ItemBuilder {
         return head;
     }
 
+    /**
+     * Initializes this builder's item as a player head and applies the given skin texture and profile name.
+     *
+     * @param url  the skin texture value to apply to the head (if empty, the method returns null)
+     * @param name the profile name to associate with the head's GameProfile
+     * @return the current ItemBuilder configured as a PLAYER_HEAD with the specified texture and name, or `null` if `url` is empty
+     */
     public ItemBuilder getHeadBuilder(String url, String name) {
         item = new ItemStack(Material.PLAYER_HEAD, (short) 1);
         if (url.isEmpty())
