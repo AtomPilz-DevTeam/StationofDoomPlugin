@@ -54,7 +54,7 @@ jobs:
           echo "runnumber=${{ github.run_number }}" >> $GITHUB_ENV
       - run: ./gradlew jar
       - name: Upload artifact
-        uses: actions/upload-artifact@v6.0.0
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: StationofdoomPlugin
           path: build/libs
@@ -90,7 +90,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' && needs.paths-filter.outputs.output1 == 'true' }}
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: StationofdoomPlugin
           path: build/libs
