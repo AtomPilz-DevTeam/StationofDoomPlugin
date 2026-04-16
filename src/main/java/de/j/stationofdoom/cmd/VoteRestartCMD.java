@@ -24,6 +24,14 @@ public class VoteRestartCMD implements BasicCommand {
     private final ArrayList<Player> votedPlayers = new ArrayList<>();
     public static boolean restarting = false;
 
+    /**
+     * Handles a player-issued restart vote command: opens or joins a vote, broadcasts voting prompts, and triggers a server restart when unanimous.
+     *
+     * If no vote is active, marks the vote active and broadcasts a global notice and clickable vote prompts. If a vote is active, records the caller's vote or informs them they already voted. When every online player has voted, starts a countdown that broadcasts remaining seconds, then kicks all players with a restart message, invokes shutdown hooks, and restarts the server.
+     *
+     * @param commandSourceStack the command invocation context (expected to contain a Player sender)
+     * @param strings            the command arguments (unused)
+     */
     @Override
     public void execute(@NotNull CommandSourceStack commandSourceStack, @NotNull String[] strings) {
         assert commandSourceStack.getSender() instanceof Player;
