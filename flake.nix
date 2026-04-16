@@ -10,7 +10,7 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
       jdk = pkgs.jdk21;
-      gradle = pkgs.gradle_8.override { java = jdk; };
+      gradle = pkgs.gradle_9.override { java = jdk; };
     in
     {
 
@@ -22,8 +22,8 @@
 
          shellHook = ''
            echo "Development environment ready!"
-           echo "JDK: $(java -version 2>&1 | head -n 1)"
-           echo "Gradle: $(gradle --version | head -n 1)"
+           echo "$(java -version 2>&1 | head -n 1)"
+           echo "$(gradle --version | head -n 3 | tail -n 1)"
          '';
         };
 
