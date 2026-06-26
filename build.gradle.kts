@@ -28,7 +28,7 @@ dependencies {
     library("de.chojo.sadu:sadu-postgresql:2.3.9")
     library("de.chojo.sadu:sadu-datasource:2.3.9")
     library("de.chojo.sadu:sadu-queries:2.3.9")
-    library("com.zaxxer:HikariCP:6.3.3")
+    library("com.zaxxer:HikariCP:7.1.0")
 }
 
 java {
